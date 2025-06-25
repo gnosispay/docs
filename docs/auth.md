@@ -8,34 +8,37 @@ title: Authentication Flow
 
 ## Overview
 
-Our authentication system uses Sign-In with Ethereum (SIWE) to generate JWT tokens for user authentication.
-Both EOA and Smart Contract signatures (via EIP-1271) are supported.
+Our authentication system uses Sign-In with Ethereum (SIWE) to generate a `jwt` to interact with our API.
+This means you don't need to handle the storage of a powerful API key or spend hours configuring granular permissions.
 
-## Requirements
-
-- Signer must be an owner of a Gnosis Pay account
+Our API accepts signatures from Externally Owned Accounts (EOAs) and Smart Accounts (EIP-1271).
 
 :::caution
+The signer must be an owner of a Gnosis Pay account. 
 Non-registered users will receive `401 Unauthorized` on most authenticated routes
 :::
 
 ## Token Details
 
-- JWT tokens are generated upon successful SIWE verification
-- Token validity: 1 hour
-- Token is set as an HTTP-only cookie named `jwt`
-- Every authentication attempt requires a new nonce
+A `jwt` is generated upon successful Sign-In with Ethereum (SIWE) verification and remains **valid for 1 hour**.
+To enhance security and prevent replay attacks, each authentication attempt requires a new and unique nonce.
+
+Always ensure that the `jwt` is valid before making API requests.
+If an API request returns a 401 Unauthorized response due to an expired token,
+your application must restart the authentication process, which requires user interaction.
+This means the application must request a new nonce, prompt the user to sign the message,
+and then submit the signature for verification to generate a fresh `jwt`.
 
 ## Authentication Process
 
 ### 1. Nonce Generation
 
+Before initiating authentication, the application must request a nonce.
+Your application then presents this nonce to the user for signing as part of the SIWE flow.
+
 ```jsx
 GET /api/v1/auth/nonce
 ```
-
-The application must request a nonce before initiating user authentication. 
-This nonce is presented to the user for signing as a part of the SIWE flow.
 
 ### 2. Signature Verification
 
@@ -49,11 +52,7 @@ Content-Type: application/json
 }
 ```
 
-Upon successful verification:
-
-- A JWT token is generated
-- The token is set as an HTTP-only cookie named `jwt`
-- This cookie will be automatically included in subsequent API requests
+Upon successful verification, a `jwt` is generated.
 
 ### Authentication Methods
 

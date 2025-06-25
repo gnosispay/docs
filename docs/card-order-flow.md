@@ -52,7 +52,7 @@ Calling this endpoint is optional because the card can be free.
 ::: 
 
 
-### 4. Confirm the payment performed
+### 4. Confirm the payment was performed
 
 ```jsx
 PUT /api/v1/order/{orderId}/confirm-payment
@@ -82,7 +82,7 @@ Even if the card is free, this endpoint needs to be called to move the card orde
 POST /api/v1/order/:orderId/card
 ```
 
-In order to create a `Card` out of a `CardOrder` the following conditions needs to be met:
+In order to create a `Card` out of a `CardOrder` the following conditions need to be met:
 
 - No cards were created out of this `orderId`.
 - The risk score needs to be Green or Orange.
@@ -91,13 +91,71 @@ In order to create a `Card` out of a `CardOrder` the following conditions needs 
 - User needs to be from a supported country.
 - User address needs to be set.
 - User needs to have an approved KYC.
-- User needs to have the shipping details for the order set.
-    - The shipping details are the same as the User’s address.
+- User needs to have the shipping details for the physical card order set.
+    - The shipping details can be different from the KYC address, as long as it is in the same country.
+    - Virtual cards do not require a shipping address.
 - The embossed name for the card needs to be set.
 
 :::caution
-In order to create a card, an encrypted key generated on the client side must be provided. 
-This key should be encrypted with Paymentology’s public key.
-We do not have a reference implementation for this yet, but it can be provided.
+In order to create a card, users need to set a pin code. 
+This pin should be sent encrypted, using Paymentology's public key.
 ::: 
+
+## Virtual Card Orders
+
+In addition to physical cards, we support virtual card orders. 
+Virtual card orders have a **simplified flow** compared to physical cards, with these key differences:
+
+- No shipping address is required
+- The card is available immediately after order creation (no shipping delay)
+- Virtual cards can be used for online transactions immediately
+- No PIN required
+- **Cards are automatically created when the order is placed**
+
+### 1. Create a Virtual Card Order
+
+```jsx
+POST /api/v1/order/create
+```
+
+When creating a virtual card order, you need to specify the `cardType` as `VIRTUAL` in the request body:
+
+```json
+{
+  "cardType": "VIRTUAL"
+}
+```
+
+:::warning Important: Automatic Card Creation
+When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
+:::
+
+### 2. ~~Create a Virtual Card~~ Card Auto-Creation
+
+**For virtual cards, skip this step!** The card is automatically created during order creation.
+
+```jsx
+❌ DO NOT CALL: POST /api/v1/order/:orderId/card
+```
+
+If you call this endpoint for a virtual card order, you will receive an error: `"Card was already created for the specified order"` because the card was auto-created in step 1.
+
+### 3. Verify Card Creation
+
+After creating a virtual card order, you can verify the card was created by listing the user's cards:
+
+```jsx
+GET /api/v1/cards
+```
+
+The virtual card should appear in the card list immediately after order creation.
+
+:::info
+Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
+:::
+
+:::caution Physical vs Virtual Card Flows
+- **Physical Cards**: Follow the complete 5-step flow including explicit card creation
+- **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
+:::
 
