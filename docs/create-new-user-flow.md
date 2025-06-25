@@ -1,28 +1,47 @@
 ---
 id: create-new-user-flow
-sidebar_label: Create New User Flow
-title: Create New User Flow
+sidebar_label: Create New User
+title: Create New User
 ---
 
 # Create New User Flow 
 
-## 1. Create a User on our API 
+## 1. Request Email Verification OTP
 
-If you have a `referralCouponCode` you can send it on this step.
+Users need to verify their email address before signing up. Request an OTP code to be sent to the user's email:
+
+```jsx
+POST /api/v1/auth/signup/otp
+{
+  "email": "string"
+}
+```
+
+The OTP code will be sent to the provided email address from `team@gnosispay.com`. The code is valid for 5 minutes.
+
+## 2. Create a User on our API 
+
+Once the user receives the OTP code, they can complete the signup process. If you have a `referralCouponCode` you can also send it at this step.
 
 ```jsx
 POST /api/v1/auth/signup
 {
   "authEmail": "string",
+  "otp": "string", // The 6-digit code received via email
   "referralCouponCode": "string" (optional)
 }
 ```
+
 :::info
-By calling this endpoint passing a `jwt`` from a signed message you are automatically
+During the transition period, the OTP verification is optional. If provided, it will be validated; if not, the signup will proceed without email verification. However, OTP verification will be mandatory in the future.
+:::
+
+:::info
+By calling this endpoint passing a `jwt` from a signed message you are automatically
 assigning that address as the initial associated wallet (EOA) of this user.
 ::: 
 
-## 2. Get the KYC URL from Gnosis Pay API
+## 3. Get the KYC URL from Gnosis Pay API
 
 Gnosis Pay uses Sumsub as the KYC provider. 
 The flow today requires you to integrate with Sumsub's WebView. 
@@ -31,12 +50,12 @@ Use this API endpoint to get the correct URL for the User:
 GET /api/v1/kyc/integration
 ```
 
-## 3. Redirect the user to the KYC URL 
+## 4. Redirect the user to the KYC URL 
 
 The integrator needs to redirect users to the KYC URL acquired in the previous step.
 Users will conduct and complete the KYC process directly on Sumsub's platform. 
 
-## 4. Answer the Source of Funds questionnaire 
+## 5. Answer the Source of Funds questionnaire 
 
 Get the list of questions on this endpoint: 
 
@@ -68,7 +87,7 @@ Instead of sending us the question title on the `POST`, you will need to send us
 If you are integrating before the `id` is here, please check if the `id` is present to avoid any disruptions.
 ::: 
 
-## 5. Validate the phone number
+## 6. Validate the phone number
 
 Validate the phone number by first requesting an OTP: 
 
@@ -87,7 +106,7 @@ POST /api/v1/verification/check
 }
 ```
 
-## 6. Monitor the KYC result
+## 7. Monitor the KYC result
 
 KYC is an asynchronous process by nature. 
 We recommend you check the User's profile regularly for changes in the KYC status to act accordingly. 

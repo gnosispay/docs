@@ -46,7 +46,15 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "safe-configuration",
+        },
+        {
+          type: "doc",
           id: "card-order-flow",
+        },
+        {
+          type: "doc",
+          id: "iban-integration",
         },
       ]
     },
