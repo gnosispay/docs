@@ -159,3 +159,188 @@ Virtual cards are ideal for users who want immediate access to their card for on
 - **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
 :::
 
+## Card Order State Transitions
+
+Understanding the card order state machine is crucial for handling different scenarios in your application. Below is the complete state transition diagram and detailed explanations.
+
+### State Transition Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> PENDINGTRANSACTION : Create Order
+    
+    PENDINGTRANSACTION --> READY : Pay (free or paid)
+    PENDINGTRANSACTION --> TRANSACTIONCOMPLETE : Payment Complete
+    PENDINGTRANSACTION --> CANCELLED : Cancel
+    PENDINGTRANSACTION --> FAILEDTRANSACTION : Payment Failed
+    
+    TRANSACTIONCOMPLETE --> CONFIRMATIONREQUIRED : Request Confirmation
+    
+    CONFIRMATIONREQUIRED --> READY : Confirm Ready<br/>(SOF + Phone + Address)
+    
+    READY --> CARDCREATED : Create Card<br/>(Physical/Virtual)
+    
+    CARDCREATED --> [*] : Order Complete
+    CANCELLED --> [*] : Order Cancelled
+    FAILEDTRANSACTION --> [*] : Order Failed
+    
+    note right of PENDINGTRANSACTION
+        Initial state when<br/>order is created
+    end note
+    
+    note right of READY
+        Ready for card creation<br/>All requirements met
+    end note
+    
+    note right of CARDCREATED
+        Card successfully created<br/>Order fulfilled
+    end note
+```
+
+### Card Order States
+
+#### Core States
+
+**`PENDINGTRANSACTION`** - *Initial State*
+- **Description**: Order created, awaiting payment or confirmation
+- **Next States**: `READY`, `TRANSACTIONCOMPLETE`, `CANCELLED`, `FAILEDTRANSACTION`
+- **User Actions**: Attach transaction, confirm payment, cancel order
+
+**`TRANSACTIONCOMPLETE`** - *Payment Processed*
+- **Description**: Payment transaction completed but requires additional verification
+- **Next States**: `CONFIRMATIONREQUIRED`
+- **System Actions**: Automatic transition when additional verification needed
+
+**`CONFIRMATIONREQUIRED`** - *Verification Needed*
+- **Description**: Additional user verification required (SOF, phone, address)
+- **Next States**: `READY`
+- **Requirements**: Phone verified, SOF completed, address provided
+
+**`READY`** - *Ready for Card Creation*
+- **Description**: All requirements met, ready to create physical/virtual card
+- **Next States**: `CARDCREATED`
+- **User Actions**: Create card with PIN (physical) or without PIN (virtual)
+
+#### Terminal States
+
+**`CARDCREATED`** - *Success*
+- **Description**: Card successfully created and ready for use
+- **Next States**: None (terminal state)
+- **Note**: Virtual cards are immediately active; physical cards need activation
+
+**`CANCELLED`** - *Cancelled*
+- **Description**: Order cancelled by user or system
+- **Next States**: None (terminal state)
+- **Note**: Only possible from `PENDINGTRANSACTION` state
+
+**`FAILEDTRANSACTION`** - *Payment Failed*
+- **Description**: Payment processing failed
+- **Next States**: None (terminal state)
+- **Note**: User needs to create a new order
+
+### Transition Rules
+
+#### 1. Pay Transition: `PENDINGTRANSACTION` → `READY`
+```javascript
+// Conditions:
+// - Free card: totalAmountEUR === totalDiscountEUR
+// - Paid card: Valid EURe payment to correct address
+// - Transaction hash validation (if required)
+```
+
+#### 2. Request Confirmation: `TRANSACTIONCOMPLETE` → `CONFIRMATIONREQUIRED`
+```javascript
+// Triggered when:
+// - Additional user verification needed
+// - System determines extra checks required
+```
+
+#### 3. Confirm Ready: `CONFIRMATIONREQUIRED` → `READY`
+```javascript
+// Requirements:
+// - User phone verified
+// - Source of Funds (SOF) completed
+// - Valid shipping address (for physical cards)
+```
+
+#### 4. Create Card: `READY` → `CARDCREATED`
+```javascript
+// Requirements:
+// - KYC approved
+// - Risk score: Green or Orange
+// - For physical cards: Encrypted PIN required
+// - For virtual cards: No PIN needed
+```
+
+#### 5. Cancel: `PENDINGTRANSACTION` → `CANCELLED`
+```javascript
+// Conditions:
+// - Only from PENDINGTRANSACTION state
+// - User-initiated or admin-initiated
+```
+
+### Error Handling
+
+When implementing card order handling, consider these scenarios:
+
+**Invalid Transitions**
+```javascript
+// Will throw TransitionError
+// - Trying to cancel from READY state
+// - Attempting to create card from PENDINGTRANSACTION
+// - Any transition not defined in the state machine
+```
+
+**Common Error Scenarios**
+- **Payment Issues**: Transaction hash already used, insufficient payment
+- **User Requirements**: Missing KYC, unverified phone, missing address
+- **System Issues**: Payment processor errors, card creation failures
+
+### Implementation Example
+
+```javascript
+// Check current order state before taking action
+const handleOrderAction = async (order, action) => {
+  switch (order.status) {
+    case 'PENDINGTRANSACTION':
+      if (action === 'pay') {
+        await confirmPayment(order.id);
+      } else if (action === 'cancel') {
+        await cancelOrder(order.id);
+      }
+      break;
+      
+    case 'READY':
+      if (action === 'createCard') {
+        await createCard(order.id, { setPin: !order.virtual });
+      }
+      break;
+      
+    case 'CARDCREATED':
+      // Order complete - handle card activation if needed
+      break;
+      
+    default:
+      throw new Error(`Cannot perform ${action} on order with status ${order.status}`);
+  }
+};
+```
+
+### Cancellable States
+
+Orders can only be cancelled from specific states. Use the `CANCELLABLE_ORDER_STATUSES` constant:
+
+```javascript
+// From @gnosispay/prisma/card-order
+const CANCELLABLE_ORDER_STATUSES = [
+  'PENDINGTRANSACTION',
+  'TRANSACTIONCOMPLETE', 
+  'CONFIRMATIONREQUIRED',
+  'FAILEDTRANSACTION'
+];
+```
+
+:::warning State Validation
+Always validate the current order state before attempting transitions. Invalid transitions will throw a `TransitionError` and return HTTP 422 status code.
+:::
+
