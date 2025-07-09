@@ -202,4 +202,4 @@ console.log(enqueueTx.data, '-> signature');
 ### Note
 - The message can be fetched from the API using `GET /api/v1/ibans/signing-message`
 - The generated transaction can be submitted to prove ownership
-- Make sure to use the correct chainId (100 for Gnosis Chain) 
+- Make sure to use the correct chainId (100 for Gnosis Chain)

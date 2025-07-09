@@ -22,7 +22,7 @@ This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION` 
 
 The Card Order is created with the following data:
 
-- Address data is taken from the `User` and cannot be modified.
+- A shipping address can be specified by filling the `shippingAddress` field, see [endpoint specifications](/api-reference/create-a-new-card-order). If not set, the KYC address will be used for shipping.
 - The total amount to be paid is set in EURe. The amount is 30.23.
 - The `couponCode` applied is taken from the `User.referalCouponCode` . 
 
@@ -92,8 +92,8 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
 - User address needs to be set.
 - User needs to have an approved KYC.
 - User needs to have the shipping details for the physical card order set.
-    - The shipping details can be different from the KYC address, as long as it is in the same country.
-    - Virtual cards do not require a shipping address.
+  - The shipping details can be different from the KYC address, as long as it is in the same country.
+  - Virtual cards do not require a shipping address.
 - The embossed name for the card needs to be set.
 
 :::caution
@@ -104,13 +104,12 @@ This pin should be sent encrypted, using Paymentology's public key.
 ## Virtual Card Orders
 
 In addition to physical cards, we support virtual card orders. 
-Virtual card orders have a **simplified flow** compared to physical cards, with these key differences:
+The virtual card order follows the same flow as physical cards, but with these differences:
 
 - No shipping address is required
-- The card is available immediately after order creation (no shipping delay)
+- The card is available immediately after creation (no shipping delay)
 - Virtual cards can be used for online transactions immediately
 - No PIN required
-- **Cards are automatically created when the order is placed**
 
 ### 1. Create a Virtual Card Order
 
@@ -122,41 +121,18 @@ When creating a virtual card order, you need to specify the `cardType` as `VIRTU
 
 ```json
 {
-  "cardType": "VIRTUAL"
+  "virtual": true
 }
 ```
 
-:::warning Important: Automatic Card Creation
-When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
-:::
-
-### 2. ~~Create a Virtual Card~~ Card Auto-Creation
-
-**For virtual cards, skip this step!** The card is automatically created during order creation.
+### 2. Create a Virtual Card
 
 ```jsx
-❌ DO NOT CALL: POST /api/v1/order/:orderId/card
+POST /api/v1/order/:orderId/card
 ```
-
-If you call this endpoint for a virtual card order, you will receive an error: `"Card was already created for the specified order"` because the card was auto-created in step 1.
-
-### 3. Verify Card Creation
-
-After creating a virtual card order, you can verify the card was created by listing the user's cards:
-
-```jsx
-GET /api/v1/cards
-```
-
-The virtual card should appear in the card list immediately after order creation.
 
 :::info
 Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
-:::
-
-:::caution Physical vs Virtual Card Flows
-- **Physical Cards**: Follow the complete 5-step flow including explicit card creation
-- **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
 :::
 
 ## Card Order State Transitions
@@ -165,37 +141,44 @@ Understanding the card order state machine is crucial for handling different sce
 
 ### State Transition Diagram
 
-```mermaid
-stateDiagram-v2
-    [*] --> PENDINGTRANSACTION : Create Order
-    
-    PENDINGTRANSACTION --> READY : Pay (free or paid)
-    PENDINGTRANSACTION --> TRANSACTIONCOMPLETE : Payment Complete
-    PENDINGTRANSACTION --> CANCELLED : Cancel
-    PENDINGTRANSACTION --> FAILEDTRANSACTION : Payment Failed
-    
-    TRANSACTIONCOMPLETE --> CONFIRMATIONREQUIRED : Request Confirmation
-    
-    CONFIRMATIONREQUIRED --> READY : Confirm Ready<br/>(SOF + Phone + Address)
-    
-    READY --> CARDCREATED : Create Card<br/>(Physical/Virtual)
-    
-    CARDCREATED --> [*] : Order Complete
-    CANCELLED --> [*] : Order Cancelled
-    FAILEDTRANSACTION --> [*] : Order Failed
-    
-    note right of PENDINGTRANSACTION
-        Initial state when<br/>order is created
-    end note
-    
-    note right of READY
-        Ready for card creation<br/>All requirements met
-    end note
-    
-    note right of CARDCREATED
-        Card successfully created<br/>Order fulfilled
-    end note
-```
+{/*
+    This diagram is generated using https://mermaid.live
+
+  stateDiagram-v2
+  [*] --> PENDINGTRANSACTION : Create Order
+  
+  PENDINGTRANSACTION --> READY : Pay (free or paid)
+  PENDINGTRANSACTION --> TRANSACTIONCOMPLETE : Payment Complete
+  PENDINGTRANSACTION --> CANCELLED : Cancel
+  PENDINGTRANSACTION --> FAILEDTRANSACTION : Payment Failed
+  
+  TRANSACTIONCOMPLETE --> CONFIRMATIONREQUIRED : Request Confirmation
+  
+  CONFIRMATIONREQUIRED --> READY : Confirm Ready<br/>(SOF + Phone + Address)
+  
+  READY --> CARDCREATED : Create Card<br/>(Physical/Virtual)
+  
+  CARDCREATED --> [*] : Order Complete
+  CANCELLED --> [*] : Order Cancelled
+  FAILEDTRANSACTION --> [*] : Order Failed
+  
+  note right of PENDINGTRANSACTION
+      Initial state when<br/>order is created
+  end note
+  
+  note right of READY
+      Ready for card creation<br/>All requirements met
+  end note
+  
+  note right of CARDCREATED
+      Card successfully created<br/>Order fulfilled
+  end note
+*/}
+
+
+![flow diagram](./assets/card-order-flow.png)
+
+
 
 ### Card Order States
 
@@ -241,54 +224,45 @@ stateDiagram-v2
 ### Transition Rules
 
 #### 1. Pay Transition: `PENDINGTRANSACTION` → `READY`
-```javascript
-// Conditions:
-// - Free card: totalAmountEUR === totalDiscountEUR
-// - Paid card: Valid EURe payment to correct address
-// - Transaction hash validation (if required)
-```
+Conditions:
+- Free card: totalAmountEUR === totalDiscountEUR
+- Paid card: Valid EURe payment to correct address
+- Transaction hash validation (if required)
+
 
 #### 2. Request Confirmation: `TRANSACTIONCOMPLETE` → `CONFIRMATIONREQUIRED`
-```javascript
-// Triggered when:
-// - Additional user verification needed
-// - System determines extra checks required
-```
+Triggered when:
+- Additional user verification needed
+- System determines extra checks required
 
 #### 3. Confirm Ready: `CONFIRMATIONREQUIRED` → `READY`
-```javascript
-// Requirements:
-// - User phone verified
-// - Source of Funds (SOF) completed
-// - Valid shipping address (for physical cards)
-```
+Requirements:
+- User phone verified
+- Source of Funds (SOF) completed
+- Valid shipping address (for physical cards)
 
 #### 4. Create Card: `READY` → `CARDCREATED`
-```javascript
-// Requirements:
-// - KYC approved
-// - Risk score: Green or Orange
-// - For physical cards: Encrypted PIN required
-// - For virtual cards: No PIN needed
-```
+  Requirements:
+- KYC approved
+- Risk score: Green or Orange
+- For physical cards: Encrypted PIN required
+- For virtual cards: No PIN needed
 
 #### 5. Cancel: `PENDINGTRANSACTION` → `CANCELLED`
-```javascript
-// Conditions:
-// - Only from PENDINGTRANSACTION state
-// - User-initiated or admin-initiated
-```
+Conditions:
+- Only from `PENDINGTRANSACTION` state
+- User-initiated or admin-initiated
+
 
 ### Error Handling
 
 When implementing card order handling, consider these scenarios:
 
 **Invalid Transitions**
-```javascript
-// Will throw TransitionError
-// - Trying to cancel from READY state
-// - Attempting to create card from PENDINGTRANSACTION
-// - Any transition not defined in the state machine
+Will throw TransitionError
+- Trying to cancel from READY state
+- Attempting to create card from `PENDINGTRANSACTION`
+- Any transition not defined in the state machine
 ```
 
 **Common Error Scenarios**

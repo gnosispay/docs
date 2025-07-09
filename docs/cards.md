@@ -47,7 +47,7 @@ Again, more edge cases to handle:
 1. **Refunds**: unlike what you'd expect, this is not directly related to an authorization. 
 2. **Partial capture**: a capture happens with an amount lower than the authorized amount. 
 3. **Over capture**: some MCCs can over capture, meaning they can capture a value higher than the authorized amount. 
-4. **Multi captured**: basically multiple partial captures on a single authorization, limited to some MCCs as well. 
+4. **Multi capture**: basically multiple partial captures on a single authorization, limited to some MCCs as well. 
 5. **Force capture**: sometimes you receive a capture on a rejected authorization (yes, really), for example, some POS terminals on planes are not connected to the internet and when the plane lands it sends the transactions that happened mid-flight. 
 
 These edge cases are limited to some MCCs, but they can be used for fraudulent behaviour. 
