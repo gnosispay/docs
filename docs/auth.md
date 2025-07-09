@@ -9,7 +9,7 @@ title: Authentication Flow
 ## Overview
 
 Our authentication system uses Sign-In with Ethereum (SIWE) to generate a `jwt` to interact with our API.
-This means you don't need to handle the storage of a powerful API key or spend hours configuring granular permissions.
+This means you don’t need to handle the storage of a powerful API key or spend hours configuring granular permissions.
 
 Our API accepts signatures from Externally Owned Accounts (EOAs) and Smart Accounts (EIP-1271).
 
@@ -43,7 +43,7 @@ GET /api/v1/auth/nonce
 ### 2. Signature Verification
 
 ```jsx
-POST /api/v1/auth/verify
+POST /api/v1/auth/challenge
 Content-Type: application/json
 
 {
@@ -52,24 +52,14 @@ Content-Type: application/json
 }
 ```
 
+:::caution
+The SIWE message contains a `domain` and a `uri` field. You should ensure their values are **not** `127.0.0.1` or `localhost`, even when working locally. Override these fields (e.g., with `domain: "somedomain.com", uri: "https://www.somedomain.com"`) to prevent firewall blocks and "WAFForbidden" errors.
+:::
+
 Upon successful verification, a `jwt` is generated.
-
-### Authentication Methods
-
-The API supports two methods for providing authentication:
-
-1. HTTP-only Cookie:
-    - Automatically included in requests after successful authentication
-    - Cookie name: `jwt`
-
-2. Authorization Header passing the `jwt` received on the `/api/v1/auth/verify` endpoint:
+This `jwt` must be included in the Authorization header of all subsequent HTTP requests to authenticate with the Gnosis Pay API: 
 
    ```jsx
-   Authorization: Bearer <JWT>
+   Authorization: Bearer {jwt}
    ```
 
-## Considerations
-
-- Only Gnosis Pay account owners can authenticate successfully
-- Always verify JWT token expiration.
-  - When a token expires (401 response), integrations should request a new nonce and repeat the authentication process to obtain a fresh JWT token

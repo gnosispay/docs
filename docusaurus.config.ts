@@ -1,11 +1,11 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
-import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 
 const config: Config = {
   title: "Gnosis Pay Docs",
-  tagline: "The first-ever self-custodial Card bridging traditional fintech and crypto",
+  tagline:
+    "The first-ever self-custodial Card bridging traditional fintech and crypto",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -91,6 +91,7 @@ const config: Config = {
     },
   } satisfies Preset.ThemeConfig,
   plugins: [
+    require.resolve('docusaurus-lunr-search'),
     [
       "docusaurus-plugin-openapi-docs",
       {
@@ -107,9 +108,20 @@ const config: Config = {
             },
             hideSendButton: false,
             showSchemas: true,
-          } satisfies OpenApiPlugin.Options
+          },
+          pseApi: {
+            specPath: "https://api-pse-public.gnosispay.com/api-docs/spec.json",
+            outputDir: "docs/pse-api-reference",
+            sidebarOptions: {
+              groupPathsBy: "tag",
+              categoryLinkSource: "tag",
+              sidebarCollapsible: true,
+            },
+            hideSendButton: false,
+            showSchemas: true,
+          },
         },
-      },
+      }
     ],
   ],
   themes: ["docusaurus-theme-openapi-docs"],

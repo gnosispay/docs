@@ -1,5 +1,6 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
-import sidebar from './docs/api-reference/sidebar'
+import sidebar from "./docs/api-reference/sidebar";
+import pseSidebar from "./docs/pse-api-reference/sidebar";
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 /**
  * Creating a sidebar enables you to:
  - create an ordered group of docs
@@ -29,7 +30,7 @@ const sidebars: SidebarsConfig = {
           type: "doc",
           id: "cards",
         },
-      ]
+      ],
     },
     {
       type: "category",
@@ -38,7 +39,7 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: "doc",
-          id: "create-new-user-flow",
+          id: "onboarding-flow",
         },
         {
           type: "doc",
@@ -46,17 +47,21 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "safe-configuration",
+          id: "card-order-flow",
         },
         {
           type: "doc",
-          id: "card-order-flow",
+          id: "onchain-daily-limit",
         },
         {
           type: "doc",
           id: "iban-integration",
         },
-      ]
+        {
+          type: "doc",
+          id: "pse-integration",
+        },
+      ],
     },
     {
       type: "category",
@@ -64,12 +69,21 @@ const sidebars: SidebarsConfig = {
       link: {
         type: "generated-index",
         title: "Gnosis Pay API",
-        description: "The first-ever self-custodial Card bridging traditional fintech and crypto",
+        description:
+          "The first-ever self-custodial Card bridging traditional fintech and crypto",
         slug: "/category/api-reference",
       },
       items: sidebar,
     },
-  ]
+    {
+      type: "category",
+      label: "PSE API reference",
+      link: {
+        type: "generated-index",
+      },
+      items: pseSidebar,
+    },
+  ],
 };
 
 export default sidebars;
