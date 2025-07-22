@@ -19,5 +19,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# API Reference is auto-generated from swagger JSON
+# API Reference and PSE API Reference are auto-generated from swagger JSON
 docs/api-reference/
+docs/pse-api-reference/
