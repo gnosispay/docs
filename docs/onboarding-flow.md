@@ -30,7 +30,9 @@ There are 2 ways to know whether they are already registered or not:
 :::
 ### 2.1 Get a One-Time Password (OTP) for Email
 
-To register, we'll need to send your user a one-time password (OTP) to verify their email. Here's the endpoint:
+To register, we'll need to send your user a one-time password (OTP) to verify their email.  
+
+Here's the endpoint [(spec)](/api-reference/request-otp-for-email-verification):
 
 ```jsx
 POST /api/v1/auth/signup/otp
@@ -43,15 +45,20 @@ The OTP will arrive in their inbox from `team@gnosispay.com` and is valid for 5 
 
 ### 2.2 Verify the OTP
 
-Once your user gets the code, you can finish signing them up. If you have a `referralCouponCode`, you can include it here too:
+Once your user gets the code, you can finish signing them up.  
 
+You will need to pass the `partnerId`, which is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.  
+
+If you have a `referralCouponCode`, you can include it here too.
+
+Here's the endpoint [(spec)](/api-reference/create-a-new-user):
 ```jsx
 POST /api/v1/auth/signup
 {
   "authEmail": "string",
   "otp": "string", // The 6-digit code from their email
-  "referralCouponCode": "string" (optional),
-  "partnerId": "string" (optional)
+  "partnerId": "string",
+  "referralCouponCode": "string" (optional)
 }
 ```
 
@@ -339,6 +346,9 @@ The final step is to sign the data with the user's wallet and deploy the Safe mo
 :::info
 Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
 :::
+
+Tip: Use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum. `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. Another status `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on. If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
+
 #### Signing the Data
 
 Use the domain, types, and message from the previous step to generate an EIP-712 signature:

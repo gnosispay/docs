@@ -121,7 +121,7 @@ The PSE SDK will help you display sensitive information. It injects secure ifram
 
 ## How to Customize the Style of Secure Elements in the iframe
 
-For security reasons, the only way to apply custom styling to iframe elements is to prepare and share a **CSS file** with the Gnosis Pay team. This file, named `<partner-id>.css`, will be incorporated into the iframe.
+For security reasons, the only way to apply custom styling to iframe elements is to prepare and share a **CSS file** with the Gnosis Pay team. This file, named `<partner_name>.css`, will be incorporated into the iframe.
 
 Standard styling is applied to the iframe elements by default. You can override the style of these classes and IDs as needed. Here are some of them:
 
@@ -148,7 +148,7 @@ Standard styling is applied to the iframe elements by default. You can override 
 Here is a suggested workflow to customize the styling:
 
 1.  In your front-end, load the element you wish to customize (e.g., the card data).
-1.  Locate the custom CSS file with your name or ID in either the "**Style Editor**" in Firefox or the "**Sources**" panel. In the example below, the file is `gnosis_pay_ui.css`.
+1.  Locate the custom CSS file with your name in either the "**Style Editor**" in Firefox or the "**Sources**" panel on Chrome/Brave. In the example below, the file is `gnosis_pay_ui.css`.
 1.  Apply your desired styling. The changes will be reflected in your interface immediately.
 1.  Save the file and send it to Gnosis Pay for application in production.
 

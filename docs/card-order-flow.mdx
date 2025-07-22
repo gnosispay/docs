@@ -79,7 +79,7 @@ Even if the card is free, this endpoint needs to be called to move the card orde
 ### 5. Create a Card
 
 ```jsx
-POST /api/v1/order/:orderId/card
+POST /api/v1/order/:orderId/create-card
 ```
 
 In order to create a `Card` out of a `CardOrder` the following conditions need to be met:
@@ -96,10 +96,13 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
   - Virtual cards do not require a shipping address.
 - The embossed name for the card needs to be set.
 
-:::caution
-In order to create a card, users need to set a pin code. 
-This pin should be sent encrypted, using Paymentology's public key.
-::: 
+### 6. Set the Card PIN using the Partner Secure Elements (PSE)
+
+The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE). 
+If a PIN is not provided upon creation, a random one will be assigned. 
+Changing this randomly assigned PIN requires the user to visit an ATM.
+
+For detailed instructions, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
 
 ## Virtual Card Orders
 

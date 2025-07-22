@@ -52,6 +52,12 @@ The `transaction` object contains the data that needs to be signed by the user's
 
 ## Step 2: Sign and Submit Transaction
 
+:::warning
+**Safe Activation Required**: This step only works when the Gnosis Pay Safe account has been fully activated and its modules are deployed. If you receive an error during submission, ensure that the Safe account activation process has been completed first.
+
+For more information about Safe account setup and module deployment, see the [Safe Management API documentation](https://docs.gnosispay.com/api-reference/deploy-safe-modules-with-a-user-signature).
+:::
+
 ### 2.1 Sign the Transaction
 
 The transaction data from Step 1 must be signed by the user's wallet. 
