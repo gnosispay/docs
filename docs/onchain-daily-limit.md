@@ -6,7 +6,7 @@ title: Onchain Daily Limit
 
 # Onchain Daily Limit
 
-The onchain daily limit feature allows partners to manage daily spending limits for Gnosis Pay Safe accounts. 
+The onchain daily limit feature allows partners to manage daily spending limits for Gnosis Pay Safe accounts.
 
 All transactions are gasless, enabling users to perform these operations completely free of charge.
 
@@ -60,7 +60,7 @@ For more information about Safe account setup and module deployment, see the [Sa
 
 ### 2.1 Sign the Transaction
 
-The transaction data from Step 1 must be signed by the user's wallet. 
+The transaction data from Step 1 must be signed by the user's wallet.
 
 :::important
 The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
@@ -96,11 +96,11 @@ PUT /api/v1/accounts/onchain-daily-limit
 }
 ```
 
-## Step 3: Monitor the Update
+## Step 3: Monitor the transaction execution
+The withdrawal is processed through a delay relay mechanism that executes after 3 minutes.
 
-The daily limit update is processed through a **delay relay mechanism** that executes after 3 minutes.
-
-Poll the following endpoint to check when the new limit becomes active:
+You can monitor the transaction status using the [delay-relay monitoring endpoint](https://docs.gnosispay.com/api-reference/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user) or by checking your Safe's transaction history.
+Additionally, you can also poll the following endpoint to check when the new limit becomes active:
 
 **Endpoint:**
 ```http
@@ -168,12 +168,12 @@ const pollForUpdate = async () => {
     "https://api.gnosispay.com/api/v1/accounts/onchain-daily-limit"
   );
   const { data: { onchainDailyLimit: updatedLimit } } = await checkResponse.json();
-  
+
   if (updatedLimit === newOnchainDailyLimit) {
     console.log(`Limit successfully updated to: ${updatedLimit}`);
     return true;
   }
-  
+
   console.log(`Waiting for update... Current: ${updatedLimit}, Target: ${newOnchainDailyLimit}`);
   return false;
 };
