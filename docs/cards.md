@@ -57,7 +57,13 @@ That's why we have the dispute process to contest suspicious transactions.
 
 Disputes are used to recover funds for captured transactions. Their main use-case is to revert fraudulent transactions 
 or problems with the product or service paid for. Fraud and non-fraud disputes have different requirements and rules, 
-and undergo through different analysis to reach a conclusion. 
+and undergo through different analysis to reach a conclusion.  
+
+## Card PINs
+
+Visa cards have 2 places to store the PIN - the first place is on the physical card chip, called the **offline PIN**, and the second is the **online PIN** that is stored in the bank's system. While these PINs usually have the same value, there can be cases where they differ, for instance when you change the card PIN.
+
+When paying at a point of sale (in a restaurant or in a shop), only the offline PIN may be verified, while ATMs usually connect to the bank network and check the online PIN. When using the PSE to change the PIN, only the online PIN is changed. At this point, the offline PIN is **not updated** since physical access to the card is needed to change the PIN on the chip. To update the offline PIN, you need to go to an ATM and perform any operation. ATM transactions always go online to the card issuer. This allows the issuer to send an "issuer script" to your card, which updates the offline PIN stored on the chip, synchronizing it with any recent PIN changes made online (with PSE). Without this synchronization, your offline PIN might be outdated and cause issues for transactions that rely on offline verification.
 
 ## MCC: Merchant Category Code 
 
