@@ -3,6 +3,8 @@ id: pse-integration
 sidebar_label: PSE Integration
 title: Partner Secure Elements (PSE) Integration
 ---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Partner Secure Elements (PSE) Integration
 
@@ -90,7 +92,11 @@ ABCD....
 -----END EC PRIVATE KEY-----"
 ```
 
-Here's a Node.js implementation to request the ephemeral-token:
+Here's a Node.js implementation to request the ephemeral-token in two different ways:
+
+
+<Tabs groupId="ephemeral-token-impl">
+<TabItem value="axios" label="Using Axios" default>
 
 ```js
 const httpsAgent = new https.Agent({
@@ -104,8 +110,58 @@ const ephemeralTokenRequest = await axios({
     method: "POST",
     url: `https://api-pse.gnosispay.com/api/v1/ephemeral-token`,
     headers: { "Content-Type": "application/json" },
+    // Axios adds the user-agent automatically
 });
 ```
+
+</TabItem>
+<TabItem value="https-native" label="Using https.request">
+
+```js
+import https from "https";
+
+const httpsAgent = new https.Agent({
+  cert: CERT,
+  key: KEY,
+  rejectUnauthorized: true,
+});
+
+const req = https.request(
+  {
+    hostname: "api-pse.gnosispay.com",
+    path: "/api/v1/ephemeral-token",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "User-Client/1.0.0",
+    },
+    agent: httpsAgent,
+  },
+  (res) => {
+    let data = "";
+    res.on("data", (chunk) => {
+      data += chunk;
+    });
+
+    res.on("end", () => {
+      console.log("Status:", res.statusCode);
+
+      try {
+        const parsedData = JSON.parse(data);
+        console.log("Response:", parsedData);
+      } catch {
+        console.log("Raw response:", data);
+      }
+    });
+  },
+);
+
+req.on("error", (error) => {
+  console.error("Request error:", error);
+});
+req.end();
+```
+</TabItem> </Tabs>
 
 Please refer to our [API documentation](/pse-api-reference/generate-a-new-ephemeral-token) on the PSE service for more information about the specific endpoint.
 
@@ -143,7 +199,7 @@ Standard styling is applied to the iframe elements by default. You can override 
 
 ---
 
-### Guide
+### Styling Guide
 
 Here is a suggested workflow to customize the styling:
 
