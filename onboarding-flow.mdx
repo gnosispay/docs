@@ -23,14 +23,14 @@ Now that you've got your `jwt` token, it's time to register your user in the Gno
 There are 2 ways to know whether they are already registered or not:
 
 - **Check the JWT:** If the decoded JWT has a `userId`, your user is already registered.
-- **Or, call the user endpoint:** Try [`GET /api/v1/user`](/api-reference/get-the-user-profile). If you get a `401 Unauthorized Error`, the user isn't registered yet.
+- **Or, call the user endpoint:** Try [`GET /api/v1/user`](/api-reference/user/get-the-user-profile). If you get a `401 Unauthorized Error`, the user isn't registered yet.
 </Note>
 
 ### 2.1 Get a One-Time Password (OTP) for Email
 
 To register, we'll need to send your user a one-time password (OTP) to verify their email.  
 
-Here's the endpoint [(spec)](/api-reference/request-otp-for-email-verification):
+Here's the endpoint [(spec)](/api-reference/authentication/request-otp-for-email-verification):
 
 ```jsx
 POST /api/v1/auth/signup/otp
@@ -49,7 +49,7 @@ You will need to pass the `partnerId`, which is a unique identifier for your app
 
 If you have a `referralCouponCode`, you can include it here too.
 
-Here's the endpoint [(spec)](/api-reference/create-a-new-user):
+Here's the endpoint [(spec)](/api-reference/authentication/create-a-new-user):
 ```jsx
 POST /api/v1/auth/signup
 {
@@ -71,7 +71,7 @@ We recommend having a mapping in your app, between the ToS id and their title an
 This endpoint can only be called once the user is registered. Hence the proposed mapping.
 </Info>
 
-Get the terms for the user [(spec)](/api-reference/get-terms-and-conditions-status):
+Get the terms for the user [(spec)](/api-reference/user/get-terms-and-conditions-status):
 ```jsx
 GET /api/v1/user/terms
 ```
@@ -115,7 +115,7 @@ const tosToTitle = {
 }
 ```
 
-Once the OTP verification is successful (previous step), and the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/get-terms-and-conditions-status):
+Once the OTP verification is successful (previous step), and the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/user/accept-terms-and-conditions):
 
 ```jsx
 POST /api/v1/user/terms
@@ -128,7 +128,7 @@ POST /api/v1/user/terms
 ---
 ## 3. KYC Process
 
-To order a card, your users will need to go through a KYC process with our partner Sumsub. The whole KYC flow happens in a Sumsub iframe, and in the background, the Gnosis Pay API keeps you updated on your user's `kycStatus` (check it with [`GET /api/v1/user`](/api-reference/get-the-user-profile)).
+To order a card, your users will need to go through a KYC process with our partner Sumsub. The whole KYC flow happens in a Sumsub iframe, and in the background, the Gnosis Pay API keeps you updated on your user's `kycStatus` (check it with [`GET /api/v1/user`](/api-reference/user/get-the-user-profile)).
 
 Here are the different KYC statuses you might see, and what they mean for your user:
 
@@ -149,7 +149,7 @@ You should start the KYC process if your user is registered and their `kycStatus
 
 ### 3.1 Get the Sumsub iframe URL
 
-Each user gets a unique URL for their KYC process. Get it with [(spec)](/api-reference/retrieves-kyc-integration-specification):
+Each user gets a unique URL for their KYC process. Get it with [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification):
 
 ```jsx
 GET /api/v1/kyc/integration
@@ -180,13 +180,13 @@ Users should be ready for this step if:
 - the field `isSourceOfFundsAnswered` on the user endpoint response is `false`
 </Note>
 
-You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/retrieve-the-source-of-funds-questions): 
+You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-the-source-of-funds-questions): 
 
 ```jsx
 GET /api/v1/source-of-funds
 ```
 
-Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/submit-answers-to-the-source-of-funds-questionnaire):
+Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/kyc/submit-answers-to-the-source-of-funds-questionnaire):
 
 ```jsx
 POST /api/v1/source-of-funds
@@ -212,7 +212,7 @@ This step is needed if:
 - `isPhoneValidated` is `false` in the user endpoint response
 </Note>
 
-Validate the phone number by first requesting an OTP [(spec)](/api-reference/request-an-otp-to-verify-a-phone-number): 
+Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/request-an-otp-to-verify-a-phone-number): 
 
 ```jsx
 POST /api/v1/verification
@@ -221,7 +221,7 @@ POST /api/v1/verification
 }
 ```
 
-This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/validates-an-otp-code-to-verify-a-phone-number): 
+This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/validates-an-otp-code-to-verify-a-phone-number): 
 
 ```jsx
 POST /api/v1/verification/check
@@ -238,10 +238,10 @@ Once that's done, `isPhoneValidated` will be `true`.
 
 Gnosis Pay uses Safe accounts for on-chain transactions. Once your user has completed the previous steps, you're ready to help them set up their Safe account. Here's the flow:
 
-1. Creating a Safe account [(`POST /api/v1/account`)](/api-reference/create-or-deploy-a-safe-account-for-the-authenticated-user)
-2. Setting the Safe currency [(`POST /api/v1/safe/set-currency`)](/api-reference/set-the-currency-for-a-users-safe-account-based-on-their-country)
-3. Getting signature data for modules setup [(`GET /api/v1/account/signature-payload`)](/api-reference/get-signature-data-for-account-setup)
-4. Deploying Safe modules with the user's signature [(`PATCH /api/v1/account/deploy-safe-modules`)](/api-reference/deploy-safe-modules-with-a-user-signature)
+1. Creating a Safe account [(`POST /api/v1/account`)](/api-reference/safe-management/create-or-deploy-a-safe-account-for-the-authenticated-user)
+2. Setting the Safe currency [(`POST /api/v1/safe/set-currency`)](/api-reference/safe-management/set-the-currency-for-a-users-safe-account-based-on-their-country)
+3. Getting signature data for modules setup [(`GET /api/v1/account/signature-payload`)](/api-reference/safe-management/get-signature-data-for-account-setup)
+4. Deploying Safe modules with the user's signature [(`PATCH /api/v1/account/deploy-safe-modules`)](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature)
 
 <Note>
 Your user is ready for Safe configuration if:
@@ -254,7 +254,7 @@ Your user is ready for Safe configuration if:
 
 ### 4.1 Create a Safe Account
 
-The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/create-or-deploy-a-safe-account-for-the-authenticated-user)
+The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/safe-management/create-or-deploy-a-safe-account-for-the-authenticated-user)
 ```tsx
 POST /api/v1/account
 {
@@ -265,7 +265,7 @@ POST /api/v1/account
 Heads up: this endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
 
 <Note>
-After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoint](/api-reference/get-the-user-profile) won't be empty anymore.
+After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoint](/api-reference/user/get-the-user-profile) won't be empty anymore.
 </Note>
 
 ### 4.2 Set the Safe Currency
@@ -273,10 +273,10 @@ After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoi
 After deploying the Safe, we will need to have the currency set for the account. This currency determines which token will be used for transactions.
 
 <Note>
-Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user).
+Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
 </Note>
 
-Use the following endpoint to set the currency [(spec)](/api-reference/set-the-currency-for-a-users-safe-account-based-on-their-country):
+Use the following endpoint to set the currency [(spec)](/api-reference/safe-management/set-the-currency-for-a-users-safe-account-based-on-their-country):
 
 ```tsx
 POST /api/v1/safe/set-currency
@@ -295,10 +295,10 @@ The currency is automatically assigned based on the user's country:
 Once the Safe is deployed and the currency is set, you need to get the data that will be signed by the user's wallet to set up the Safe modules.
 
 <Note>
-Before this, note that the field `accountStatus` is `null` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user).
+Before this, note that the field `accountStatus` is `null` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
 </Note>
 
-You can get the data to be signed with the following endpoint  [(spec)](/api-reference/get-signature-data-for-account-setup).
+You can get the data to be signed with the following endpoint  [(spec)](/api-reference/safe-management/get-signature-data-for-account-setup).
 ```tsx
 GET /api/v1/account/signature-payload
 ```
@@ -351,7 +351,7 @@ GET /api/v1/account/signature-payload
 The final step is to sign the data with the user's wallet and deploy the Safe modules.
 
 <Note>
-Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
+Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
 </Note>
 
 Tip: Use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum. `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. Another status `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on. If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
@@ -378,7 +378,7 @@ const signature = await walletClient.signTypedData({
 
 #### Deploying the Modules
 
-Send the signature to deploy the Safe modules [(spec)](/api-reference/deploy-safe-modules-with-a-user-signature):
+Send the signature to deploy the Safe modules [(spec)](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature):
 
 ```tsx
 PATCH /api/v1/account/deploy-safe-modules
