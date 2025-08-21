@@ -7,7 +7,7 @@ We offer IBAN cash-in to the GnosisPay Account via Monerium for users in Europe 
 
 ## Check Availability
 
-[First you need to check if the user is available to activate their IBAN](https://gnosispay.mintlify.app/api-reference/iban/check-iban-availability):
+[First you need to check if the user is available to activate their IBAN](/api-reference/iban/check-iban-availability):
 
 ```bash cURL
 curl -X GET /api/v1/ibans/available
@@ -30,7 +30,7 @@ Requirements the User must have:
 <Step title="Signing the Monerium message">
 
 Monerium requires a specific message to be signed by the User's wallet.
-[Use this endpoint get the exact message that needs to be signed](https://gnosispay.mintlify.app/api-reference/iban/get-the-message-that-needs-to-be-signed-for-iban-activation):
+[Use this endpoint get the exact message that needs to be signed](/api-reference/iban/get-the-message-that-needs-to-be-signed-for-iban-activation):
 
 ```bash cURL
 curl -X GET /api/v1/ibans/signing-message
@@ -88,7 +88,7 @@ Another way to get the redirect URL if user has Monerium profile already is to u
 </Step>
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
 
-[You should monitor this endpoint until you see a status of `ASSIGNED`](https://gnosispay.mintlify.app/api-reference/iban/retrieve-iban-details):
+[You should monitor this endpoint until you see a status of `ASSIGNED`](/api-reference/iban/retrieve-iban-details):
 
 ```bash cURL
 curl -X GET /api/v1/ibans/details
