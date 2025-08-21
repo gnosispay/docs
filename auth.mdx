@@ -9,7 +9,7 @@ This means you don't need to handle the storage of a powerful API key or spend h
 
 ## Authentication Process
 
-<Steps>
+<Steps titleSize="h3">
 <Step title="Generate a Nonce to sign a SIWE Message">
 Before initiating authentication, [the application must request a nonce](/api-reference/authentication/generate-nonce).
 Your application then presents this nonce to the user for signing as part of the SIWE flow.
@@ -50,7 +50,7 @@ This `jwt` must be included in the Authorization header of all subsequent HTTP r
 Authorization: Bearer {jwt}
 ```
 
-### Access Token Details
+## Details about the Access Token
 
 A `jwt` is generated upon successful Sign-In with Ethereum (SIWE) verification and remains **valid for 1 hour**.
 To enhance security and prevent replay attacks, each authentication attempt requires a new and unique nonce.
