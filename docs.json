@@ -34,7 +34,8 @@
               "group": "Cards",
               "pages": [
                 "cards/concepts",
-                "cards/card-order-flow",
+                "cards/create-virtual-card",
+                "cards/create-physical-cards",
                 "cards/pse-integration"
               ]
             }

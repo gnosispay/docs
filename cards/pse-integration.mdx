@@ -3,11 +3,6 @@ title: Partner Secure Elements (PSE) Integration
 description: Access sensitive Card information from your client application.
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-# Partner Secure Elements (PSE) Integration
-
 ## Overview
 
 If you want to display sensitive information, such as card numbers, in your front-end, you'll need to interact with our **Partner Secure Elements (PSE)** service. The easiest way to do this is by using the [PSE SDK](https://www.npmjs.com/package/@gnosispay/pse-sdk) from Gnosis Pay.
@@ -15,15 +10,13 @@ If you want to display sensitive information, such as card numbers, in your fron
 To initialize the SDK, you'll need an `App ID` provided to you upon registration with Gnosis Pay. You'll also need an **ephemeral-token**. This ephemeral-token can be retrieved with a call to our private PSE API using mTLS authentication.
 
 <Warning> 
-An mTLS authentication can only be performed from a back-end. For this reason, you need a back-end responsible for retrieving the ephemeral-token and sending it to your front-end upon request. We'll go through each step in this guide.
+**Backend Only**: An mTLS authentication can only be performed from a back-end. For this reason, you need a back-end responsible for retrieving the ephemeral-token and sending it to your front-end upon request. We'll go through each step in this guide.
 </Warning> 
 
 Once your front-end has the ephemeral-token, it can initialize the PSE SDK and use it to display secure elements.
 
 Here's a diagram showing each step:
-{/*
-    This diagram is generated using https://excalidraw.com from the top-right button More tools > Mermaid to excalidraw
-
+```mermaid
     sequenceDiagram
         participant FE as Your Frontend
         participant BE as Your Backend
@@ -38,10 +31,8 @@ Here's a diagram showing each step:
 
         FE->>API: PSE SDK Requests Card Information
         API-->>FE: Display Card Information Inside an Iframe
-*/}
+```
 
-
-![pse diagram](./assets/PSE-diagram.png)
 
 Reference implementations are available for a [front-end](https://github.com/gnosispay/ui) and a [back-end](https://github.com/gnosispay/ui/tree/main/pse-backend-demo).
 
@@ -95,10 +86,9 @@ ABCD....
 Here's a Node.js implementation to request the ephemeral-token in two different ways:
 
 
-<Tabs groupId="ephemeral-token-impl">
-<TabItem value="axios" label="Using Axios" default>
+<CodeGroup>
 
-```js
+```js Using Axios
 const httpsAgent = new https.Agent({
     cert: process.env.SIGNED_CERTIFICATES,
     key: process.env.PRIVATE_KEY,
@@ -114,10 +104,7 @@ const ephemeralTokenRequest = await axios({
 });
 ```
 
-</TabItem>
-<TabItem value="https-native" label="Using https.request">
-
-```js
+```js Using https.request
 import https from "https";
 
 const httpsAgent = new https.Agent({
@@ -161,7 +148,8 @@ req.on("error", (error) => {
 });
 req.end();
 ```
-</TabItem> </Tabs>
+
+</CodeGroup>
 
 Please refer to our [API documentation](/pse-api-reference/generate-a-new-ephemeral-token) on the PSE service for more information about the specific endpoint.
 
