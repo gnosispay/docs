@@ -1,10 +1,7 @@
 ---
-id: cards
-sidebar_label: Cards Concepts 
 title: Cards Concepts
+description: "A quick overview of core concepts for the Card Industry"
 ---
-
-# Cards Concepts
 
 Cards are their own domain, with lots of edge cases all around and a unique set of terms. 
 On this document, we aim to present the most common concepts related to operating cards 
