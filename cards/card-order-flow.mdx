@@ -1,6 +1,6 @@
 ---
-title: Cards Order Flow
-description: Create Cards for your Users. 
+title: "Cards Order Flow"
+description: "Create Cards for your Users."
 ---
 
 Our card order flow supports both free and paid cards. 
@@ -10,10 +10,11 @@ You can provide a `couponCode` if you have one, that will affect the card's pric
 ## Create a new Card 
 
 
-:::caution Physical vs Virtual Card Flows
+<Warning>
+Physical vs Virtual Card Flows
 - **Physical Cards**: Follow the complete 5-step flow including explicit card creation
 - **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
-:::
+</Warning>
 
 ### 1. Create a Card Order
 
@@ -50,9 +51,9 @@ For the card order, a payment must be performed. This endpoint allows setting a 
 
 The transaction can only be used once across all card orders.
 
-:::info 
+<Note>
 Calling this endpoint is optional because the card can be free.
-::: 
+</Note>
 
 
 ### 4. Confirm the payment was performed
@@ -75,9 +76,9 @@ If the card is not free, we check if a payment was done. The conditions for the 
 
 If the conditions above are met, the `CardOrder.status` is to `READY` .
 
-:::caution 
+<Warning>
 Even if the card is free, this endpoint needs to be called to move the card order to a `READY` status.
-::: 
+</Warning>
 
 ### 5. Create a Card
 
@@ -124,9 +125,10 @@ Virtual card orders have a **simplified flow** compared to physical cards, with 
 POST /api/v1/order/create
 ```
 
-:::warning Important: Automatic Card Creation
+<Warning> 
+Important: Automatic Card Creation
 When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
-:::
+</Warning>
 
 When creating a virtual card order, you need to specify the `cardType` as `VIRTUAL` in the request body:
 
@@ -146,9 +148,9 @@ GET /api/v1/cards
 
 The virtual card should appear in the card list immediately after order creation.
 
-:::info
+<Note>
 Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
-:::
+</Note>
 
 
 ## Card Order State Transitions
@@ -193,8 +195,6 @@ Understanding the card order state machine is crucial for handling different sce
 
 
 ![flow diagram](./assets/card-order-flow.png)
-
-
 
 ### Card Order States
 
@@ -330,7 +330,8 @@ const CANCELLABLE_ORDER_STATUSES = [
 ];
 ```
 
-:::warning State Validation
+<Warning> 
+State Validation
 Always validate the current order state before attempting transitions. Invalid transitions will throw a `TransitionError` and return HTTP 422 status code.
-:::
+</Warning>
 

@@ -14,9 +14,9 @@ If you want to display sensitive information, such as card numbers, in your fron
 
 To initialize the SDK, you'll need an `App ID` provided to you upon registration with Gnosis Pay. You'll also need an **ephemeral-token**. This ephemeral-token can be retrieved with a call to our private PSE API using mTLS authentication.
 
-:::caution
+<Warning> 
 An mTLS authentication can only be performed from a back-end. For this reason, you need a back-end responsible for retrieving the ephemeral-token and sending it to your front-end upon request. We'll go through each step in this guide.
-:::
+</Warning> 
 
 Once your front-end has the ephemeral-token, it can initialize the PSE SDK and use it to display secure elements.
 
@@ -165,9 +165,9 @@ req.end();
 
 Please refer to our [API documentation](/pse-api-reference/generate-a-new-ephemeral-token) on the PSE service for more information about the specific endpoint.
 
-:::info
+<Note>
 The ephemeral-token, as its name suggests, is valid for a very short time frame. It is advised to generate a new one for every usage of the SDK.
-:::
+</Note>
 
 ---
 

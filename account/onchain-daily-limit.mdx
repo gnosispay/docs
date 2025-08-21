@@ -15,10 +15,10 @@ The onchain daily limit update process involves the following steps:
 2. **Sign and Submit** - Sign the transaction and submit the update
 3. **Monitor Update** - Wait for the delay relay to process the change and check the new limit
 
-:::important
+<Warning>
 - Transaction signing wallet must be one of the Gnosis Pay Safe signers
 - Updates are processed after a 3-minute delay as transactions are going through the Gnosis Pay delay relay
-:::
+</Warning>
 
 ## Step 1: Fetch Transaction Data for Signing
 
@@ -49,19 +49,19 @@ The `transaction` object contains the data that needs to be signed by the user's
 
 ## Step 2: Sign and Submit Transaction
 
-:::warning
+<Warning>
 **Safe Activation Required**: This step only works when the Gnosis Pay Safe account has been fully activated and its modules are deployed. If you receive an error during submission, ensure that the Safe account activation process has been completed first.
 
 For more information about Safe account setup and module deployment, see the [Safe Management API documentation](https://docs.gnosispay.com/api-reference/deploy-safe-modules-with-a-user-signature).
-:::
+</Warning>
 
 ### 2.1 Sign the Transaction
 
 The transaction data from Step 1 must be signed by the user's wallet.
 
-:::important
+<Note>
 The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
-:::
+</Note>
 
 ### 2.2 Submit the Signed Transaction
 
