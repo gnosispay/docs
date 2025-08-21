@@ -55,6 +55,10 @@ const sidebars: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "send-funds-from-safe",
+        },
+        {
+          type: "doc",
           id: "iban-integration",
         },
         {

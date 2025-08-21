@@ -102,6 +102,7 @@ Another way to get the redirect URL if user has Monerium profile already is to u
 callbackUrl should always be sent as query parameter in both the cases.
 :::
 
+
 ## 3. Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent
 
 You should monitor this endpoint until you see a status of `ASSIGNED`

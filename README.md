@@ -5,13 +5,13 @@ This website is built using [Docusaurus](https://docusaurus.io/), a modern stati
 ### Installation
 
 ```
-yarn
+corepack enable && pnpm install
 ```
 
 ### Build
 
 ```
-yarn build
+pnpm build
 ```
 
 This command generates the api documentation and builds the app's static content into the `build` directory. It can be served using any static contents hosting service.
@@ -19,7 +19,7 @@ This command generates the api documentation and builds the app's static content
 ### Local Development
 
 ```
-yarn start
+pnpm start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.

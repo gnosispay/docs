@@ -12,6 +12,12 @@ You can provide a `couponCode` if you have one, that will affect the card's pric
 
 ## Create a new Card
 
+
+:::caution Physical vs Virtual Card Flows
+- **Physical Cards**: Follow the complete 5-step flow including explicit card creation
+- **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
+:::
+
 ### 1. Create a Card Order
 
 ```jsx
@@ -98,35 +104,47 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
 
 ### 6. Set the Card PIN using the Partner Secure Elements (PSE)
 
-The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE).
-If a PIN is not provided upon creation, a random one will be assigned.
-Changing this randomly assigned PIN requires the user to visit an ATM.
+The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE). 
+If a PIN is not provided upon creation, a random one will be assigned. 
+Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn mort about the online and offline PINs.
 
-For detailed instructions, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
+
+For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
 
 ## Virtual Card Orders
 
-In addition to physical cards, we support virtual card orders.
-The virtual card order follows the same flow as physical cards, but with these differences:
+In addition to physical cards, we support virtual card orders. 
+Virtual card orders have a **simplified flow** compared to physical cards, with these key differences:
+
 
 - No shipping address is required
-- The card is available immediately after creation (no shipping delay)
+- The card is available immediately after order creation (no shipping delay)
 - Virtual cards can be used for online transactions immediately
 - No PIN required
+- **Cards are automatically created when the order is placed**
 
 ### 1. Create a Virtual Card
 
 This endpoint allows you to issue virtual card without requiring a card order. Virtual cards are free and activated immediately. No shipping address or payment validation is required.
 
+:::warning Important: Automatic Card Creation
+When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
+:::
+
+
 ```jsx
 POST /api/v1/cards/virtual
   ```
 
-### 2. Create a Virtual Card
+### 2. Verify Card Creation
+
+After creating a virtual card order, you can verify the card was created by listing the user's cards:
 
 ```jsx
-POST /api/v1/order/:orderId/card
+GET /api/v1/cards
 ```
+
+The virtual card should appear in the card list immediately after order creation.
 
 :::info
 Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
@@ -135,6 +153,7 @@ Virtual cards are ideal for users who want immediate access to their card for on
 :::note
 Card Limits: Users can have a maximum of 10 active cards including physical and virtual cards combined. Active cards exclude voided, lost, and stolen cards.
 :::
+
 
 ## Card Order State Transitions
 
