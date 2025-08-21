@@ -1,13 +1,10 @@
 ---
-title: "Send funds from GP Safe"
-description: "How to withdraw from the Gnosis Pay Safe"
+title: "Withdraw funds from GP Safe"
+description: "How to send funds from the Gnosis Pay Safe to your EOA or somewhere else."
 ---
 
 The withdrawal feature allows partners to withdraw tokens from Gnosis Pay Safe accounts to any external address **on the Gnosis Chain**. 
-
 All transactions are gasless, enabling users to perform these operations completely free of charge.
-
-## Overview
 
 The withdrawal process involves the following steps:
 
@@ -22,7 +19,10 @@ Please remember the following:
 - Cards are temporarily frozen for 3 minutes during withdrawal processing as a security measure
 </Warning>
 
-## Step 1: Fetch Transaction Data for Signing
+## Withdrawal Process 
+
+<Steps titleSize="h3">
+<Step title="Fetch Transaction Data for Signing">
 
 Get the EIP-712 typed data that needs to be signed by the user's wallet:
 
@@ -66,18 +66,14 @@ GET /api/v1/accounts/withdraw/transaction-data?tokenAddress=${tokenAddress}&to=$
 ```
 
 The response contains EIP-712 typed data that needs to be signed by the user's wallet.
-
-## Step 2: Sign and Submit Transaction
-
-### 2.1 Sign the Transaction
+</Step>
+<Step title="Sign and Submit Transaction">
 
 The typed data from Step 1 must be signed by the user's wallet using the EIP-712 standard.
 
 <Warning>
 The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
 </Warning>
-
-### 2.2 Submit the Signed Transaction
 
 Once signed, submit the transaction to execute the withdrawal:
 
@@ -124,12 +120,17 @@ POST /api/v1/accounts/withdraw
   }
 }
 ```
-
-## Step 3: Monitor the Execution
+</Step>
+<Step title="Monitor the Execution">
 
 The withdrawal is processed through a **delay relay mechanism** that executes after 3 minutes.
 
 You can monitor the transaction status using the [delay-relay monitoring endpoints](/api-reference/account-management/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user) or by checking your Safe's transaction history.
+</Step>
+</Steps>
+
+
+
 
 ## Complete Implementation Example
 
@@ -182,6 +183,7 @@ console.log(`Withdrawal submitted with ID: ${transactionResult.id}`);
 console.log(`Status: ${transactionResult.status}`);
 console.log("Transaction will be processed after the 3-minute delay period");
 ```
+
 
 ## Security Considerations
 

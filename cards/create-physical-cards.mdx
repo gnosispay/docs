@@ -4,7 +4,11 @@ description: "Order physical cards for your Users."
 ---
 
 
-### 1. Create a Card Order
+## Create Physical Card Process 
+
+
+<Steps titleSize="h3">
+<Step title="Create a Card Order">
 
 ```jsx
 POST /api/v1/order/create
@@ -18,8 +22,8 @@ The Card Order is created with the following data:
 - The total amount to be paid is set in EURe. The amount is 30.23.
 - A coupon code can be applied to reduce the amount to be paid, either at signup or in the next step
 
-### 2. (Optional) Attach a Coupon
-
+</Step>
+<Step title="(Optional) Attach a Coupon">
 ```jsx
 POST /api/v1/order/{orderId}/attach-coupon
 ```
@@ -27,8 +31,8 @@ POST /api/v1/order/{orderId}/attach-coupon
 This endpoint attaches a coupon to the `CardOrder` with `orderId`.
 The coupon needs to be valid, otherwise an error is thrown.
 If the user has a coupon code both from the signup, and from this step, the one from the signup takes precedence.
-
-### 3. (Optional) Attach an on-chain transaction
+</Step>
+<Step title="(Optional) Attach an on-chain transaction">
 
 <Note>
 This is only needed if the card is not free.
@@ -41,8 +45,8 @@ PUT /api/v1/order/{orderId}/attach-transaction
 When the card isn't free, a payment must be performed for the card order. This endpoint allows setting a transaction hash to the specified `orderId`.
 
 The transaction can only be used once across all card orders.
-
-### 4. Confirm the payment was performed
+</Step>
+<Step title="Confirm the payment was performed">
 
 <Warning>
 This endpoint must be called even if the card is free. It moves the card order to the `READY` status.
@@ -55,9 +59,6 @@ PUT /api/v1/order/{orderId}/confirm-payment
 In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION`.
 
 If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
-
-#### Successful Payment Conditions
-
 If the card is not free, we check if a payment was done. The conditions for the payment are:
 
 - Token used for payment needs to be EURe `0xcB444e90D8198415266c6a2724b7900fb12FC56E`.
@@ -65,9 +66,8 @@ If the card is not free, we check if a payment was done. The conditions for the 
 - The respective EURe amount was paid in that transaction hash (partial transfers are not supported).
 
 If all the conditions above are met, the `CardOrder.status` is set to `READY`.
-
-### 5. Create the Physical Card
-
+</Step>
+<Step title="Create the Physical Card">
 ```jsx
 POST /api/v1/order/:orderId/create-card
 ```
@@ -87,8 +87,8 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
   - The shipping details can be different from the KYC address, as long as it is in the same country.
   - Virtual cards do not require a shipping address.
 - The embossed name for the card needs to be set.
-
-### 6. Set the Card PIN using the Partner Secure Elements (PSE)
+</Step>
+<Step title="Set the Card PIN using the Partner Secure Elements (PSE)">
 
 The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE).
 Use the `cardToken` returned from the previous endpoint to set the PIN.
@@ -96,6 +96,8 @@ If a PIN is not provided upon creation, a random one will be assigned.
 Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn more about the online and offline PINs.
 
 For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
+</Step>
+</Steps>
 
 ## Card Order State Transitions
 
