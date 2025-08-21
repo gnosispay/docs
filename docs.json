@@ -1,75 +1,79 @@
 {
-    "$schema": "https://mintlify.com/docs.json",
-    "theme": "mint",
-    "name": "Mint Starter Kit",
-    "colors": {
-      "primary": "#2e8555",
-      "light": "#2e8555",
-      "dark": "#25c2a0"
-    },
-    "favicon": "/favicon.svg",
-    "navigation": {
-      "tabs": [
-        {
-          "tab": "Guides",
-          "groups": [
-            {
-              "group": "Getting started",
-              "pages": [
-                "index",
-                "auth",
-                "onboarding-flow"
-              ]
-            },
-            {
-              "group": "Accounts",
-              "pages": [
-                "account/accounts",
-                "account/send-funds-from-safe",
-                "account/onchain-daily-limit",
-                "account/iban-integration"
-              ]
-            },
-            {
-              "group": "Cards",
-              "pages": [
-                "cards/concepts",
-                "cards/card-order-flow",
-                "cards/pse-integration"
-              ]
-            }
-          ]
-        },
-        {
-          "tab": "API reference",
-          "groups": [
-            {
-              "group": "API",
-              "openapi": "https://api.gnosispay.com/api-docs/spec.json"
-            },
-            {
-                "group": "PSE API",
-                "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
-              }
-          ]
-        }
-      ]
-    },
-    "logo": {
-      "light": "/static/img/logo.svg",
-      "dark": "/static/img/logo.svg"
-    },
-    "contextual": {
-      "options": [
-       "copy",
-       "view",
-       "chatgpt",
-       "claude",
-       "perplexity",
-       "mcp",
-       "cursor",
-       "vscode"
-     ]
+  "theme": "mint",
+  "name": "Gnosis Pay Documentation",
+  "colors": {
+    "primary": "#8D9746",
+    "light": "#556B2F",
+    "dark": "#8D9746"
+  },
+  "favicon": "/static/img/favicon.ico",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting started",
+            "icon": "play",
+            "pages": ["index", "auth", "onboarding-flow"]
+          },
+          {
+            "group": "Accounts",
+            "icon": "file-user",
+            "pages": [
+              "account/accounts",
+              "account/send-funds-from-safe",
+              "account/onchain-daily-limit",
+              "account/iban-integration"
+            ]
+          },
+          {
+            "group": "Cards",
+            "icon": "cards",
+            "pages": [
+              "cards/concepts",
+              "cards/card-order-flow",
+              "cards/pse-integration"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API reference",
+        "groups": [
+          {
+            "group": "API reference",
+            "openapi": "https://api.gnosispay.com/api-docs/spec.json"
+          },
+          {
+            "group": "PSE API",
+            "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/static/img/Logo-black.svg",
+    "dark": "/static/img/Logo-white.svg"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/gnosispay",
+      "website": "https://gnosispay.com/",
+      "github": "https://github.com/gnosispay"
     }
   }
-  
+}

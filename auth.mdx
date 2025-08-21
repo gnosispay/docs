@@ -4,7 +4,7 @@ description: Use Sign-In with Ethereum (SIWE) to authenticate API requests.
 ---
 
 Our authentication system uses Sign-In with Ethereum (SIWE) to generate a `jwt` to interact with our API.
-This means you don’t need to handle the storage of a powerful API key or spend hours configuring granular permissions.
+This means you don't need to handle the storage of a powerful API key or spend hours configuring granular permissions.
 
 Our API accepts signatures from Externally Owned Accounts (EOAs) and Smart Accounts (EIP-1271).
 
@@ -31,21 +31,24 @@ and then submit the signature for verification to generate a fresh `jwt`.
 Before initiating authentication, the application must request a nonce.
 Your application then presents this nonce to the user for signing as part of the SIWE flow.
 
-```jsx
-GET /api/v1/auth/nonce
+<RequestExample>
+```bash cURL
+curl -X GET /api/v1/auth/nonce
 ```
+</RequestExample>
 
 ### 2. Signature Verification
 
-```jsx
-POST /api/v1/auth/challenge
-Content-Type: application/json
-
-{
-    "message": "string",  // SIWE message containing the nonce
-    "signature": "string" // User's signature of the message (EOA) or Smart Contract verification (EIP-1271)
-}
+<RequestExample>
+```bash cURL
+curl -X POST /api/v1/auth/challenge \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "string",
+    "signature": "string"
+  }'
 ```
+</RequestExample>
 
 <Warning>
 The SIWE message contains a `domain` and a `uri` field. You should ensure their values are **not** `127.0.0.1` or `localhost`, even when working locally. Override these fields (e.g., with `domain: "somedomain.com", uri: "https://www.somedomain.com"`) to prevent firewall blocks and "WAFForbidden" errors.
@@ -54,7 +57,7 @@ The SIWE message contains a `domain` and a `uri` field. You should ensure their 
 Upon successful verification, a `jwt` is generated.
 This `jwt` must be included in the Authorization header of all subsequent HTTP requests to authenticate with the Gnosis Pay API: 
 
-   ```jsx
-   Authorization: Bearer {jwt}
-   ```
+```bash
+Authorization: Bearer {jwt}
+```
 
