@@ -24,67 +24,32 @@ Please remember the following:
 <Steps titleSize="h3">
 <Step title="Fetch Transaction Data for Signing">
 
-Get the EIP-712 typed data that needs to be signed by the user's wallet:
+Get the EIP-712 typed data that needs to be signed by the user's wallet [(spec)](/api-reference/account-management/get-typed-data-for-withdrawing-from-the-users-safe-account):
 
-**Endpoint:**
-```http
-GET /api/v1/accounts/withdraw/transaction-data?tokenAddress=${tokenAddress}&to=${toAddress}&amount=${amount}
-```
-
-**Parameters:**
-- `tokenAddress` (required): The address of the token to withdraw (must be a valid 40-character hex address)
-- `to` (required): The destination address to withdraw to (must be a valid 40-character hex address)
-- `amount` (required): The amount to withdraw in the token's base units (must be a positive integer string)
-
-**Response:**
-```json
-{
-  "data": {
-    "domain": {
-      "verifyingContract": "0x12345...",
-      "chainId": 100
-    },
-    "primaryType": "ModuleTx",
-    "types": {
-      "ModuleTx": [
-        {
-          "type": "bytes",
-          "name": "data"
-        },
-        {
-          "type": "bytes32",
-          "name": "salt"
-        }
-      ]
-    },
-    "message": {
-      "data": "0x123456...00de0b6b3a7640000",
-      "salt": "0x1234567890...abcdef"
-    }
-  }
-}
+```bash cURL
+curl -X GET \
+/api/v1/accounts/withdraw/transaction-data?tokenAddress=${tokenAddress}&to=${toAddress}&amount=${amount}
 ```
 
 The response contains EIP-712 typed data that needs to be signed by the user's wallet.
-</Step>
-<Step title="Sign and Submit Transaction">
 
+</Step>
+<Step title="Sign the Transaction with the User's EOA wallet">
 The typed data from Step 1 must be signed by the user's wallet using the EIP-712 standard.
 
 <Warning>
 The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
 </Warning>
+</Step>
+<Step title="Submit Transaction">
 
-Once signed, submit the transaction to execute the withdrawal:
+Once signed, [submit the transaction to execute the withdrawal](/api-reference/account-management/withdraw-from-the-users-safe-account):
 
-**Endpoint:**
-```http
-POST /api/v1/accounts/withdraw
-```
-
-**Request Body:**
-```json
-{
+```bash cURL
+curl -X POST \
+/api/v1/accounts/withdraw \
+-H "Content-Type: application/json" \
+-d '{
   "tokenAddress": "0x123456....",
   "to": "0x78910...",
   "amount": "1000000000000000000",
@@ -93,33 +58,9 @@ POST /api/v1/accounts/withdraw
     "salt": "0x1234567890...abcdef",
     "data": "0x123456...00de0b6b3a7640000"
   }
-}
+}'
 ```
 
-**Parameters:**
-- `tokenAddress` (required): The address of the token to withdraw
-- `to` (required): The destination address to withdraw to
-- `amount` (required): The amount to withdraw in the token's base units
-- `signature` (required): The EIP-712 signature from Step 2.1
-- `message` (required): The message object from the typed data response
-
-**Response:**
-```json
-{
-  "data": {
-    "id": "clp3j1f..6ezx2qv",
-    "safeAddress": "0x1234567...",
-    "transactionData": "{\"to\":\"0x123\",\"value\":\"0\",\"data\":\"0xabcdef\"}",
-    "enqueueTaskId": "task_abc123",
-    "dispatchTaskId": null,
-    "readyAt": null,
-    "operationType": "CALL",
-    "userId": "user_123",
-    "status": "QUEUING",
-    "createdAt": "2025-02-07T12:34:56Z"
-  }
-}
-```
 </Step>
 <Step title="Monitor the Execution">
 

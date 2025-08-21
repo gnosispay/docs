@@ -27,7 +27,7 @@ Non-registered users will receive `401 Unauthorized` on most authenticated route
 </Warning>
 </Step>
 <Step title="Verify the Signature and get an Access Token">
-
+After the message is signed, you need to submit both the message and the signature to [retrieve an Access Token](/api-reference/authentication/verify-siwe-signature):
 ```bash cURL
 curl -X POST /api/v1/auth/challenge \
   -H "Content-Type: application/json" \
