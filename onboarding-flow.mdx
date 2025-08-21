@@ -1,5 +1,5 @@
 ---
-title: Onboarding Flow
+title: Onboard Users to Gnosis Pay
 description: How to onboard new Users to Gnosis Pay.
 ---
 
@@ -65,7 +65,11 @@ POST /api/v1/auth/signup
 At this point, the user is registered in the Gnosis Pay system and has an associated user id.
 Users need to accept our terms of service and those from our partners. To streamline the process, you can do this step together with the previous one.
 
-We recommend having a mapping in your app, between the ToS id and a title, so you can display the title and link out for users to read the full text. Make sure they check a box to accept before moving on!
+We recommend having a mapping in your app, between the ToS id and their title and urls, so you can display the title and link out for users to read the full text. Make sure they check a box to accept before moving on!
+
+<Info>
+This endpoint can only be called once the user is registered. Hence the proposed mapping.
+</Info>
 
 Get the terms for the user [(spec)](/api-reference/get-terms-and-conditions-status):
 ```jsx
