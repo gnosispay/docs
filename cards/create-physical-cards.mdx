@@ -1,20 +1,8 @@
 ---
-title: "Cards Order Flow"
-description: "Create Cards for your Users."
+title: "Create Physical Cards"
+description: "Order physical cards for your Users."
 ---
 
-Our card order flow supports both free and paid cards. 
-You can provide a `couponCode` if you have one, that will affect the card's price. 
-
-
-## Create a new Card
-
-
-<Warning>
-Physical vs Virtual Card Flows
-- **Physical Cards**: Follow the complete 5-step flow including explicit card creation
-- **Virtual Cards**: Only need step 1 (order creation) - card auto-creation handles the rest
-</Warning>
 
 ### 1. Create a Card Order
 
@@ -28,7 +16,7 @@ The Card Order is created with the following data:
 
 - A shipping address can be specified by filling the `shippingAddress` field, see [endpoint specifications](/api-reference/create-a-new-card-order). If not set, the KYC address will be used for shipping.
 - The total amount to be paid is set in EURe. The amount is 30.23.
-- The `couponCode` applied is taken from the `User.referalCouponCode` .
+- A coupon code can be applied to reduce the amount to be paid, either at signup or in the next step
 
 ### 2. (Optional) Attach a Coupon
 
@@ -37,34 +25,36 @@ POST /api/v1/order/{orderId}/attach-coupon
 ```
 
 This endpoint attaches a coupon to the `CardOrder` with `orderId`.
-The coupon needs to be valid else an error is thrown.
-
-We recommend you send the couponCode on the order creation and avoid this step.
+The coupon needs to be valid, otherwise an error is thrown.
+If the user has a coupon code both from the signup, and from this step, the one from the signup takes precedence.
 
 ### 3. (Optional) Attach an on-chain transaction
+
+<Note>
+This is only needed if the card is not free.
+</Note>
 
 ```jsx
 PUT /api/v1/order/{orderId}/attach-transaction
 ```
 
-For the card order, a payment must be performed. This endpoint allows setting a transaction hash to the specified `orderId`.
+When the card isn't free, a payment must be performed for the card order. This endpoint allows setting a transaction hash to the specified `orderId`.
 
 The transaction can only be used once across all card orders.
 
-<Note>
-Calling this endpoint is optional because the card can be free.
-</Note>
-
-
 ### 4. Confirm the payment was performed
+
+<Warning>
+This endpoint must be called even if the card is free. It moves the card order to the `READY` status.
+</Warning>
 
 ```jsx
 PUT /api/v1/order/{orderId}/confirm-payment
 ```
 
-In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION` .
+In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION`.
 
-This endpoint validates if the card order is free. If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
+If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
 
 #### Successful Payment Conditions
 
@@ -74,27 +64,25 @@ If the card is not free, we check if a payment was done. The conditions for the 
 - Payment was done to `0x3D4FD6a1A7a1382ae1d62C3DD7247254a0236847`.
 - The respective EURe amount was paid in that transaction hash (partial transfers are not supported).
 
-If the conditions above are met, the `CardOrder.status` is to `READY` .
+If all the conditions above are met, the `CardOrder.status` is set to `READY`.
 
-<Warning>
-Even if the card is free, this endpoint needs to be called to move the card order to a `READY` status.
-</Warning>
-
-### 5. Create a Physical Card
+### 5. Create the Physical Card
 
 ```jsx
 POST /api/v1/order/:orderId/create-card
 ```
 
+When successful, this endpoint returns the `cardToken` from the newly created card.
+
 In order to create a `Card` out of a `CardOrder` the following conditions need to be met:
 
 - No cards were created out of this `orderId`.
-- The risk score needs to be Green or Orange.
 - User needs to have a verified phone number.
 - User needs to have a name set.
 - User needs to be from a supported country.
 - User address needs to be set.
 - User needs to have an approved KYC.
+- The risk score needs to be Green or Orange based on the user's answers to the Source of funds questionnaire.
 - User needs to have the shipping details for the physical card order set.
   - The shipping details can be different from the KYC address, as long as it is in the same country.
   - Virtual cards do not require a shipping address.
@@ -102,57 +90,12 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
 
 ### 6. Set the Card PIN using the Partner Secure Elements (PSE)
 
-The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE). 
+The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE).
+Use the `cardToken` returned from the previous endpoint to set the PIN.
 If a PIN is not provided upon creation, a random one will be assigned. 
-Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn mort about the online and offline PINs.
-
+Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn more about the online and offline PINs.
 
 For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
-
-## Virtual Card Orders
-
-In addition to physical cards, we support virtual card orders. 
-Virtual card orders have a **simplified flow** compared to physical cards, with these key differences:
-
-
-- No shipping address is required
-- The card is available immediately after order creation (no shipping delay)
-- Virtual cards can be used for online transactions immediately
-- No PIN required
-- **Cards are automatically created when the order is placed**
-
-### 1. Create a Virtual Card
-
-This endpoint allows you to issue virtual card without requiring a card order. Virtual cards are free and activated immediately. No shipping address or payment validation is required.
-
-<Warning> 
-Important: Automatic Card Creation
-When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
-</Warning>
-
-
-```jsx
-POST /api/v1/cards/virtual
-  ```
-
-### 2. Verify Card Creation
-
-After creating a virtual card order, you can verify the card was created by listing the user's cards:
-
-```jsx
-GET /api/v1/cards
-```
-
-The virtual card should appear in the card list immediately after order creation.
-
-<Note>
-Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
-</Note>
-
-:::note
-Card Limits: Users can have a maximum of 10 active cards including physical and virtual cards combined. Active cards exclude voided, lost, and stolen cards.
-:::
-
 
 ## Card Order State Transitions
 
@@ -160,9 +103,7 @@ Understanding the card order state machine is crucial for handling different sce
 
 ### State Transition Diagram
 
-{/*
-    This diagram is generated using https://mermaid.live
-
+```mermaid
   stateDiagram-v2
   [*] --> PENDINGTRANSACTION : Create Order
 
@@ -192,10 +133,9 @@ Understanding the card order state machine is crucial for handling different sce
   note right of CARDCREATED
       Card successfully created<br/>Order fulfilled
   end note
-*/}
+```
 
 
-![flow diagram](./assets/card-order-flow.png)
 
 ### Card Order States
 
@@ -273,14 +213,14 @@ Conditions:
 
 ### Error Handling
 
-When implementing card order handling, consider these scenarios:
+When implementing card order, consider these scenarios:
 
 **Invalid Transitions**
 Will throw TransitionError
 - Trying to cancel from READY state
 - Attempting to create card from `PENDINGTRANSACTION`
 - Any transition not defined in the state machine
-```
+
 
 **Common Error Scenarios**
 - **Payment Issues**: Transaction hash already used, insufficient payment
@@ -322,7 +262,6 @@ const handleOrderAction = async (order, action) => {
 Orders can only be cancelled from specific states. Use the `CANCELLABLE_ORDER_STATUSES` constant:
 
 ```javascript
-// From @gnosispay/prisma/card-order
 const CANCELLABLE_ORDER_STATUSES = [
   'PENDINGTRANSACTION',
   'TRANSACTIONCOMPLETE',
@@ -331,8 +270,6 @@ const CANCELLABLE_ORDER_STATUSES = [
 ];
 ```
 
-<Warning> 
-State Validation
-Always validate the current order state before attempting transitions. Invalid transitions will throw a `TransitionError` and return HTTP 422 status code.
+<Warning>
+**State Validation**: Always validate the current order state before attempting transitions. Invalid transitions will throw a `TransitionError` and return HTTP 422 status code.
 </Warning>
-

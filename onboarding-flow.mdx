@@ -1,5 +1,5 @@
 ---
-title: Onboarding Flow
+title: Onboard Users to Gnosis Pay
 description: How to onboard new Users to Gnosis Pay.
 ---
 
@@ -32,12 +32,22 @@ To register, we'll need to send your user a one-time password (OTP) to verify th
 
 Here's the endpoint [(spec)](/api-reference/request-otp-for-email-verification):
 
-```jsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/auth/signup/otp
 {
   "email": "string"
 }
 ```
+
+```json Response
+{
+  "success": true
+}
+```
+
+</CodeGroup>
 
 The OTP will arrive in their inbox from `team@gnosispay.com` and is valid for 5 minutes.
 
@@ -50,29 +60,48 @@ You will need to pass the `partnerId`, which is a unique identifier for your app
 If you have a `referralCouponCode`, you can include it here too.
 
 Here's the endpoint [(spec)](/api-reference/create-a-new-user):
-```jsx
+
+<CodeGroup>
+
+```bash Request
 POST /api/v1/auth/signup
 {
   "authEmail": "string",
-  "otp": "string", // The 6-digit code from their email
+  "otp": "string",
   "partnerId": "string",
-  "referralCouponCode": "string" (optional)
+  "referralCouponCode": "string"
 }
 ```
+
+```json Response
+{
+  "userId": "string",
+  "email": "string"
+}
+```
+
+</CodeGroup>
 
 ### 2.3 Accept Terms of Service (ToS)
 
 At this point, the user is registered in the Gnosis Pay system and has an associated user id.
 Users need to accept our terms of service and those from our partners. To streamline the process, you can do this step together with the previous one.
 
-We recommend having a mapping in your app, between the ToS id and a title, so you can display the title and link out for users to read the full text. Make sure they check a box to accept before moving on!
+We recommend having a mapping in your app, between the ToS id and their title and urls, so you can display the title and link out for users to read the full text. Make sure they check a box to accept before moving on!
+
+<Info>
+This endpoint can only be called once the user is registered. Hence the proposed mapping.
+</Info>
 
 Get the terms for the user [(spec)](/api-reference/get-terms-and-conditions-status):
-```jsx
+
+<CodeGroup>
+
+```bash Request
 GET /api/v1/user/terms
 ```
-***Response***
-```json
+
+```json Response
 [
     {
         "type": "general-tos",
@@ -101,9 +130,11 @@ GET /api/v1/user/terms
 ]
 ```
 
+</CodeGroup>
+
 Suggestion to link each id with a title in your app:
 
-```jsx
+```javascript
 const tosToTitle = {
   "general-tos": "Gnosis Pay Terms of Service",
   "card-monavate-tos": "Cardholder Terms of Service",
@@ -113,13 +144,23 @@ const tosToTitle = {
 
 Once the OTP verification is successful (previous step), and the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/get-terms-and-conditions-status):
 
-```jsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/user/terms
 {
-  "terms": "string", // e.g. "general-tos"
-  "version": "string" // e.g. "TOS_GENERAL_VERSION_1"
+  "terms": "string",
+  "version": "string"
 }
 ```
+
+```json Response
+{
+  "success": true
+}
+```
+
+</CodeGroup>
 
 ---
 ## 3. KYC Process
@@ -128,16 +169,57 @@ To order a card, your users will need to go through a KYC process with our partn
 
 Here are the different KYC statuses you might see, and what they mean for your user:
 
-| **KYC Status**                | **Description**                                                                                                          | **What your user should do**              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
-| `notStarted`                  | No KYC process started                                                                                                   | Start KYC                                 |
-| `documentsRequested`          | Applicant must upload documents. Status moves to `pending` when done.                                                    | Upload documents                          |
-| `pending`                     | Awaiting verification processing                                                                                         | Nothing—just wait!                        |
-| `processing`                  | Profile is being processed                                                                                               | Nothing—system is checking                |
-| `approved`                    | All verification checks passed                                                                                           | Nothing—KYC is complete                   |
-| `resubmissionRequested`       | Some checks failed; user can re-submit required steps                                                                    | Re-submit documents                       |
-| `rejected`                    | Final rejection; user cannot try again                                                                                   | Nothing (final rejection)                 |
-| `requiresAction`              | Manual check required by our team                                                                                        | Wait or contact support                   |
+<Table>
+  <TableHead>
+    <TableRow>
+      <TableHeader>KYC Status</TableHeader>
+      <TableHeader>Description</TableHeader>
+      <TableHeader>What your user should do</TableHeader>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell><Code>notStarted</Code></TableCell>
+      <TableCell>No KYC process started</TableCell>
+      <TableCell>Start KYC</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>documentsRequested</Code></TableCell>
+      <TableCell>Applicant must upload documents. Status moves to <Code>pending</Code> when done.</TableCell>
+      <TableCell>Upload documents</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>pending</Code></TableCell>
+      <TableCell>Awaiting verification processing</TableCell>
+      <TableCell>Nothing—just wait!</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>processing</Code></TableCell>
+      <TableCell>Profile is being processed</TableCell>
+      <TableCell>Nothing—system is checking</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>approved</Code></TableCell>
+      <TableCell>All verification checks passed</TableCell>
+      <TableCell>Nothing—KYC is complete</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>resubmissionRequested</Code></TableCell>
+      <TableCell>Some checks failed; user can re-submit required steps</TableCell>
+      <TableCell>Re-submit documents</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>rejected</Code></TableCell>
+      <TableCell>Final rejection; user cannot try again</TableCell>
+      <TableCell>Nothing (final rejection)</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell><Code>requiresAction</Code></TableCell>
+      <TableCell>Manual check required by our team</TableCell>
+      <TableCell>Wait or contact support</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
 
 <Note>
 You should start the KYC process if your user is registered and their `kycStatus` is `notStarted` or `documentsRequested`.
@@ -147,21 +229,36 @@ You should start the KYC process if your user is registered and their `kycStatus
 
 Each user gets a unique URL for their KYC process. Get it with [(spec)](/api-reference/retrieves-kyc-integration-specification):
 
-```jsx
+<CodeGroup>
+
+```bash Request
 GET /api/v1/kyc/integration
 ```
 
+```json Response
+{
+  "url": "https://sumsub.com/iframe/..."
+}
+```
+
+</CodeGroup>
+
 ### 3.2 Monitor KYC Status
+
 While the whole KYC flow happens in an iframe, it is advised to constantly monitor the `kycStatus` from the user endpoint, and act if users are in certain states.
 
+<Warning>
 Provide a way to contact your support if the `kycStatus` is:
 - `requiresAction`
 - `rejected`
+</Warning>
 
+<Info>
 If the status is one of the following, there's nothing to do on your side:
-  - `pending`
-  - `processing`
-  - `resubmissionRequested`
+- `pending`
+- `processing`
+- `resubmissionRequested`
+</Info>
 
 Finally, if the status is `approved`, you can move on to the next step.
 
@@ -178,22 +275,46 @@ Users should be ready for this step if:
 
 You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/retrieve-the-source-of-funds-questions): 
 
-```jsx
+<CodeGroup>
+
+```bash Request
 GET /api/v1/source-of-funds
 ```
 
+```json Response
+{
+  "questions": [
+    {
+      "question": "What is your primary source of income?",
+      "options": ["Employment", "Business", "Investment", "Other"]
+    }
+  ]
+}
+```
+
+</CodeGroup>
+
 Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/submit-answers-to-the-source-of-funds-questionnaire):
 
-```jsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/source-of-funds
 [
   {
-    question: "string",
-    answer: "string"
-  },
-  ...
+    "question": "string",
+    "answer": "string"
+  }
 ]
 ```
+
+```json Response
+{
+  "success": true
+}
+```
+
+</CodeGroup>
 
 Don't forget to include the question title with each answer. If you want to see how this looks in practice, check out [Gnosis Pay UI](https://github.com/gnosispay/ui).
 
@@ -210,21 +331,41 @@ This step is needed if:
 
 Validate the phone number by first requesting an OTP [(spec)](/api-reference/request-an-otp-to-verify-a-phone-number): 
 
-```jsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/verification
 {
-  phoneNumber: "string"
+  "phoneNumber": "string"
 }
 ```
+
+```json Response
+{
+  "success": true
+}
+```
+
+</CodeGroup>
 
 This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/validates-an-otp-code-to-verify-a-phone-number): 
 
-```jsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/verification/check
 {
-  code: "string"
+  "code": "string"
 }
 ```
+
+```json Response
+{
+  "success": true
+}
+```
+
+</CodeGroup>
 
 Once that's done, `isPhoneValidated` will be `true`.
 
@@ -251,17 +392,32 @@ Your user is ready for Safe configuration if:
 ### 4.1 Create a Safe Account
 
 The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/create-or-deploy-a-safe-account-for-the-authenticated-user)
-```tsx
+
+<CodeGroup>
+
+```bash Request
 POST /api/v1/account
 {
-  "chainId": "100" // Gnosis Chain ID
+  "chainId": "100"
 }
 ```
 
-Heads up: this endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
+```json Response
+{
+  "deployed": true,
+  "transactionHash": "0x...",
+  "safeAddress": "0x..."
+}
+```
+
+</CodeGroup>
+
+<Warning>
+This endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
+</Warning>
 
 <Note>
-After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoint](/api-reference/get-the-user-profile) won't be empty anymore.
+After this, `safeWallet` from the user response from [`GET /api/v1/user` endpoint](/api-reference/get-the-user-profile) won't be empty anymore.
 </Note>
 
 ### 4.2 Set the Safe Currency
@@ -274,9 +430,20 @@ Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null
 
 Use the following endpoint to set the currency [(spec)](/api-reference/set-the-currency-for-a-users-safe-account-based-on-their-country):
 
-```tsx
+<CodeGroup>
+
+```bash Request
 POST /api/v1/safe/set-currency
 ```
+
+```json Response
+{
+  "tokenSymbol": "EURe",
+  "fiatSymbol": "EUR"
+}
+```
+
+</CodeGroup>
 
 <Warning> 
 The currency is automatically assigned based on the user's country:
@@ -294,13 +461,15 @@ Once the Safe is deployed and the currency is set, you need to get the data that
 Before this, note that the field `accountStatus` is `null` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user).
 </Note>
 
-You can get the data to be signed with the following endpoint  [(spec)](/api-reference/get-signature-data-for-account-setup).
-```tsx
+You can get the data to be signed with the following endpoint [(spec)](/api-reference/get-signature-data-for-account-setup):
+
+<CodeGroup>
+
+```bash Request
 GET /api/v1/account/signature-payload
 ```
 
-**Response:**
-```json
+```json Response
 {
   "domain": {
     "name": "Safe",
@@ -337,6 +506,8 @@ GET /api/v1/account/signature-payload
 }
 ```
 
+</CodeGroup>
+
 <Warning>
 - This signature setup configures Safe account allowances and delay mechanisms required for secure operation.
 - The response contains structured data compatible with the EIP-712 signature standard.
@@ -350,21 +521,25 @@ The final step is to sign the data with the user's wallet and deploy the Safe mo
 Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
 </Note>
 
-Tip: Use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum. `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. Another status `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on. If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
+<Tip>
+Use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum. `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. Another status `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on. If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
+</Tip>
 
 #### Signing the Data
 
 Use the domain, types, and message from the previous step to generate an EIP-712 signature:
 
-```typescript
-// Using ethers.js wallet
+<CodeGroup>
+
+```typescript Using ethers.js
 const signature = await wallet.signTypedData(
   domain,
   types,
   message
 );
+```
 
-// or using viem
+```typescript Using viem
 const signature = await walletClient.signTypedData({
   domain,
   types,
@@ -372,24 +547,29 @@ const signature = await walletClient.signTypedData({
 });
 ```
 
+</CodeGroup>
+
 #### Deploying the Modules
 
 Send the signature to deploy the Safe modules [(spec)](/api-reference/deploy-safe-modules-with-a-user-signature):
 
-```tsx
+<CodeGroup>
+
+```bash Request
 PATCH /api/v1/account/deploy-safe-modules
 {
   "signature": "0x1234567890abc...bcdef1b"
 }
 ```
 
-**Response:**
-```json
+```json Response
 {
   "transactionHash": "0xabcdef...34567890",
   "deployed": true
 }
 ```
+
+</CodeGroup>
 
 <Warning>
 - This endpoint waits for the transaction to be confirmed on-chain, so it may take up to 10 seconds to complete.
