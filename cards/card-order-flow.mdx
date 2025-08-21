@@ -7,7 +7,7 @@ Our card order flow supports both free and paid cards.
 You can provide a `couponCode` if you have one, that will affect the card's price. 
 
 
-## Create a new Card 
+## Create a new Card
 
 
 <Warning>
@@ -28,7 +28,7 @@ The Card Order is created with the following data:
 
 - A shipping address can be specified by filling the `shippingAddress` field, see [endpoint specifications](/api-reference/create-a-new-card-order). If not set, the KYC address will be used for shipping.
 - The total amount to be paid is set in EURe. The amount is 30.23.
-- The `couponCode` applied is taken from the `User.referalCouponCode` . 
+- The `couponCode` applied is taken from the `User.referalCouponCode` .
 
 ### 2. (Optional) Attach a Coupon
 
@@ -39,7 +39,7 @@ POST /api/v1/order/{orderId}/attach-coupon
 This endpoint attaches a coupon to the `CardOrder` with `orderId`.
 The coupon needs to be valid else an error is thrown.
 
-We recommend you send the couponCode on the order creation and avoid this step. 
+We recommend you send the couponCode on the order creation and avoid this step.
 
 ### 3. (Optional) Attach an on-chain transaction
 
@@ -64,7 +64,7 @@ PUT /api/v1/order/{orderId}/confirm-payment
 
 In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION` .
 
-This endpoint validates if the card order is free. If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free. 
+This endpoint validates if the card order is free. If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
 
 #### Successful Payment Conditions
 
@@ -80,7 +80,7 @@ If the conditions above are met, the `CardOrder.status` is to `READY` .
 Even if the card is free, this endpoint needs to be called to move the card order to a `READY` status.
 </Warning>
 
-### 5. Create a Card
+### 5. Create a Physical Card
 
 ```jsx
 POST /api/v1/order/:orderId/create-card
@@ -106,6 +106,7 @@ The card PIN should be set immediately after the card is created via the Partner
 If a PIN is not provided upon creation, a random one will be assigned. 
 Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn mort about the online and offline PINs.
 
+
 For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
 
 ## Virtual Card Orders
@@ -113,30 +114,26 @@ For detailed instructions about how to change the PIN, please refer to the [PSE 
 In addition to physical cards, we support virtual card orders. 
 Virtual card orders have a **simplified flow** compared to physical cards, with these key differences:
 
+
 - No shipping address is required
 - The card is available immediately after order creation (no shipping delay)
 - Virtual cards can be used for online transactions immediately
 - No PIN required
 - **Cards are automatically created when the order is placed**
 
-### 1. Create a Virtual Card Order
+### 1. Create a Virtual Card
 
-```jsx
-POST /api/v1/order/create
-```
+This endpoint allows you to issue virtual card without requiring a card order. Virtual cards are free and activated immediately. No shipping address or payment validation is required.
 
 <Warning> 
 Important: Automatic Card Creation
 When you create a virtual card order, **the virtual card is automatically created** if the user's Safe account is properly configured. You do NOT need to call the card creation endpoint separately.
 </Warning>
 
-When creating a virtual card order, you need to specify the `cardType` as `VIRTUAL` in the request body:
 
-```json
-{
-  "virtual": true
-}
-```
+```jsx
+POST /api/v1/cards/virtual
+  ```
 
 ### 2. Verify Card Creation
 
@@ -152,6 +149,10 @@ The virtual card should appear in the card list immediately after order creation
 Virtual cards are ideal for users who want immediate access to their card for online transactions without waiting for physical delivery. Once Google and Apple Pay are available in the region, the card can be used for in-person transactions too.
 </Note>
 
+:::note
+Card Limits: Users can have a maximum of 10 active cards including physical and virtual cards combined. Active cards exclude voided, lost, and stolen cards.
+:::
+
 
 ## Card Order State Transitions
 
@@ -164,30 +165,30 @@ Understanding the card order state machine is crucial for handling different sce
 
   stateDiagram-v2
   [*] --> PENDINGTRANSACTION : Create Order
-  
+
   PENDINGTRANSACTION --> READY : Pay (free or paid)
   PENDINGTRANSACTION --> TRANSACTIONCOMPLETE : Payment Complete
   PENDINGTRANSACTION --> CANCELLED : Cancel
   PENDINGTRANSACTION --> FAILEDTRANSACTION : Payment Failed
-  
+
   TRANSACTIONCOMPLETE --> CONFIRMATIONREQUIRED : Request Confirmation
-  
+
   CONFIRMATIONREQUIRED --> READY : Confirm Ready<br/>(SOF + Phone + Address)
-  
+
   READY --> CARDCREATED : Create Card<br/>(Physical/Virtual)
-  
+
   CARDCREATED --> [*] : Order Complete
   CANCELLED --> [*] : Order Cancelled
   FAILEDTRANSACTION --> [*] : Order Failed
-  
+
   note right of PENDINGTRANSACTION
       Initial state when<br/>order is created
   end note
-  
+
   note right of READY
       Ready for card creation<br/>All requirements met
   end note
-  
+
   note right of CARDCREATED
       Card successfully created<br/>Order fulfilled
   end note
@@ -299,17 +300,17 @@ const handleOrderAction = async (order, action) => {
         await cancelOrder(order.id);
       }
       break;
-      
+
     case 'READY':
       if (action === 'createCard') {
         await createCard(order.id, { setPin: !order.virtual });
       }
       break;
-      
+
     case 'CARDCREATED':
       // Order complete - handle card activation if needed
       break;
-      
+
     default:
       throw new Error(`Cannot perform ${action} on order with status ${order.status}`);
   }
@@ -324,7 +325,7 @@ Orders can only be cancelled from specific states. Use the `CANCELLABLE_ORDER_ST
 // From @gnosispay/prisma/card-order
 const CANCELLABLE_ORDER_STATUSES = [
   'PENDINGTRANSACTION',
-  'TRANSACTIONCOMPLETE', 
+  'TRANSACTIONCOMPLETE',
   'CONFIRMATIONREQUIRED',
   'FAILEDTRANSACTION'
 ];
