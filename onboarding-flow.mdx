@@ -1,10 +1,7 @@
 ---
-id: onboarding-flow
-sidebar_label: Onboarding Flow
 title: Onboarding Flow
+description: How to onboard new Users to Gnosis Pay.
 ---
-
-# Onboarding Flow
 
 Welcome! This guide will walk you through the journey to implement the complete onboarding of a user, from the first time they connect their wallet, to the point where they can order a card (physical or virtual) and start using it.
 
@@ -22,12 +19,13 @@ First things first: your users need to authenticate with our API. This is covere
 
 Now that you've got your `jwt` token, it's time to register your user in the Gnosis Pay system. 
 
-:::info
+<Note>
 There are 2 ways to know whether they are already registered or not:
 
 - **Check the JWT:** If the decoded JWT has a `userId`, your user is already registered.
 - **Or, call the user endpoint:** Try [`GET /api/v1/user`](/api-reference/get-the-user-profile). If you get a `401 Unauthorized Error`, the user isn't registered yet.
-:::
+</Note>
+
 ### 2.1 Get a One-Time Password (OTP) for Email
 
 To register, we'll need to send your user a one-time password (OTP) to verify their email.  
@@ -141,9 +139,10 @@ Here are the different KYC statuses you might see, and what they mean for your u
 | `rejected`                    | Final rejection; user cannot try again                                                                                   | Nothing (final rejection)                 |
 | `requiresAction`              | Manual check required by our team                                                                                        | Wait or contact support                   |
 
-:::info
+<Note>
 You should start the KYC process if your user is registered and their `kycStatus` is `notStarted` or `documentsRequested`.
-:::
+</Note>
+
 ### 3.1 Get the Sumsub iframe URL
 
 Each user gets a unique URL for their KYC process. Get it with [(spec)](/api-reference/retrieves-kyc-integration-specification):
@@ -170,12 +169,12 @@ Finally, if the status is `approved`, you can move on to the next step.
 
 For regulatory reasons, users need to answer a couple of questions regarding the source of funds for their card.
 
-:::info
+<Note>
 Users should be ready for this step if:
 - they are registered (a `userId` is present in the JWT)
 - their `kycStatus` is `approved`
 - the field `isSourceOfFundsAnswered` on the user endpoint response is `false`
-:::
+</Note>
 
 You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/retrieve-the-source-of-funds-questions): 
 
@@ -202,12 +201,12 @@ Don't forget to include the question title with each answer. If you want to see 
 
 Last but not least, your users need to verify their mobile phone. Just like with email, they'll enter their phone number, get a one-time password (OTP), and we'll verify it.
 
-:::info
+<Note>
 This step is needed if:
 - The user is registered (`userId` in JWT)
 - `kycStatus` is `approved`
 - `isPhoneValidated` is `false` in the user endpoint response
-:::
+</Note>
 
 Validate the phone number by first requesting an OTP [(spec)](/api-reference/request-an-otp-to-verify-a-phone-number): 
 
@@ -240,14 +239,15 @@ Gnosis Pay uses Safe accounts for on-chain transactions. Once your user has comp
 3. Getting signature data for modules setup [(`GET /api/v1/account/signature-payload`)](/api-reference/get-signature-data-for-account-setup)
 4. Deploying Safe modules with the user's signature [(`PATCH /api/v1/account/deploy-safe-modules`)](/api-reference/deploy-safe-modules-with-a-user-signature)
 
-:::info
+<Note>
 Your user is ready for Safe configuration if:
 - They are registered (`userId` in JWT)
 - `kycStatus` is `approved`
 - `isSourceOfFundsAnswered` is `true`
 - `isPhoneValidated` is `true`
 - `safeWallet` is an empty array in the user endpoint response
-:::
+</Note>
+
 ### 4.1 Create a Safe Account
 
 The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/create-or-deploy-a-safe-account-for-the-authenticated-user)
@@ -260,16 +260,17 @@ POST /api/v1/account
 
 Heads up: this endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
 
-:::info
+<Note>
 After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoint](/api-reference/get-the-user-profile) won't be empty anymore.
-:::
+</Note>
+
 ### 4.2 Set the Safe Currency
 
 After deploying the Safe, we will need to have the currency set for the account. This currency determines which token will be used for transactions.
 
-:::info
+<Note>
 Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user).
-:::
+</Note>
 
 Use the following endpoint to set the currency [(spec)](/api-reference/set-the-currency-for-a-users-safe-account-based-on-their-country):
 
@@ -277,19 +278,21 @@ Use the following endpoint to set the currency [(spec)](/api-reference/set-the-c
 POST /api/v1/safe/set-currency
 ```
 
-:::warning
-- The currency is automatically assigned based on the user's country:
-  - UK users (GB): GBPe
-  - Brazil users (BR): USDCe
-  - Users from other countries: EURe (default)
-:::
+<Warning> 
+The currency is automatically assigned based on the user's country:
+
+- UK users (GB): GBPe
+- Brazil users (BR): USDCe
+- Users from other countries: EURe (default)
+</Warning> 
 
 ### 4.3 Getting Signature Data for Modules Setup
 
 Once the Safe is deployed and the currency is set, you need to get the data that will be signed by the user's wallet to set up the Safe modules.
-:::info
+
+<Note>
 Before this, note that the field `accountStatus` is `null` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user).
-:::
+</Note>
 
 You can get the data to be signed with the following endpoint  [(spec)](/api-reference/get-signature-data-for-account-setup).
 ```tsx
@@ -334,18 +337,18 @@ GET /api/v1/account/signature-payload
 }
 ```
 
-:::warning
+<Warning>
 - This signature setup configures Safe account allowances and delay mechanisms required for secure operation.
 - The response contains structured data compatible with the EIP-712 signature standard.
-:::
+</Warning>
 
 ### 4.4. Signing and Deploying Safe Modules
 
 The final step is to sign the data with the user's wallet and deploy the Safe modules.
 
-:::info
+<Note>
 Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
-:::
+</Note>
 
 Tip: Use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum. `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. Another status `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on. If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
 
@@ -388,10 +391,10 @@ PATCH /api/v1/account/deploy-safe-modules
 }
 ```
 
-:::warning
+<Warning>
 - This endpoint waits for the transaction to be confirmed on-chain, so it may take up to 10 seconds to complete.
 - The transaction configures the Safe's allowances and delay mechanisms for secure operation.
-:::
+</Warning>
 
 #### Complete Safe Configuration Example
 

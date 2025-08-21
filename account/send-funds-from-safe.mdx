@@ -1,10 +1,7 @@
 ---
-id: send-funds-from-safe
-sidebar_label: Send funds from the Safe
-title: Send funds from the Safe
+title: "Send funds from GP Safe"
+description: "How to withdraw from the Gnosis Pay Safe"
 ---
-
-# Send funds from the Safe
 
 The withdrawal feature allows partners to withdraw tokens from Gnosis Pay Safe accounts to any external address **on the Gnosis Chain**. 
 
@@ -18,11 +15,12 @@ The withdrawal process involves the following steps:
 2. **Sign and Submit** - Sign the transaction and submit the withdrawal
 3. **Monitor Execution** - Wait for the delay relay to process the withdrawal
 
-:::important
+<Warning>
+Please remember the following:
 - Transaction signing wallet must be one of the Gnosis Pay Safe signers
 - Withdrawals are processed after a 3-minute delay as transactions are going through the Gnosis Pay delay relay
 - Cards are temporarily frozen for 3 minutes during withdrawal processing as a security measure
-:::
+</Warning>
 
 ## Step 1: Fetch Transaction Data for Signing
 
@@ -75,9 +73,9 @@ The response contains EIP-712 typed data that needs to be signed by the user's w
 
 The typed data from Step 1 must be signed by the user's wallet using the EIP-712 standard.
 
-:::important
+<Warning>
 The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
-:::
+</Warning>
 
 ### 2.2 Submit the Signed Transaction
 

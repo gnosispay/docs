@@ -1,22 +1,17 @@
 ---
-id: auth
-sidebar_label: Authentication Flow
 title: Authentication Flow
+description: Use Sign-In with Ethereum (SIWE) to authenticate API requests.
 ---
-
-# Authentication Flow
-
-## Overview
 
 Our authentication system uses Sign-In with Ethereum (SIWE) to generate a `jwt` to interact with our API.
 This means you don’t need to handle the storage of a powerful API key or spend hours configuring granular permissions.
 
 Our API accepts signatures from Externally Owned Accounts (EOAs) and Smart Accounts (EIP-1271).
 
-:::caution
+<Warning>
 The signer must be an owner of a Gnosis Pay account. 
 Non-registered users will receive `401 Unauthorized` on most authenticated routes
-:::
+</Warning>
 
 ## Token Details
 
@@ -52,9 +47,9 @@ Content-Type: application/json
 }
 ```
 
-:::caution
+<Warning>
 The SIWE message contains a `domain` and a `uri` field. You should ensure their values are **not** `127.0.0.1` or `localhost`, even when working locally. Override these fields (e.g., with `domain: "somedomain.com", uri: "https://www.somedomain.com"`) to prevent firewall blocks and "WAFForbidden" errors.
-:::
+</Warning>
 
 Upon successful verification, a `jwt` is generated.
 This `jwt` must be included in the Authorization header of all subsequent HTTP requests to authenticate with the Gnosis Pay API: 

@@ -1,10 +1,7 @@
 ---
-id: accounts
-sidebar_label: Accounts on Gnosis Pay
-title: Accounts on Gnosis Pay
+title: "Accounts on Gnosis Pay"
+description: "How the Gnosis Pay Safe works"
 ---
-
-# Accounts on Gnosis Pay
 
 When you sign up for Gnosis Pay, a new Gnosis Pay Safe—a smart contract wallet—is created for you. 
 This Safe is exclusively controlled by you through your Externally Owned Account (EOA) Wallet. 
@@ -73,9 +70,9 @@ It’s important to note that this module is owned and modifiable only by you. Y
 The Delay Module ensures that all non-card transactions (e.g., sending funds to another address, adding funds) undergo a 3-minute delay. 
 This delay prevents double-spending conditions and ensures the availability of funds authorized and spent by the card.
 
-:::caution
+<Warning>
 The card will be paused during the 3-minute delay if there are any non-card transactions in the delay queue.
-:::
+</Warning>
 
 The Delay Module also ensures that you have sole control over the Safe itself. 
 During the activation process, your EOA Wallet is made an indirect owner of the Safe by placing the Delay Module between the Safe and the EOA.
@@ -86,9 +83,9 @@ We advise against changing the configuration of the Safe to ensure that Gnosis P
 
 If you’ve forgotten the password to your EOA Wallet, you can regain access using its seed phrase.
 
-:::caution
+<Warning>
 However, if you’ve lost access to the seed phrase and cannot regain access to the EOA, you will also lose access to the Safe if it’s the only owner.
-:::
+</Warning>
 
 **To mitigate this risk, consider adding multiple owners to your [Safe](https://safe.global/).**
 

@@ -1,0 +1,72 @@
+{
+    "$schema": "https://mintlify.com/docs.json",
+    "theme": "mint",
+    "name": "Mint Starter Kit",
+    "colors": {
+      "primary": "#2e8555",
+      "light": "#2e8555",
+      "dark": "#25c2a0"
+    },
+    "favicon": "/favicon.svg",
+    "navigation": {
+      "tabs": [
+        {
+          "tab": "Guides",
+          "groups": [
+            {
+              "group": "Getting started",
+              "pages": [
+                "index",
+                "auth",
+                "onboarding-flow"
+              ]
+            },
+            {
+              "group": "Accounts",
+              "pages": [
+                "account/accounts",
+                "account/send-funds-from-safe",
+                "account/onchain-daily-limit",
+                "account/iban-integration"
+              ]
+            },
+            {
+              "group": "Cards",
+              "pages": [
+                "cards/concepts",
+                "cards/card-order-flow",
+                "cards/pse-integration"
+              ]
+            }
+          ]
+        },
+        {
+          "tab": "API reference",
+          "groups": [
+
+            {
+                "group": "PSE API",
+                "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
+              }
+          ]
+        }
+      ]
+    },
+    "logo": {
+      "light": "/static/img/logo.svg",
+      "dark": "/static/img/logo.svg"
+    },
+    "contextual": {
+      "options": [
+       "copy",
+       "view",
+       "chatgpt",
+       "claude",
+       "perplexity",
+       "mcp",
+       "cursor",
+       "vscode"
+     ]
+    }
+  }
+  

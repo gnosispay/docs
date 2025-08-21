@@ -1,10 +1,7 @@
 ---
-id: iban-integration
-sidebar_label: IBAN Integration
 title: IBAN Integration
+description: IBAN cash-in to the GnosisPay Account via Monerium
 ---
-
-# IBAN Integration
 
 For users in Europe (EU) and Switzerland, we offer IBAN cash-in to the GnosisPay Account via Monerium.
 
@@ -47,9 +44,9 @@ GET /api/v1/ibans/signing-message
 ```
 To request signature from your gnosis safe, you can follow this [demo signature implementation](#message-signing-example-with-gnosispay-account-kit).
 
-:::important
+<Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
-:::
+</Warning>
 
 ## Possible outcomes for the IBAN integration activation
 
@@ -98,9 +95,9 @@ After the User approves our access to their existing account, the background job
 
 Another way to get the redirect URL if user has Monerium profile already is to use the `/api/v1/ibans/oauth/redirect_url` endpoint.
 
-:::note
-callbackUrl should always be sent as query parameter in both the cases.
-:::
+<Note>
+`callbackUrl` should always be sent as query parameter in both the cases.
+</Note>
 
 
 ## 3. Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent
@@ -161,7 +158,9 @@ GET /api/v1/ibans/orders
 }
 ```
 
-**Note:** This endpoint returns only incoming orders (deposits) to the user's IBAN.
+<Note>
+This endpoint returns only incoming orders (deposits) to the user's IBAN.
+</Note>
 
 ## Message Signing Example with GnosisPay Account Kit
 
