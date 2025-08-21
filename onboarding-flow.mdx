@@ -28,37 +28,37 @@ There are 2 ways to know whether they are already registered or not:
 
 <Steps titleSize="h3">
 <Step title="Get a One-Time Password (OTP) for Email">
-To register, we'll need to send your user a one-time password (OTP) to verify their email.  
+To register, we'll need to send your user a [one-time password (OTP) to verify their email](/api-reference/authentication/request-otp-for-email-verification):
 
-Here's the endpoint [(spec)](/api-reference/authentication/request-otp-for-email-verification):
-
-```jsx
-POST /api/v1/auth/signup/otp
-{
+```bash cURL
+curl -X POST /api/v1/auth/signup/otp \
+-d '{
   "email": "string"
-}
+}'
 ```
 
 The OTP will arrive in their inbox from `team@gnosispay.com` and is valid for 5 minutes.
 </Step>
 
 <Step title="Verify the OTP">
-Once your user gets the code, you can finish signing them up.  
+Once your user gets the code, you can [create a new user](/api-reference/authentication/create-a-new-user).  
 
+<Note>
 You will need to pass the `partnerId`, which is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.  
+</Note>
 
 If you have a `referralCouponCode`, you can include it here too.
 
-Here's the endpoint [(spec)](/api-reference/authentication/create-a-new-user):
-```jsx
-POST /api/v1/auth/signup
-{
+```bash cURL
+curl -X POST /api/v1/auth/signup \
+-d '{
   "authEmail": "string",
   "otp": "string", // The 6-digit code from their email
   "partnerId": "string",
   "referralCouponCode": "string" (optional)
-}
+}'
 ```
+
 </Step>
 <Step title="Accept Terms of Service (ToS)">
 At this point, the user is registered in the Gnosis Pay system and has an associated user id.
@@ -71,42 +71,12 @@ This endpoint can only be called once the user is registered. Hence the proposed
 </Info>
 
 Get the terms for the user [(spec)](/api-reference/user/get-terms-and-conditions-status):
-```jsx
-GET /api/v1/user/terms
+```bash cURL
+curl -X GET /api/v1/user/terms
 ```
-***Response***
-```json
-[
-    {
-        "type": "general-tos",
-        "currentVersion": "TOS_GENERAL_VERSION_1",
-        "accepted": false,
-        "acceptedVersion": null,
-        "acceptedAt": null,
-        "url": "https://legal.gnosispay.com/en/articles/8911632-gnosis-pay-terms-of-service"
-    },
-    {
-        "type": "card-monavate-tos",
-        "currentVersion": "TOS_CARD_VERSION_1",
-        "accepted": true,
-        "acceptedVersion": "TOS_CARD_VERSION_1",
-        "acceptedAt": "2025-05-07T15:46:25.706Z",
-        "url": "https://legal.gnosispay.com/en/articles/8911633-monavate-cardholder-terms-eea"
-    },
-    {
-        "type": "cashback-tos",
-        "currentVersion": "TOS_CASHBACK_2024-08-01",
-        "accepted": false,
-        "acceptedVersion": null,
-        "acceptedAt": null,
-        "url": "https://forum.gnosis.io/t/gip-110-should-the-gnosis-dao-create-and-fund-a-gnosis-pay-rewards-program-with-10k-gno/8837"
-    }
-]
-```
+We recommend you link each id received on this endpoint with a title in your app:
 
-Suggestion to link each id with a title in your app:
-
-```jsx
+```javascript
 const tosToTitle = {
   "general-tos": "Gnosis Pay Terms of Service",
   "card-monavate-tos": "Cardholder Terms of Service",
@@ -115,14 +85,14 @@ const tosToTitle = {
 ```
 
 Once the OTP verification is successful (previous step), and the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/user/accept-terms-and-conditions):
-
-```jsx
-POST /api/v1/user/terms
-{
+```bash cURL
+curl -X POST /api/v1/user/terms \
+-d '{
   "terms": "string", // e.g. "general-tos"
   "version": "string" // e.g. "TOS_GENERAL_VERSION_1"
-}
+}'
 ```
+
 </Step>
 </Steps>
 
@@ -152,14 +122,17 @@ You should start the KYC process if your user is registered and their `kycStatus
 By default, each user gets a unique URL for their KYC process. 
 Get it with [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification):
 
-```jsx
-GET /api/v1/kyc/integration
+```bash cURL
+curl -X GET /api/v1/kyc/integration
 ```
 
-For mobile integrations, you can use the Sumsub Mobile SDK. To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification-for-sdk): 
-```jsx
-GET /api/v1/kyc/integration/sdk
+For mobile integrations, you can use the Sumsub Mobile SDK. 
+To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification-for-sdk): 
+
+```bash cURL
+curl -X GET /api/v1/kyc/integration/sdk
 ```
+
 </Step>
 <Step title="Monitor KYC Status">
 
@@ -190,21 +163,21 @@ Users should be ready for this step if:
 
 You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-the-source-of-funds-questions): 
 
-```jsx
-GET /api/v1/source-of-funds
+```bash cURL
+curl -X GET /api/v1/source-of-funds
 ```
 
 Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/kyc/submit-answers-to-the-source-of-funds-questionnaire):
 
-```jsx
-POST /api/v1/source-of-funds
-[
+```bash cURL
+curl -X POST /api/v1/source-of-funds \
+-d '[
   {
     question: "string",
     answer: "string"
   },
   ...
-]
+]'
 ```
 
 Don't forget to include the question title with each answer. If you want to see how this looks in practice, check out [Gnosis Pay UI](https://github.com/gnosispay/ui).
@@ -223,20 +196,20 @@ This step is needed if:
 
 Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/request-an-otp-to-verify-a-phone-number): 
 
-```jsx
-POST /api/v1/verification
-{
-  phoneNumber: "string"
-}
+```bash cURL
+curl -X POST /api/v1/verification \
+-d '{
+  "phoneNumber": "string"
+}'
 ```
 
 This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/validates-an-otp-code-to-verify-a-phone-number): 
 
-```jsx
-POST /api/v1/verification/check
-{
-  code: "string"
-}
+```bash cURL
+curl -X POST /api/v1/verification/check \
+-d '{
+  "code": "string"
+}'
 ```
 
 Once that's done, `isPhoneValidated` will be `true`.
@@ -265,11 +238,11 @@ Your user is ready for Safe configuration if:
 <Steps titleSize="h3">
 <Step title="Create a Safe Account">
 The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/safe-management/create-or-deploy-a-safe-account-for-the-authenticated-user)
-```tsx
-POST /api/v1/account
-{
-  "chainId": "100" // Gnosis Chain ID
-}
+```bash cURL
+curl -X POST /api/v1/account \
+-d '{
+  "chainId": "100"
+}'
 ```
 
 Heads up: this endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
@@ -288,8 +261,8 @@ Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null
 
 Use the following endpoint to set the currency [(spec)](/api-reference/safe-management/set-the-currency-for-a-users-safe-account-based-on-their-country):
 
-```tsx
-POST /api/v1/safe/set-currency
+```bash cURL
+curl -X POST /api/v1/safe/set-currency
 ```
 
 <Warning> 
@@ -311,46 +284,8 @@ Before this, note that the field `accountStatus` is `null` in the response from 
 </Note>
 
 You can get the data to be signed with the following endpoint  [(spec)](/api-reference/safe-management/get-signature-data-for-account-setup).
-```tsx
-GET /api/v1/account/signature-payload
-```
-
-**Response:**
-```json
-{
-  "domain": {
-    "name": "Safe",
-    "version": "1.0.0",
-    "chainId": 100,
-    "verifyingContract": "0x1234567890123456789012345678901234567890"
-  },
-  "types": {
-    "SafeTransactionType": [
-      { "name": "to", "type": "address" },
-      { "name": "value", "type": "uint256" },
-      { "name": "data", "type": "bytes" },
-      { "name": "operation", "type": "uint8" },
-      { "name": "safeTxGas", "type": "uint256" },
-      { "name": "baseGas", "type": "uint256" },
-      { "name": "gasPrice", "type": "uint256" },
-      { "name": "gasToken", "type": "address" },
-      { "name": "refundReceiver", "type": "address" },
-      { "name": "nonce", "type": "uint256" }
-    ]
-  },
-  "message": {
-    "to": "0xTargetContractAddress",
-    "value": "0",
-    "data": "0xEncodedSetupData",
-    "operation": 0,
-    "safeTxGas": 0,
-    "baseGas": 0,
-    "gasPrice": 0,
-    "gasToken": "0x0000000000000000000000000000000000000000",
-    "refundReceiver": "0x0000000000000000000000000000000000000000",
-    "nonce": 0
-  }
-}
+```bash cURL
+curl -X GET /api/v1/account/signature-payload
 ```
 
 <Warning>
@@ -400,19 +335,11 @@ const signature = await walletClient.signTypedData({
 
 Send the signature to deploy the Safe modules [(spec)](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature):
 
-```tsx
-PATCH /api/v1/account/deploy-safe-modules
-{
+```bash cURL
+curl -X PATCH /api/v1/account/deploy-safe-modules \
+-d '{
   "signature": "0x1234567890abc...bcdef1b"
-}
-```
-
-**Response:**
-```json
-{
-  "transactionHash": "0xabcdef...34567890",
-  "deployed": true
-}
+}'
 ```
 
 <Warning>

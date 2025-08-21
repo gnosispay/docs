@@ -1,5 +1,5 @@
 ---
-title: Create Virtual Card
+title: Create Virtual Cards
 description: Virtual cards work either online or tap in presence (with Apple Pay and Google Pay).
 --- 
 
@@ -14,20 +14,27 @@ Virtual card orders have a **simplified flow** compared to physical cards, with 
 
 ## How to create a Virtual Card
 
-This endpoint allows you to issue a virtual card directly. Virtual cards are free and activated immediately. No shipping address or payment validation required.
+[This endpoint allows you to issue a virtual card directly](/api-reference/card-order/create-a-virtual-card):
+
+```bash cURL
+curl -X POST /api/v1/cards/virtual 
+```
+
+Virtual cards are free and activated immediately. No shipping address or payment validation required.
+
 
 <Warning> 
 **Automatic Card Creation**: By calling this endpoint, the virtual card is automatically created if the user's Safe account is properly configured. You do not need to call any other endpoint.
 </Warning> 
 
-```jsx
-POST /api/v1/cards/virtual
-  ```
 
-The virtual card should appear immediately in the card list available with the endpoint:
-```jsx
-GET /api/v1/cards
+[The virtual card should appear immediately in the card list available with the endpoint](/api-reference/card-management/list-all-cards):
+
+```bash cURL
+curl /api/v1/cards?status_code=1000
 ```
+
+The `status_code=1000` query parameter returns only active cards.
 
 <Note>
 Card Limits: Users can have a **maximum of 10 active cards including physical and virtual cards combined**. Active cards exclude voided, lost, and stolen cards.
