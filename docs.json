@@ -78,11 +78,12 @@
       "github": "https://github.com/gnosispay"
     }
   },
-  "playground": {
-    "display": "interactive"
-  },
-  "examples": {
-    "languages": ["curl", "python", "javascript", "go", "java"],
-    "defaults": "all"
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["javascript", "curl", "python"]
+    }
   }
 }
