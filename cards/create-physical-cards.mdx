@@ -4,13 +4,18 @@ description: "Order physical cards for your Users."
 ---
 
 
-### 1. Create a Card Order
+## Create Physical Card Process 
 
-```jsx
-POST /api/v1/order/create
+
+<Steps titleSize="h3">
+<Step title="Create a Card Order">
+
+
+[This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION`](/api-reference/card-order/create-a-new-card-order): 
+
+```bash cURL
+curl -X POST /api/v1/order/create
 ```
-
-This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION` .
 
 The Card Order is created with the following data:
 
@@ -18,58 +23,64 @@ The Card Order is created with the following data:
 - The total amount to be paid is set in EURe. The amount is 30.23.
 - A coupon code can be applied to reduce the amount to be paid, either at signup or in the next step
 
-### 2. (Optional) Attach a Coupon
+</Step>
+<Step title="(Optional) Attach a Coupon">
 
-```jsx
-POST /api/v1/order/{orderId}/attach-coupon
+[This endpoint attaches a coupon to the `CardOrder` with `orderId`](/api-reference/card-order/attach-a-coupon-to-a-card-order):
+
+```bash cURL
+curl -X POST /api/v1/order/{orderId}/attach-coupon
 ```
 
-This endpoint attaches a coupon to the `CardOrder` with `orderId`.
 The coupon needs to be valid, otherwise an error is thrown.
 If the user has a coupon code both from the signup, and from this step, the one from the signup takes precedence.
 
-### 3. (Optional) Attach an on-chain transaction
+</Step>
+<Step title="(Optional) Attach an on-chain transaction">
 
 <Note>
-This is only needed if the card is not free.
+This is only needed if the card is not free. If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
 </Note>
 
-```jsx
-PUT /api/v1/order/{orderId}/attach-transaction
-```
+[This endpoint allows setting a transaction hash to the specified `orderId`](/api-reference/card-order/attach-an-on-chain-transaction-to-a-card-order).
 
-When the card isn't free, a payment must be performed for the card order. This endpoint allows setting a transaction hash to the specified `orderId`.
+```bash cURL
+curl -X PUT /api/v1/order/{orderId}/attach-transaction \
+-d '{
+  "transactionHash": "0x..."
+}'
+```
 
 The transaction can only be used once across all card orders.
 
-### 4. Confirm the payment was performed
+</Step>
+<Step title="Confirm the payment was performed">
 
 <Warning>
 This endpoint must be called even if the card is free. It moves the card order to the `READY` status.
 </Warning>
 
-```jsx
-PUT /api/v1/order/{orderId}/confirm-payment
+[To confirm the payment call this endpoint](/api-reference/card-order/marks-a-card-order-as-paid):
+
+```bash cURL
+curl -X PUT /api/v1/order/{orderId}/confirm-payment
 ```
 
-In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION`.
+The conditions for the payment are:
 
-If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
-
-#### Successful Payment Conditions
-
-If the card is not free, we check if a payment was done. The conditions for the payment are:
-
-- Token used for payment needs to be EURe `0xcB444e90D8198415266c6a2724b7900fb12FC56E`.
-- Payment was done to `0x3D4FD6a1A7a1382ae1d62C3DD7247254a0236847`.
-- The respective EURe amount was paid in that transaction hash (partial transfers are not supported).
+- In order to call this endpoint, the `CardOrder.status` needs to be `PENDINGTRANSACTION`.
+- If the card is not free, we check if a payment was done. 
+  - Token used for payment needs to be EURe `0xcB444e90D8198415266c6a2724b7900fb12FC56E`.
+  - Payment was done to `0x3D4FD6a1A7a1382ae1d62C3DD7247254a0236847`.
+  - The respective EURe amount was paid in that transaction hash (partial transfers are not supported).
 
 If all the conditions above are met, the `CardOrder.status` is set to `READY`.
+</Step>
+<Step title="Create the Physical Card">
+[Finally, you can create the Physical Card](/api-reference/card-order/create-a-card-out-of-a-card-order): 
 
-### 5. Create the Physical Card
-
-```jsx
-POST /api/v1/order/:orderId/create-card
+```bash cURL
+curl -X POST /api/v1/order/:orderId/create-card
 ```
 
 When successful, this endpoint returns the `cardToken` from the newly created card.
@@ -87,8 +98,8 @@ In order to create a `Card` out of a `CardOrder` the following conditions need t
   - The shipping details can be different from the KYC address, as long as it is in the same country.
   - Virtual cards do not require a shipping address.
 - The embossed name for the card needs to be set.
-
-### 6. Set the Card PIN using the Partner Secure Elements (PSE)
+</Step>
+<Step title="Set the Card PIN using the Partner Secure Elements (PSE)">
 
 The card PIN should be set immediately after the card is created via the Partner Secure Elements (PSE).
 Use the `cardToken` returned from the previous endpoint to set the PIN.
@@ -96,6 +107,8 @@ If a PIN is not provided upon creation, a random one will be assigned.
 Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn more about the online and offline PINs.
 
 For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
+</Step>
+</Steps>
 
 ## Card Order State Transitions
 
@@ -180,36 +193,41 @@ Understanding the card order state machine is crucial for handling different sce
 
 ### Transition Rules
 
-#### 1. Pay Transition: `PENDINGTRANSACTION` → `READY`
-Conditions:
-- Free card: totalAmountEUR === totalDiscountEUR
+<Steps titleSize="h3">
+<Step title="Pay Transition">
+`PENDINGTRANSACTION` → `READY`:
+- Free card: `totalAmountEUR === totalDiscountEUR`
 - Paid card: Valid EURe payment to correct address
 - Transaction hash validation (if required)
+</Step>
 
-
-#### 2. Request Confirmation: `TRANSACTIONCOMPLETE` → `CONFIRMATIONREQUIRED`
-Triggered when:
-- Additional user verification needed
+<Step title="Request Confirmation">
+`TRANSACTIONCOMPLETE` → `CONFIRMATIONREQUIRED`:
+- Triggered when additional user verification is needed
 - System determines extra checks required
+</Step>
 
-#### 3. Confirm Ready: `CONFIRMATIONREQUIRED` → `READY`
-Requirements:
+<Step title="Confirm Ready">
+`CONFIRMATIONREQUIRED` → `READY`:
 - User phone verified
 - Source of Funds (SOF) completed
 - Valid shipping address (for physical cards)
+</Step>
 
-#### 4. Create Card: `READY` → `CARDCREATED`
-  Requirements:
+<Step title="Create Card">
+`READY` → `CARDCREATED`:
 - KYC approved
 - Risk score: Green or Orange
 - For physical cards: Encrypted PIN required
 - For virtual cards: No PIN needed
+</Step>
 
-#### 5. Cancel: `PENDINGTRANSACTION` → `CANCELLED`
-Conditions:
+<Step title="Cancel">
+`PENDINGTRANSACTION` → `CANCELLED`:
 - Only from `PENDINGTRANSACTION` state
 - User-initiated or admin-initiated
-
+</Step>
+</Steps>
 
 ### Error Handling
 

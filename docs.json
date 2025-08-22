@@ -22,7 +22,7 @@
             "icon": "file-user",
             "pages": [
               "account/accounts",
-              "account/send-funds-from-safe",
+              "account/withdraw-funds-from-safe",
               "account/onchain-daily-limit",
               "account/iban-integration"
             ]
@@ -32,7 +32,8 @@
             "icon": "cards",
             "pages": [
               "cards/concepts",
-              "cards/card-order-flow",
+              "cards/create-physical-cards",
+              "cards/create-virtual-cards",
               "cards/pse-integration"
             ]
           }
