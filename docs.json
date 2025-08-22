@@ -84,5 +84,13 @@
       "website": "https://gnosispay.com/",
       "github": "https://github.com/gnosispay"
     }
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["javascript", "curl", "python"]
+    }
   }
 }
