@@ -95,7 +95,8 @@
         "curl", 
         "python",
         "go",
-        "java"
+        "java",
+        "ruby"
       ]
     }
   }
