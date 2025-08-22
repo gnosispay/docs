@@ -10,7 +10,11 @@ description: "Order physical cards for your Users."
 <Step title="Create a Card Order">
 
 
+<<<<<<< HEAD
 [This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION`](/api-reference/physical-card-order/create-physical-card-order):
+=======
+[This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION`](/api-reference/card-order/create-a-new-card-order):
+>>>>>>> ce2d52e (Separate card order state transitions)
 
 ```bash cURL
 curl -X POST /api/v1/order/create
@@ -76,7 +80,11 @@ The conditions for the payment are:
 If all the conditions above are met, the `CardOrder.status` is set to `READY`.
 </Step>
 <Step title="Create the Physical Card">
+<<<<<<< HEAD
 [Finally, you can create the Physical Card](/api-reference/physical-card-order/create-a-physical-card):
+=======
+[Finally, you can create the Physical Card](/api-reference/card-order/create-a-card-out-of-a-card-order):
+>>>>>>> ce2d52e (Separate card order state transitions)
 
 ```bash cURL
 curl -X POST /api/v1/order/:orderId/create-card
