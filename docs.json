@@ -44,6 +44,13 @@
         "tab": "API reference",
         "groups": [
           {
+            "group": "Authentication",
+            "pages": [
+              "api-reference/intro",
+              "api-reference/auth-app"
+            ]
+          },
+          {
             "group": "API reference",
             "openapi": "https://api.gnosispay.com/api-docs/spec.json"
           },
