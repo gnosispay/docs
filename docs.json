@@ -77,5 +77,14 @@
       "website": "https://gnosispay.com/",
       "github": "https://github.com/gnosispay"
     }
-  }
+  },
+  "api": {
+   "playground": {
+     "display": "interactive"
+   },
+   "examples": {
+     "languages": ["curl", "python", "javascript", "go", "ruby"],
+     "defaults": "all"
+   }
+ }
 }
