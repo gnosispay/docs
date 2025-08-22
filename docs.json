@@ -90,7 +90,14 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": ["javascript", "curl", "python"]
+      "languages": [
+        "javascript",
+        "curl", 
+        "python",
+        "go",
+        "java",
+        "ruby"
+      ]
     }
   }
 }
