@@ -34,6 +34,7 @@
               "cards/concepts",
               "cards/create-physical-cards",
               "cards/create-virtual-cards",
+              "cards/card-order-state-transitions",
               "cards/pse-integration"
             ]
           }
