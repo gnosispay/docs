@@ -51,6 +51,12 @@
             ]
           },
           {
+            "group": "IBAN API (New)",
+            "pages": [
+              "api-reference/iban-modernized"
+            ]
+          },
+          {
             "group": "API reference",
             "openapi": "https://api.gnosispay.com/api-docs/spec.json"
           },

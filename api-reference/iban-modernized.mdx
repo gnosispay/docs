@@ -1,0 +1,194 @@
+---
+title: IBAN API (Modernized)
+description: New simplified IBAN API endpoints with direct EIP-712 signing support
+---
+
+<Note>
+**New Simplified API**: These endpoints eliminate the need for account-kit client dependencies and provide direct EIP-712 signing support for better wallet compatibility.
+</Note>
+
+## GET /api/v1/ibans/transaction-data
+
+Returns complete EIP-712 typed data structure for IBAN ownership verification that can be signed directly with any wallet.
+
+**Authentication**: Required (Bearer token)
+
+**Request**: No body required
+
+**Response Structure**:
+```json
+{
+  "data": {
+    "domain": {
+      "name": "Safe Message Lib",
+      "version": "1.0",
+      "chainId": 100,
+      "verifyingContract": "0xd53cd0aB83D845Ac265BE939c57F53AD838012c9"
+    },
+    "types": {
+      "EIP712Domain": [
+        {"name": "name", "type": "string"},
+        {"name": "version", "type": "string"},
+        {"name": "chainId", "type": "uint256"},
+        {"name": "verifyingContract", "type": "address"}
+      ],
+      "SafeMessage": [
+        {"name": "message", "type": "bytes"}
+      ]
+    },
+    "primaryType": "SafeMessage",
+    "message": {
+      "message": "0x..."
+    }
+  }
+}
+```
+
+**Error Responses**:
+- `422`: User doesn't have Safe assigned for IBAN creation
+
+**Example Usage**:
+```typescript
+const response = await fetch('/api/v1/ibans/transaction-data', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const typedData = await response.json();
+
+// Sign directly with any wallet
+const signature = await wallet.signTypedData(typedData.data);
+```
+
+## POST /api/v1/ibans/new-profile
+
+Creates Monerium profile using raw EIP-712 signature obtained from the transaction-data endpoint.
+
+**Authentication**: Required (Bearer token)
+
+**Request Body**:
+```json
+{
+  "signature": "0x1234567890abcdef...", // Raw EIP-712 signature (130 chars)
+  "callbackUrl": "https://example.com"   // OAuth callback URL
+}
+```
+
+**Response Codes**:
+- `200`: Profile created successfully
+- `400`: Invalid request data or signature format
+- `422`: Business logic validation errors
+
+**Business Logic Validation**:
+The endpoint validates the following requirements:
+- User authentication
+- KYC verification status
+- Personal data completeness
+- Location data requirements
+- Country restrictions (EEA/Swiss only)
+- Monerium restricted countries check
+- Existing IBAN prevention
+
+**OAuth Flow Handling**:
+If the user already has a Monerium profile, the request will return a `422` error with redirect information:
+
+```json
+{
+  "errors": {
+    "externalApiCallStatusCode": 304,
+    "message": "User needs to be redirect to Monerium oAuth flow",
+    "redirectUrl": "... url ..."
+  }
+}
+```
+
+**Example Usage**:
+```typescript
+const response = await fetch('/api/v1/ibans/new-profile', {
+  method: 'POST',
+  headers: { 
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    signature: '0x1234567890abcdef...',
+    callbackUrl: 'https://your-app.com/iban-callback'
+  })
+});
+```
+
+## Migration from Legacy Endpoints
+
+### Deprecated Endpoints
+
+<Warning>
+The following endpoints are deprecated but still supported for backward compatibility:
+- `GET /api/v1/ibans/signing-message` → Use `GET /api/v1/ibans/transaction-data`
+- `POST /api/v1/ibans/monerium-profile` → Use `POST /api/v1/ibans/new-profile`
+</Warning>
+
+### Key Differences
+
+| Aspect | Legacy Approach | New Approach |
+|--------|----------------|--------------|
+| **Dependencies** | Requires `@gnosispay/account-kit` | No dependencies needed |
+| **Signing** | Complex transaction processing | Direct `signTypedData()` |
+| **Wallet Support** | Limited to account-kit compatible | Universal EIP-712 support |
+| **Bundle Size** | Larger due to account-kit | Smaller, no extra libraries |
+| **Complexity** | High client-side complexity | Simple, standard wallet integration |
+
+### Security & Compatibility
+
+- ✅ Same cryptographic security as legacy endpoints
+- ✅ Same business logic validation
+- ✅ Same authentication requirements
+- ✅ No breaking changes to existing implementations
+- ✅ Gradual migration supported
+
+### Complete Migration Example
+
+**Before (Legacy)**:
+```typescript
+// Step 1: Get signing message
+const messageResponse = await fetch('/api/v1/ibans/signing-message');
+const { message } = messageResponse.data;
+
+// Step 2: Use account-kit to process signature
+import { 
+  createInnerSignMessageTransaction, 
+  populateExecuteEnqueue 
+} from '@gnosispay/account-kit';
+
+const transaction = createInnerSignMessageTransaction(message);
+const enqueueTx = await populateExecuteEnqueue(
+  { account: safeAddress, chainId: 100 }, 
+  transaction, 
+  ({ domain, types, message }) => wallet._signTypedData(domain, types, message)
+);
+
+// Step 3: Submit processed signature
+await fetch('/api/v1/ibans/monerium-profile', {
+  method: 'POST',
+  body: JSON.stringify({ 
+    signature: enqueueTx.data,
+    callbackUrl: 'https://example.com' 
+  })
+});
+```
+
+**After (New)**:
+```typescript
+// Step 1: Get complete typed data
+const typedDataResponse = await fetch('/api/v1/ibans/transaction-data');
+const typedData = typedDataResponse.data;
+
+// Step 2: Sign directly with any wallet
+const signature = await wallet.signTypedData(typedData);
+
+// Step 3: Submit raw signature
+await fetch('/api/v1/ibans/new-profile', {
+  method: 'POST', 
+  body: JSON.stringify({
+    signature,
+    callbackUrl: 'https://example.com'
+  })
+});
+```
