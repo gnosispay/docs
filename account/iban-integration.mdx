@@ -30,13 +30,14 @@ Requirements the User must have:
 <Step title="Signing the Monerium message">
 
 Monerium requires a specific message to be signed by the User's wallet.
-[Use this endpoint get the exact message that needs to be signed](/api-reference/iban/get-the-message-that-needs-to-be-signed-for-iban-activation):
+
+Get the complete EIP-712 typed data for direct wallet signing:
 
 ```bash cURL
-curl -X GET /api/v1/ibans/signing-message
+curl -X GET /api/v1/ibans/transaction-data
 ```
 
-To request signature from your gnosis safe, you can follow this [demo signature implementation](#message-signing-example-with-gnosispay-account-kit).
+This returns a complete EIP-712 structure that can be signed directly with any wallet using `signTypedData()`.
 
 <Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
@@ -44,13 +45,12 @@ We cannot request new IBANs nor transfer existing IBANs until the message signat
 </Step>
 <Step title="Request the IBAN from Monerium">
 
-
-[You need to call this endpoint to request your IBAN profile](): 
+Submit the raw EIP-712 signature directly:
 
 ```bash cURL
-curl -X POST /api/v1/ibans/monerium-profile \
+curl -X POST /api/v1/ibans/new-profile \
 -d '{
-  "signature": "... signed message as a string ...",
+  "signature": "0x1234567890abcdef...",
   "callbackUrl": "https://your-app.com/iban-callback"
 }'
 ```
@@ -118,47 +118,30 @@ This endpoint returns only incoming orders (deposits) to the user's IBAN.
 </Steps>
 
 
-## Message Signing Example with GnosisPay Account Kit
+## Signing Example
 
-You can use the GnosisPay Account Kit as example to generate a signature for endpoint.
-You can find the Account Kit code in our [GitHub repository](https://github.com/gnosispay/account-kit/).
-
-### Example Usage
+The API works with any wallet and eliminates the need for specialized dependencies:
 
 ```typescript
-import { Wallet } from 'ethers';
-import {
-  populateExecuteEnqueue,
-  predictAccountAddress,
-  createInnerSignMessageTransaction
-} from '@gnosispay/account-kit';
+// Step 1: Get complete typed data
+const response = await fetch('/api/v1/ibans/transaction-data', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const typedData = await response.json();
 
-// Initialize your wallet
-const wallet = new Wallet(privateKey, provider);
+// Step 2: Sign directly with any wallet
+const signature = await wallet.signTypedData(typedData.data);
 
-// Predict the account address
-const owner = wallet.address;
-const safeAddress = predictAccountAddress({ owner });
-
-// Create a transaction to sign a message
-const transaction = createInnerSignMessageTransaction(
-  "I hereby declare that I am the address owner."
-);
-
-// Generate the execute transaction with signature
-const enqueueTx = await populateExecuteEnqueue(
-  { account: safeAddress, chainId: 100 },
-  transaction,
-  ({ domain, types, message }) => wallet._signTypedData(domain, types, message)
-);
-
-// The transaction data contains the signature
-console.log(enqueueTx.data, '-> signature');
+// Step 3: Submit raw signature
+await fetch('/api/v1/ibans/new-profile', {
+  method: 'POST',
+  headers: { 
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    signature,
+    callbackUrl: 'https://your-app.com/iban-callback'
+  })
+});
 ```
-
-<Info>
-Note:
-- The message can be fetched from the API using `GET /api/v1/ibans/signing-message`
-- The generated transaction can be submitted to prove ownership
-- Make sure to use the correct chainId (100 for Gnosis Chain)
-</Info>
