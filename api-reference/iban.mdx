@@ -1,11 +1,7 @@
 ---
-title: IBAN API (Modernized)
-description: New simplified IBAN API endpoints with direct EIP-712 signing support
+title: IBAN API
+description: IBAN API endpoints with direct EIP-712 signing support
 ---
-
-<Note>
-**New Simplified API**: These endpoints eliminate the need for account-kit client dependencies and provide direct EIP-712 signing support for better wallet compatibility.
-</Note>
 
 ## GET /api/v1/ibans/transaction-data
 
@@ -115,80 +111,48 @@ const response = await fetch('/api/v1/ibans/new-profile', {
 });
 ```
 
-## Migration from Legacy Endpoints
+## Complete Integration Example
 
-### Deprecated Endpoints
+Here's a complete example of how to integrate IBAN functionality:
 
-<Warning>
-The following endpoints are deprecated but still supported for backward compatibility:
-- `GET /api/v1/ibans/signing-message` → Use `GET /api/v1/ibans/transaction-data`
-- `POST /api/v1/ibans/monerium-profile` → Use `POST /api/v1/ibans/new-profile`
-</Warning>
-
-### Key Differences
-
-| Aspect | Legacy Approach | New Approach |
-|--------|----------------|--------------|
-| **Dependencies** | Requires `@gnosispay/account-kit` | No dependencies needed |
-| **Signing** | Complex transaction processing | Direct `signTypedData()` |
-| **Wallet Support** | Limited to account-kit compatible | Universal EIP-712 support |
-| **Bundle Size** | Larger due to account-kit | Smaller, no extra libraries |
-| **Complexity** | High client-side complexity | Simple, standard wallet integration |
-
-### Security & Compatibility
-
-- ✅ Same cryptographic security as legacy endpoints
-- ✅ Same business logic validation
-- ✅ Same authentication requirements
-- ✅ No breaking changes to existing implementations
-- ✅ Gradual migration supported
-
-### Complete Migration Example
-
-**Before (Legacy)**:
-```typescript
-// Step 1: Get signing message
-const messageResponse = await fetch('/api/v1/ibans/signing-message');
-const { message } = messageResponse.data;
-
-// Step 2: Use account-kit to process signature
-import { 
-  createInnerSignMessageTransaction, 
-  populateExecuteEnqueue 
-} from '@gnosispay/account-kit';
-
-const transaction = createInnerSignMessageTransaction(message);
-const enqueueTx = await populateExecuteEnqueue(
-  { account: safeAddress, chainId: 100 }, 
-  transaction, 
-  ({ domain, types, message }) => wallet._signTypedData(domain, types, message)
-);
-
-// Step 3: Submit processed signature
-await fetch('/api/v1/ibans/monerium-profile', {
-  method: 'POST',
-  body: JSON.stringify({ 
-    signature: enqueueTx.data,
-    callbackUrl: 'https://example.com' 
-  })
-});
-```
-
-**After (New)**:
 ```typescript
 // Step 1: Get complete typed data
-const typedDataResponse = await fetch('/api/v1/ibans/transaction-data');
-const typedData = typedDataResponse.data;
+const typedDataResponse = await fetch('/api/v1/ibans/transaction-data', {
+  headers: { 'Authorization': `Bearer ${token}` }
+});
+const typedData = await typedDataResponse.json();
 
 // Step 2: Sign directly with any wallet
-const signature = await wallet.signTypedData(typedData);
+const signature = await wallet.signTypedData(typedData.data);
 
 // Step 3: Submit raw signature
-await fetch('/api/v1/ibans/new-profile', {
-  method: 'POST', 
+const profileResponse = await fetch('/api/v1/ibans/new-profile', {
+  method: 'POST',
+  headers: { 
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
   body: JSON.stringify({
     signature,
-    callbackUrl: 'https://example.com'
+    callbackUrl: 'https://your-app.com/iban-callback'
   })
 });
+
+if (profileResponse.ok) {
+  console.log('IBAN profile creation initiated successfully');
+} else {
+  const error = await profileResponse.json();
+  // Handle OAuth redirect if user has existing Monerium profile
+  if (error.errors?.externalApiCallStatusCode === 304) {
+    window.location.href = error.errors.redirectUrl;
+  }
+}
 ```
+
+## Key Benefits
+
+- ✅ **Universal wallet compatibility** - Works with all EIP-712 compatible wallets
+- ✅ **No specialized dependencies** - Standard wallet integration only
+- ✅ **Simple implementation** - Direct `signTypedData()` method
+- ✅ **Reduced complexity** - Straightforward client-side code
+- ✅ **Smaller bundle size** - No additional libraries required

@@ -5,10 +5,6 @@ description: IBAN cash-in to the GnosisPay Account via Monerium
 
 We offer IBAN cash-in to the GnosisPay Account via Monerium for users in Europe (EU) and Switzerland.
 
-<Note>
-**API Modernization Update**: We've introduced new simplified endpoints that eliminate the need for account-kit client dependencies. The new endpoints provide direct EIP-712 signing support for better wallet compatibility. [See migration guide below](#migration-to-new-api-endpoints).
-</Note>
-
 ## Check Availability
 
 [First you need to check if the user is available to activate their IBAN](/api-reference/iban/check-iban-availability):
@@ -33,9 +29,7 @@ Requirements the User must have:
 <Steps titleSize="h3">
 <Step title="Signing the Monerium message">
 
-Monerium requires a specific message to be signed by the User's wallet. You can use either the **new simplified approach** (recommended) or the legacy method:
-
-### New Approach (Recommended)
+Monerium requires a specific message to be signed by the User's wallet.
 
 Get the complete EIP-712 typed data for direct wallet signing:
 
@@ -45,25 +39,11 @@ curl -X GET /api/v1/ibans/transaction-data
 
 This returns a complete EIP-712 structure that can be signed directly with any wallet using `signTypedData()`.
 
-### Legacy Approach
-
-<Warning>
-**Deprecated**: This endpoint is deprecated. Use `/api/v1/ibans/transaction-data` instead.
-</Warning>
-
-```bash cURL
-curl -X GET /api/v1/ibans/signing-message
-```
-
-For legacy implementations, you can follow the [account-kit signature implementation](#message-signing-example-with-gnosispay-account-kit).
-
 <Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
 </Warning>
 </Step>
 <Step title="Request the IBAN from Monerium">
-
-### New Approach (Recommended)
 
 Submit the raw EIP-712 signature directly:
 
@@ -71,20 +51,6 @@ Submit the raw EIP-712 signature directly:
 curl -X POST /api/v1/ibans/new-profile \
 -d '{
   "signature": "0x1234567890abcdef...",
-  "callbackUrl": "https://your-app.com/iban-callback"
-}'
-```
-
-### Legacy Approach
-
-<Warning>
-**Deprecated**: This endpoint is deprecated. Use `/api/v1/ibans/new-profile` instead.
-</Warning>
-
-```bash cURL
-curl -X POST /api/v1/ibans/monerium-profile \
--d '{
-  "signature": "... signed message as a string ...",
   "callbackUrl": "https://your-app.com/iban-callback"
 }'
 ```
@@ -152,11 +118,9 @@ This endpoint returns only incoming orders (deposits) to the user's IBAN.
 </Steps>
 
 
-## Signing Examples
+## Signing Example
 
-### New Simplified Approach (Recommended)
-
-The new API eliminates the need for account-kit dependencies and works with any wallet:
+The API works with any wallet and eliminates the need for specialized dependencies:
 
 ```typescript
 // Step 1: Get complete typed data
@@ -182,85 +146,10 @@ await fetch('/api/v1/ibans/new-profile', {
 });
 ```
 
-### Legacy Approach with GnosisPay Account Kit
-
-<Warning>
-**Deprecated**: This approach is deprecated but still supported. Migrate to the new simplified approach above.
-</Warning>
-
-You can use the GnosisPay Account Kit as example to generate a signature for endpoint.
-You can find the Account Kit code in our [GitHub repository](https://github.com/gnosispay/account-kit/).
-
-```typescript
-import { Wallet } from 'ethers';
-import {
-  populateExecuteEnqueue,
-  predictAccountAddress,
-  createInnerSignMessageTransaction
-} from '@gnosispay/account-kit';
-
-// Initialize your wallet
-const wallet = new Wallet(privateKey, provider);
-
-// Predict the account address
-const owner = wallet.address;
-const safeAddress = predictAccountAddress({ owner });
-
-// Create a transaction to sign a message
-const transaction = createInnerSignMessageTransaction(
-  "I hereby declare that I am the address owner."
-);
-
-// Generate the execute transaction with signature
-const enqueueTx = await populateExecuteEnqueue(
-  { account: safeAddress, chainId: 100 },
-  transaction,
-  ({ domain, types, message }) => wallet._signTypedData(domain, types, message)
-);
-
-// The transaction data contains the signature
-console.log(enqueueTx.data, '-> signature');
-```
-
 <Info>
-Note:
-- The message can be fetched from the API using `GET /api/v1/ibans/signing-message`
-- The generated transaction can be submitted to prove ownership
-- Make sure to use the correct chainId (100 for Gnosis Chain)
-</Info>
-
-## Migration to New API Endpoints
-
-### Benefits of the New API
-
+**Benefits:**
 - ✅ **No specialized library dependencies** - Works with any wallet
 - ✅ **Standard wallet integration** - Uses standard `signTypedData()` method
-- ✅ **Reduced complexity** - Simpler client-side implementation
 - ✅ **Universal compatibility** - Works with all EIP-712 compatible wallets
-- ✅ **Smaller bundle size** - No account-kit dependency required
-
-### Migration Steps
-
-1. **Replace endpoint calls:**
-   - `GET /api/v1/ibans/signing-message` → `GET /api/v1/ibans/transaction-data`
-   - `POST /api/v1/ibans/monerium-profile` → `POST /api/v1/ibans/new-profile`
-
-2. **Update signing logic:**
-   - Remove account-kit dependencies
-   - Use direct `wallet.signTypedData()` calls
-   - Submit raw signatures instead of processed ones
-
-3. **Update error handling:**
-   - Same error codes and business logic validation
-   - Same OAuth flow for existing Monerium users
-
-### Backward Compatibility
-
-- All existing endpoints continue to work unchanged
-- No breaking changes to current implementations
-- Gradual migration supported via deprecation notices
-- Old and new endpoints can coexist indefinitely
-
-<Note>
-The new endpoints provide the same security guarantees and business logic validation as the legacy endpoints, with improved developer experience and reduced client complexity.
-</Note>
+- ✅ **Reduced complexity** - Simple, straightforward implementation
+</Info>

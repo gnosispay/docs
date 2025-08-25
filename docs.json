@@ -51,9 +51,9 @@
             ]
           },
           {
-            "group": "IBAN API (New)",
+            "group": "IBAN API",
             "pages": [
-              "api-reference/iban-modernized"
+              "api-reference/iban"
             ]
           },
           {
