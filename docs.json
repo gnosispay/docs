@@ -19,7 +19,7 @@
           },
           {
             "group": "Accounts",
-            "icon": "file-user",
+            "icon": "user",
             "pages": [
               "account/accounts",
               "account/withdraw-funds-from-safe",
@@ -29,13 +29,22 @@
           },
           {
             "group": "Cards",
-            "icon": "cards",
+            "icon": "credit-card",
             "pages": [
               "cards/concepts",
               "cards/create-physical-cards",
               "cards/create-virtual-cards",
               "cards/card-order-state-transitions",
               "cards/pse-integration"
+            ]
+          },
+          {
+            "group": "On-chain",
+            "icon": "cubes",
+            "pages": [
+              "gp-onchain/overview",
+              "gp-onchain/about-gp-safe",
+              "gp-onchain/sign-message"
             ]
           }
         ]

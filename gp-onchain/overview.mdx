@@ -1,0 +1,24 @@
+---
+title: Overview
+description: Understanding the on-chain integration options for Gnosis Pay, including the Account Kit SDK and direct contract integration approaches.
+--- 
+
+## Account Kit 
+
+We provide the Account Kit as a way to accelerate on-chain integration for the TypeScript/JavaScript ecosystem. This SDK abstracts away the complexity of our multi-module Safe architecture, making it easier for developers to integrate with Gnosis Pay's on-chain infrastructure directly.
+
+Installing instructions and comprehensive examples are available in the [Account Kit repository](https://github.com/gnosispay/account-kit). The SDK is open source and actively maintained by the Gnosis Pay team.
+
+All examples in this section of the documentation assume you are using the Account Kit SDK.
+
+## Direct Integration without Account Kit 
+
+For other programming languages, you can use their own cryptocurrency libraries (e.g., go-ethereum for Go, web3.py for Python, and so on) and integrate directly with the contracts. However, this approach requires additional steps since the Account Kit relies on TypeScript/JavaScript projects from Gnosis such as `@gnosis.pm/safe-contracts`, `@gnosis.pm/zodiac`, and related dependencies.
+
+Integrating directly means you'll need to explore the Account Kit source code and its dependencies to understand:
+- **Contract Function Calls**: Which specific functions are being called on the Safe, Delay, Roles, and Bouncer modules
+- **Payload Encoding**: How transaction data is encoded and structured for each operation
+- **Module Interactions**: The sequence and coordination between different modules
+- **Parameter Validation**: What parameters are required and how they're validated
+
+This reverse-engineering approach is entirely doable for teams with strong smart contract integration experience, but it requires significant additional development time compared to using the Account Kit directly. 
