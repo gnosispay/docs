@@ -60,7 +60,7 @@ curl -X POST /api/v1/ibans/monerium-profile \
 
 There are two results possible here: 
 
-1. If the User is not registered with Monerium you will receive a `"success": true` and it will take 3+ mininutes (due to the delay module that verifies the signature and ownership of the address) for the new Monerium account to be created;
+1. If the User is not registered with Monerium you will receive a `"success": true` and it will take 3+ minutes (due to the delay module that verifies the signature and ownership of the address) for the new Monerium account to be created;
 2. The user already has a Monerium profile, so we need to request access to it via an oAuth flow, in this case the request will fail as expected.
 
 When your User already have a Monerium account, we need to redirect the user to a URL so they can allow GnosisPay to interact with

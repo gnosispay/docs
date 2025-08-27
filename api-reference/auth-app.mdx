@@ -7,10 +7,11 @@ export const AuthApp = () => {
   return (
     <div className="flex items-center justify-center" style={{marginTop: '20px'}}>
       <div className="flex items-center rounded-xl overflow-hidden border border-zinc-950/20 dark:border-white/20" style={{width: '100%', height: '800px'}}>
-        <iframe 
-          src="https://gnosispay-api-siwe-demo.vercel.app/" 
+        <iframe
+          src="https://gnosispay-api-siwe-demo.vercel.app/"
           style={{width: '100%', height: '100%'}}
           title="GnosisPay API SIWE Demo"
+          allow="clipboard-write"
         />
       </div>
     </div>
