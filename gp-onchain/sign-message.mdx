@@ -1,0 +1,92 @@
+---
+title: Sign Messages with GP Safe
+description: Learn how to sign messages using your GP Safe account with the delay module for enhanced security.
+---
+
+Unlike traditional EOA (Externally Owned Account) message signing, GP Safe message signing goes through the delay module.
+
+<Note>
+Message signing with GP Safe requires the account to be fully configured with the delay module enabled. If you haven't set up your Safe account yet, see the [Safe Account Configuration](/onboarding-flow#4-safe-account-configuration) section first.
+</Note>
+
+## Message Signing Process
+
+GP Safe message signing follows the same two-phase pattern as other delayed operations:
+
+1. **Enqueue Phase**: Submit the message signing request to the delay queue
+2. **Dispatch Phase**: Execute the message signing after the delay period expires
+
+[You can find a complete working example here.](https://github.com/gnosispay/account-kit/blob/main/examples/src/sign-safe-message/index.ts)
+
+<Steps titleSize="h3">
+<Step title="Prepare the Message">
+First, prepare the message you want to sign. 
+
+This can be any string, such as: 
+
+```typescript
+const message = "Hello, this is a message to be signed by my GP Safe!";
+```
+
+Or structured data that needs to be signed by your GP Safe account. 
+
+</Step>
+
+<Step title="Enqueue the Message Signing Request">
+Use the `populateSignMessageEnqueue` function to create a transaction that submits your message signing request to the delay queue.
+
+```typescript
+import { populateSignMessageEnqueue } from "@gnosispay/account-kit";
+
+const owner: Signer = {}; // Your wallet signer
+const account = "0x..."; // Your GP Safe address
+const chainId = 100; // Gnosis Chain
+
+const enqueueTx = await populateSignMessageEnqueue(
+  { account, chainId },
+  message,
+  // EIP-712 signature callback
+  ({ domain, primaryType, types, message }) =>
+    owner.signTypedData(domain, primaryType, types, message)
+);
+
+// Send the enqueueTx using your wallet
+```
+
+<Warning>
+This transaction will be queued in the delay module and cannot be executed immediately. The delay period (typically 3 minutes) must pass before the message can be signed.
+</Warning>
+</Step>
+
+<Step title="Wait for the Delay Period">
+The message signing request is now in the delay queue. You must wait for the configured cooldown period to expire before proceeding.
+
+<Info>
+The default delay period is 3 minutes (180 seconds). This provides time for you to review and potentially cancel the operation if needed.
+</Info>
+
+You can check the delay queue status using the `accountQuery` function from `@gnosispay/account-kit`.
+
+</Step>
+
+<Step title="Dispatch the Message Signing">
+Once the delay period has expired, use the `populateSignMessageDispatch` function to execute the queued message signing operation.
+
+```typescript
+import { populateSignMessageDispatch } from "@gnosispay/account-kit";
+
+const dispatchTx = populateSignMessageDispatch(
+  { account },
+  message
+);
+
+// Send the dispatchTx using your wallet
+```
+
+<Note>
+Unlike the enqueue transaction, the dispatch transaction doesn't require a signature since it's executing a previously authorized operation.
+</Note>
+</Step>
+</Steps>
+
+
