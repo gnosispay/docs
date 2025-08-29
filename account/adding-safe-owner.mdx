@@ -1,0 +1,61 @@
+---
+title: "Managing Safe Ownership"
+description: "Adding a new owner for your Gnosis Pay Safe Account"
+---
+When you **add** of your Gnosis Pay Safe, you’re effectively adding a new owner for the **Delay Module**.
+This is important because only Delay Module owners can approve and execute on-chain transactions.
+
+<Warning>
+**Authenticated wallets** (used for SIWE and getting a JWT) are for API sessions only.
+They do **not** become Safe owners unless you enabled them on-chain as Delay Module owners.
+</Warning>
+
+In this guide, we will go through step-by-step flow to add additional owners for gnosis pay safe, which will be enabled to send transactions via the delay module. Once complete, the new owner will be able to send and control transactions through the Delay Module.
+
+<Steps>
+  <Step title="Get a JWT token for session">
+      Follow the [authentication flow](https://docs.gnosispay.com/auth) and get a JWT token for your Gnosis Pay user.
+  </Step>
+
+<Step title="Get typed data for adding a new safe owner">
+    Use [this endpoint](https://docs.gnosispay.com/api-reference/safe-owners/get-typed-data-for-adding-a-new-safe-owner) to get the typed data. You will then have to sign this typed data and get the signature in return.
+
+``` bash
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/owners/add/transaction-data \
+  --header 'Authorization: Bearer <token>'
+```
+</Step>
+
+<Step title="Submit the signature">
+
+[Submit the address of the new owner along with the signature, and the message.](https://docs.gnosispay.com/api-reference/safe-owners/add-a-new-owner-to-the-safe)
+
+``` bash
+    curl --request POST \
+      --url https://api.gnosispay.com/api/v1/owners \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+      "newOwner": "0x3270bf32AB647e90eF94A026c70Aa1daaaDA2382",
+      "signature": "0x1234567890abcdef...",
+      "message": {
+        "salt": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        "data": "0xa9059cbb0000000000000000000000003270bf32ab647e90ef94a026c70aa1daaaada2382"
+      }
+    }'
+```
+The operation is processed through a delay relay mechanism that executes after 3 minutes.
+</Step>
+
+<Step title="Verify Delay Module ownership">
+    Verify that the new owner has been added to the Delay Module by checking the [Safe's owner list](https://docs.gnosispay.com/api-reference/safe-owners/get-the-list-of-safe-owners)
+
+    ```bash
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/owners \
+  --header 'Authorization: Bearer <token>'
+  ```
+</Step>
+
+</Steps>

@@ -3,40 +3,45 @@ title: "Accounts on Gnosis Pay"
 description: "How the Gnosis Pay Safe works"
 ---
 
-When you sign up for Gnosis Pay, a new Gnosis Pay Safe—a smart contract wallet—is created for you. 
-This Safe is exclusively controlled by you through your Externally Owned Account (EOA) Wallet. 
+When you sign up for Gnosis Pay, a new Gnosis Pay Safe—a smart contract wallet—is created for you.This Safe holds your funds on-chain and is controlled only by its **owners**.Gnosis Pay Safe owner can be either an EOA wallet(Externally Owned Account) , or another smart wallet (e.g. a Safe) whose owners may use passkeys, EOAs, or other signers.
 Consequently, the funds in your Gnosis Pay Safe are not held by any third party; **you have sole ownership and control over them**.
 
 <Frame>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_-FoBiwBJTA?si=-6VlRlqqdYuJhW4j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </Frame>
 
-## Externally Owned Account Wallet 
+## Authenticating user sessions with wallets
 
-Your EOA Wallet is your personal wallet, granting you full control over your funds, ensuring they are never managed by a third party. 
-The EOA has sole authority over your assets.
+When you log in to the Gnosis Pay dashboard or call our APIs, you use a wallet to complete [Sign-In With Ethereum (SIWE)](https://docs.login.xyz/). This wallet authenticates your identity and issues a JWT token after SIWE. You can read more about this in our [Authentication Flow](https://docs.gnosispay.com/auth).
 
-We support EVM compatible EOA wallets at the moment. 
-You can transfer funds from any token on any EVM chain using your EOA Wallet.
+With this token, you can interact with the Gnosis Pay APIs — e.g., ordering cards, fetching user info, or adding more wallets for authenticating your user sessions.
+
+This wallet address does not perform onchain transactions. The authenticated wallet may or may not be the same as the wallet that owns your Gnosis Pay Safe.
+
+Follow this guide to [learn how to add and authenticate](account/update-authenticated-account) different wallets for your Gnosis Pay sessions.
+<Tip>
+    The first wallet that is connected to your session automatically becomes your primary owner for your Delay Module that is owned by Gnosis Pay Safe Account.
+</Tip>
+
 
 ## Safe Smart Account: your Smart Contract wallet
 
-When you open your Account with Gnosis Pay, we create a **Safe Smart Account** for you, 
-which functions as a "savings" account on Gnosis Chain L1. 
+When you open your Account with Gnosis Pay, we create a **Safe Smart Account** for you,
+which functions as a "savings" account on Gnosis Chain L1.
 
-Currently, we deploy a new Safe for you. We have plans on supporting existing 
+Currently, we deploy a new Safe for you. We have plans on supporting existing
 Safe multisig wallet as the Gnosis Pay Safe.
 
- 
-### What is a smart contract wallet? 
 
-A smart contract wallet utilizes smart contracts on a blockchain to manage and automate transactions, 
-offering enhanced security and functionality beyond simple fund storage and transfer. 
+### What is a smart contract wallet?
+
+A smart contract wallet utilizes smart contracts on a blockchain to manage and automate transactions,
+offering enhanced security and functionality beyond simple fund storage and transfer.
 These wallets are typically owned by an EOA Wallet.
 
 [Safe](https://safe.global/) is the pioneer of smart contract wallets custodying over $70+ billion in assets.
 
-### Understanding the Safe setup 
+### Understanding the Safe setup
 
 To explore the Safe setup further, you can access the Zodiac application in the Safe Webapp for your specific Safe by following these steps:
 
@@ -47,36 +52,36 @@ To explore the Safe setup further, you can access the Zodiac application in the 
 
 The Roles Module and Delay Module are open-source smart contracts governed by the LGPL 3.0 license.
 
-## What are modules? 
+## What are modules?
 
-Modules are small pieces of logic that help ensure the product functions securely. 
-Controlled by the user, these modules allow Gnosis Pay to operate as configured by you, 
+Modules are small pieces of logic that help ensure the product functions securely.
+Controlled by the user, these modules allow Gnosis Pay to operate as configured by you,
 ensuring self-custody of your funds in your preferred manner.
 
 These modules are open source software developed as part of the zodiac standard of DAO tooling built by [Gnosis Guild](https://www.gnosisguild.org/).
 Without this configuration, we would be unable to serve you.
- 
+
 ## Roles Module
 
-The roles module has 4 configurations: 
+The roles module has 4 configurations:
 
-1. **Token Used** - Specifies which token Gnosis Pay can spend. 
+1. **Token Used** - Specifies which token Gnosis Pay can spend.
 2. **Daily Limit** - Defines the daily limit of funds that Gnosis Pay can spend on your behalf.
-3. **Recipient address** - Indicates where the funds can be transferred. In our case, it’s another Safe owned by the card issuer, used to settle funds owed to merchants through Visa. 
-4. **Role delegated to whom** - Specifies to whom this role is delegated—in this case, Gnosis Pay. 
+3. **Recipient address** - Indicates where the funds can be transferred. In our case, it’s another Safe owned by the card issuer, used to settle funds owed to merchants through Visa.
+4. **Role delegated to whom** - Specifies to whom this role is delegated—in this case, Gnosis Pay.
 
 It’s important to note that this module is owned and modifiable only by you. You have complete control to change the daily spending limit in a permissionless way whenever you desire. This setup allows Gnosis Pay to process transactions on your behalf.
 
 ## Delay Module
 
-The Delay Module ensures that all non-card transactions (e.g., sending funds to another address, adding funds) undergo a 3-minute delay. 
+The Delay Module ensures that all non-card transactions (e.g., sending funds to another address, adding funds) undergo a 3-minute delay.
 This delay prevents double-spending conditions and ensures the availability of funds authorized and spent by the card.
 
 <Warning>
 The card will be paused during the 3-minute delay if there are any non-card transactions in the delay queue.
 </Warning>
 
-The Delay Module also ensures that you have sole control over the Safe itself. 
+The Delay Module also ensures that you have sole control over the Safe itself.
 During the activation process, your EOA Wallet is made an indirect owner of the Safe by placing the Delay Module between the Safe and the EOA.
 
 We advise against changing the configuration of the Safe to ensure that Gnosis Pay can continue to serve you effectively.
@@ -90,4 +95,3 @@ However, if you’ve lost access to the seed phrase and cannot regain access to 
 </Warning>
 
 **To mitigate this risk, consider adding multiple owners to your [Safe](https://safe.global/).**
-
