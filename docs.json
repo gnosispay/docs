@@ -76,6 +76,17 @@
     ]
   },
   "footer": {
+    "links": [
+      {
+        "title": "Resources",
+        "items": [
+          {
+            "label": "Gnosis Pay Media Kit",
+            "href": "https://github.com/gnosispay/docs/tree/main/static/Gnosis%20Pay%20Media%20Kit"
+          }
+        ]
+      }
+    ],
     "socials": {
       "x": "https://x.com/gnosispay",
       "website": "https://gnosispay.com/",
