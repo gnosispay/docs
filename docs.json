@@ -45,10 +45,7 @@
         "groups": [
           {
             "group": "Authentication",
-            "pages": [
-              "api-reference/intro",
-              "api-reference/auth-app"
-            ]
+            "pages": ["api-reference/intro", "api-reference/auth-app"]
           },
           {
             "group": "API reference",
@@ -79,6 +76,17 @@
     ]
   },
   "footer": {
+    "links": [
+      {
+        "title": "Resources",
+        "items": [
+          {
+            "label": "Gnosis Pay Media Kit",
+            "href": "https://github.com/gnosispay/docs/tree/main/static/Gnosis%20Pay%20Media%20Kit"
+          }
+        ]
+      }
+    ],
     "socials": {
       "x": "https://x.com/gnosispay",
       "website": "https://gnosispay.com/",
@@ -90,14 +98,7 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": [
-        "javascript",
-        "curl", 
-        "python",
-        "go",
-        "java",
-        "ruby"
-      ]
+      "languages": ["javascript", "curl", "python", "go", "java", "ruby"]
     }
   }
 }
