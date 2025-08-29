@@ -19,17 +19,27 @@
           },
           {
             "group": "Accounts",
-            "icon": "file-user",
+            "icon": "user",
             "pages": [
-              "account/accounts",
-              "account/withdraw-funds-from-safe",
-              "account/onchain-daily-limit",
+              "account",
+              "account/update-authenticated-account",
+              "account/adding-safe-owner",
               "account/iban-integration"
             ]
           },
           {
+            "group": "On-chain",
+            "icon": "cubes",
+            "pages": [
+              "onchain-integration",
+              "onchain-integration/signing-message",
+              "onchain-integration/onchain-daily-limit",
+              "onchain-integration/withdraw-funds-from-safe"
+            ]
+          },
+          {
             "group": "Cards",
-            "icon": "cards",
+            "icon": "credit-card",
             "pages": [
               "cards/concepts",
               "cards/create-physical-cards",
@@ -45,10 +55,7 @@
         "groups": [
           {
             "group": "Authentication",
-            "pages": [
-              "api-reference/intro",
-              "api-reference/auth-app"
-            ]
+            "pages": ["api-reference/intro", "api-reference/auth-app"]
           },
           {
             "group": "API reference",
@@ -90,14 +97,7 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": [
-        "javascript",
-        "curl", 
-        "python",
-        "go",
-        "java",
-        "ruby"
-      ]
+      "languages": ["javascript", "curl", "python", "go", "java", "ruby"]
     }
   }
 }
