@@ -45,10 +45,7 @@
         "groups": [
           {
             "group": "Authentication",
-            "pages": [
-              "api-reference/intro",
-              "api-reference/auth-app"
-            ]
+            "pages": ["api-reference/intro", "api-reference/auth-app"]
           },
           {
             "group": "API reference",
@@ -90,14 +87,7 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": [
-        "javascript",
-        "curl", 
-        "python",
-        "go",
-        "java",
-        "ruby"
-      ]
+      "languages": ["javascript", "curl", "python", "go", "java", "ruby"]
     }
   }
 }
