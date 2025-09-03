@@ -1,0 +1,56 @@
+---
+title: "Webhooks Introduction"
+description: "Learn how to integrate with Gnosis Pay webhooks to receive real-time event notifications."
+---
+
+Webhooks allow you to receive real-time notifications when events occur in the Gnosis Pay system.
+
+Instead of polling our APIs for updates, you can configure webhook endpoints to receive instant notifications about user activities, KYC status changes, card transactions, and more!
+
+## What are Webhooks?
+
+Webhooks are HTTP callbacks that send event data to your application when specific actions occur in the Gnosis Pay system. This enables you to:
+
+- **React immediately** to user actions and system events
+- **Reduce API calls** by eliminating the need for polling
+- **Build responsive applications** that stay synchronized with Gnosis Pay
+- **Automate workflows** based on real-time events
+
+## How Webhooks Work
+
+<Steps titleSize="h3">
+  <Step title="Configure Your Endpoint">
+    Set up a webhook endpoint in your application that can receive HTTP POST
+    requests. This endpoint should be publicly accessible and return a 2xx
+    status code to acknowledge receipt.
+  </Step>
+  <Step title="Register with Gnosis Pay">
+    Contact the Gnosis Pay team to configure your webhook URL.
+  </Step>
+  <Step title="Receive Events">
+    When events occur in the Gnosis Pay system, we'll send HTTP POST requests to
+    your webhook endpoint with event data and cryptographic signatures.
+  </Step>
+  <Step title="Verify and Process">
+    Verify the webhook signature to ensure authenticity, then process the event
+    data in your application.
+  </Step>
+</Steps>
+
+## Webhook Security
+
+All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptography** for security:
+
+- **`X-Webhook-Timestamp`**: Unix timestamp when the webhook was sent
+- **`X-Webhook-Signature`**: Base64-encoded Ed25519 signature
+
+<Warning>
+  **Always verify webhook signatures** before processing events. This ensures
+  the webhook originated from Gnosis Pay and hasn't been tampered with.
+</Warning>
+
+You can retrieve the public key for signature verification from our API:
+
+```bash cURL
+curl -X GET https://webhooks.gnosispay.com/api/v1/public-key
+```

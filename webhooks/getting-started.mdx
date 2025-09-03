@@ -1,0 +1,138 @@
+---
+title: "Getting Started with Webhooks"
+description: "Step-by-step guide to set up and implement webhooks in your application."
+---
+
+## Getting Started
+
+### 1. Contact Gnosis Pay Team
+
+To enable webhooks for your account:
+
+1. **Contact your Gnosis Pay partner manager** or reach out to our technical support team
+2. **Provide your webhook endpoint URL** (must be publicly accessible and use HTTPS)
+3. **Wait for confirmation** that your webhook has been configured
+
+<Info>
+  **Setup Time**: Webhook configuration typically takes 1-2 business days after
+  you provide the required information.
+</Info>
+
+### 2. Set Up Your Endpoint
+
+Create a webhook endpoint in your application:
+
+```typescript
+import express from "express";
+import { verifyWebhookSignature } from "./webhook-verification";
+
+const app = express();
+app.use(express.json());
+
+app.post("/webhook", async (req, res) => {
+  try {
+    // Verify the webhook signature
+    const isValid = await verifyWebhookSignature(req);
+    if (!isValid) {
+      return res.status(401).send("Invalid signature");
+    }
+
+    // Process the event
+    const { eventType, data } = req.body;
+    await processWebhookEvent(eventType, data);
+
+    // Acknowledge receipt
+    res.status(200).send("OK");
+  } catch (error) {
+    console.error("Webhook processing error:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+```
+
+### 3. Implement Signature Verification
+
+```typescript
+import crypto from "crypto";
+
+export async function verifyWebhookSignature(req: Request): Promise<boolean> {
+  const signature = req.headers["x-webhook-signature"] as string;
+  const timestamp = req.headers["x-webhook-timestamp"] as string;
+  const body = JSON.stringify(req.body);
+
+  // Get the public key from Gnosis Pay
+  const publicKeyResponse = await fetch(
+    "https://webhooks.gnosispay.com/api/v1/public-key"
+  );
+  const { publicKey } = await publicKeyResponse.json();
+
+  // Create the payload to verify
+  const payload = `${timestamp}.${body}`;
+
+  // Verify the signature
+  const verifier = crypto.createVerify("ed25519");
+  verifier.update(payload);
+
+  return verifier.verify(publicKey, signature, "base64");
+}
+```
+
+### 4. Process Events
+
+```typescript
+async function processWebhookEvent(eventType: string, data: any) {
+  switch (eventType) {
+    case "user.created":
+      await handleUserCreated(data);
+      break;
+    case "kyc.status.changed":
+      await handleKycStatusChanged(data);
+      break;
+    case "card.transaction.created":
+      await handleCardTransaction(data);
+      break;
+    // Handle other event types...
+    default:
+      console.log(`Unhandled event type: ${eventType}`);
+  }
+}
+```
+
+## Testing Webhooks
+
+### Local Development
+
+For local development, you can use tools like [ngrok](https://ngrok.com/) to expose your local webhook endpoint:
+
+```bash
+# Install ngrok
+npm install -g ngrok
+
+# Expose your local server
+ngrok http 3000
+
+# Use the ngrok URL as your webhook endpoint
+# Example: https://abc123.ngrok.io/webhook
+```
+
+### Webhook Testing Tools
+
+You can also use webhook testing services like:
+
+- [Webhook.site](https://webhook.site/) - Temporary webhook URLs for testing
+- [RequestBin](https://requestbin.com/) - HTTP request inspection
+- [Postman Webhooks](https://learning.postman.com/docs/designing-and-developing-your-api/monitoring-your-api/webhooks/) - Webhook testing in Postman
+
+## Best Practices
+
+### Security
+
+- **Always verify signatures** before processing events
+- **Use HTTPS** for your webhook endpoints
+- **Validate event data** against expected schemas
+
+### Reliability
+
+- **Process events idempotently** to handle duplicates
+- **Implement proper error handling** and logging
+- **Monitor webhook delivery** and response times
