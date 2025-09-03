@@ -131,13 +131,13 @@ export async function verifyWebhookSignature(req: Request): Promise<boolean> {
 async function processWebhookEvent(eventType: string, data: any) {
   switch (eventType) {
     case "user.created":
-      await handleUserCreated(data);
+      console.log("user.created", data);
       break;
     case "kyc.status.changed":
-      await handleKycStatusChanged(data);
+      console.log("kyc.status.changed", data);
       break;
     case "card.transaction.created":
-      await handleCardTransaction(data);
+      console.log("card.transaction.created", data);
       break;
     // Handle other event types
     default:
