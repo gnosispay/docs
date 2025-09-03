@@ -3,10 +3,6 @@ title: "Getting Started with Webhooks"
 description: "Step-by-step guide to set up and implement webhooks in your application."
 ---
 
-## Getting Started
-
-### 1. Contact Gnosis Pay Team
-
 To enable webhooks for your account:
 
 1. **Contact your Gnosis Pay partner manager** or reach out to our technical support team
@@ -18,7 +14,9 @@ To enable webhooks for your account:
   you provide the required information.
 </Info>
 
-### 2. Set Up Your Endpoint
+## Working with webhooks
+
+### 1. Set Up Your Endpoint
 
 Create a webhook endpoint in your application:
 
@@ -50,7 +48,7 @@ app.post("/webhook", async (req, res) => {
 });
 ```
 
-### 3. Implement Signature Verification
+### 2. Implement Signature Verification
 
 ```typescript
 import crypto from "crypto";
@@ -60,13 +58,13 @@ export async function verifyWebhookSignature(req: Request): Promise<boolean> {
   const timestamp = req.headers["x-webhook-timestamp"] as string;
   const body = JSON.stringify(req.body);
 
-  // Get the public key from Gnosis Pay
+  // Retrieve the public key from Gnosis Pay
   const publicKeyResponse = await fetch(
     "https://webhooks.gnosispay.com/api/v1/public-key"
   );
   const { publicKey } = await publicKeyResponse.json();
 
-  // Create the payload to verify
+  // Create the payload for verification
   const payload = `${timestamp}.${body}`;
 
   // Verify the signature
@@ -77,7 +75,7 @@ export async function verifyWebhookSignature(req: Request): Promise<boolean> {
 }
 ```
 
-### 4. Process Events
+### 3. Handle Events
 
 ```typescript
 async function processWebhookEvent(eventType: string, data: any) {
@@ -91,7 +89,7 @@ async function processWebhookEvent(eventType: string, data: any) {
     case "card.transaction.created":
       await handleCardTransaction(data);
       break;
-    // Handle other event types...
+    // Handle other event types
     default:
       console.log(`Unhandled event type: ${eventType}`);
   }
@@ -102,7 +100,7 @@ async function processWebhookEvent(eventType: string, data: any) {
 
 ### Local Development
 
-For local development, you can use tools like [ngrok](https://ngrok.com/) to expose your local webhook endpoint:
+For local development, use tools like [ngrok](https://ngrok.com/) to expose your local webhook endpoint:
 
 ```bash
 # Install ngrok
@@ -117,22 +115,9 @@ ngrok http 3000
 
 ### Webhook Testing Tools
 
-You can also use webhook testing services like:
+You can also use webhook testing services:
 
 - [Webhook.site](https://webhook.site/) - Temporary webhook URLs for testing
 - [RequestBin](https://requestbin.com/) - HTTP request inspection
 - [Postman Webhooks](https://learning.postman.com/docs/designing-and-developing-your-api/monitoring-your-api/webhooks/) - Webhook testing in Postman
 
-## Best Practices
-
-### Security
-
-- **Always verify signatures** before processing events
-- **Use HTTPS** for your webhook endpoints
-- **Validate event data** against expected schemas
-
-### Reliability
-
-- **Process events idempotently** to handle duplicates
-- **Implement proper error handling** and logging
-- **Monitor webhook delivery** and response times
