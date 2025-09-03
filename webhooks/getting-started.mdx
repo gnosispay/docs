@@ -3,26 +3,86 @@ title: "Getting Started with Webhooks"
 description: "Step-by-step guide to set up and implement webhooks in your application."
 ---
 
-To enable webhooks for your account:
+## Guidelines
 
-1. **Contact your Gnosis Pay partner manager** or reach out to our technical support team
-2. **Provide your webhook endpoint URL** (must be publicly accessible and use HTTPS)
-3. **Wait for confirmation** that your webhook has been configured
+To implement webhooks in your application, follow these essential steps:
+
+<Steps titleSize="h3">
+<Step title="Configure Your Endpoint">
+Create a publicly accessible HTTP endpoint in your application that can receive POST requests. This endpoint must be available over HTTPS and return a 2xx status code to acknowledge receipt of webhook events.
+
+<Warning>
+Your webhook endpoint must be publicly accessible. For local development, use tools like [ngrok](https://ngrok.com/) to expose your local server.
+</Warning>
+</Step>
+
+<Step title="Register with Gnosis Pay">
+Contact your Gnosis Pay partner manager or technical support team to register your webhook endpoint URL. Provide the complete HTTPS URL where you want to receive webhook notifications.
 
 <Info>
-  **Setup Time**: Webhook configuration typically takes 1-2 business days after
-  you provide the required information.
+**Setup Time**: Webhook configuration typically takes 1-2 business days after you provide the required information.
+</Info>
+</Step>
+
+<Step title="Receive and Verify Events">
+When events happen in the Gnosis Pay system, we'll send HTTP POST requests to your webhook endpoint with event data and cryptographic signatures.
+
+All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptography**:
+
+- **`X-Webhook-Timestamp`**: Unix timestamp when the webhook was sent
+- **`X-Webhook-Signature`**: Base64-encoded Ed25519 signature
+
+<Warning>
+  **Always verify webhook signatures** before processing events. This ensures
+  the webhook originated from Gnosis Pay and hasn't been tampered with.
+</Warning>
+
+Retrieve the public key for signature verification from our API:
+
+```bash cURL
+curl -X GET https://webhooks.gnosispay.com/api/v1/public-key
+```
+</Step>
+
+<Step title="Parse and Process Event Data">
+Extract the `eventType` and `data` fields from the webhook payload. The `eventType` identifies what happened (e.g., `user.created`, `kyc.status.changed`), while `data` contains the complete entity information.
+
+```json
+{
+  "eventType": "user.created",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    // ... complete user entity
+  }
+}
+```
+
+Handle each event type appropriately in your application. Since we send complete entity data, you typically won't need additional API calls to get the full context.
+
+<Info>
+Process events idempotently to handle potential duplicates, and implement proper error handling and logging for monitoring.
 </Info>
 
-## Working with webhooks
+<Info>
+  **Retry Policy**: If your webhook endpoint returns a non-2xx status code, we'll retry delivery up to 3 times with exponential backoff (1 minute, 5 minutes, 15 minutes).
+</Info>
 
-### 1. Set Up Your Endpoint
+<Warning>
+  **Timeout**: Your webhook endpoint must respond within 30 seconds. Requests that exceed this timeout are considered failed and will trigger our retry mechanism.
+</Warning>
 
-Create a webhook endpoint in your application:
+</Step>
+</Steps> 
 
-```typescript
+## Complete Example
+
+<CodeGroup>
+
+```typescript Node.js
 import express from "express";
 import { verifyWebhookSignature } from "./webhook-verification";
+import crypto from "crypto";
 
 const app = express();
 app.use(express.json());
@@ -46,12 +106,6 @@ app.post("/webhook", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
-```
-
-### 2. Implement Signature Verification
-
-```typescript
-import crypto from "crypto";
 
 export async function verifyWebhookSignature(req: Request): Promise<boolean> {
   const signature = req.headers["x-webhook-signature"] as string;
@@ -73,11 +127,7 @@ export async function verifyWebhookSignature(req: Request): Promise<boolean> {
 
   return verifier.verify(publicKey, signature, "base64");
 }
-```
 
-### 3. Handle Events
-
-```typescript
 async function processWebhookEvent(eventType: string, data: any) {
   switch (eventType) {
     case "user.created":
@@ -96,28 +146,4 @@ async function processWebhookEvent(eventType: string, data: any) {
 }
 ```
 
-## Testing Webhooks
-
-### Local Development
-
-For local development, use tools like [ngrok](https://ngrok.com/) to expose your local webhook endpoint:
-
-```bash
-# Install ngrok
-npm install -g ngrok
-
-# Expose your local server
-ngrok http 3000
-
-# Use the ngrok URL as your webhook endpoint
-# Example: https://abc123.ngrok.io/webhook
-```
-
-### Webhook Testing Tools
-
-You can also use webhook testing services:
-
-- [Webhook.site](https://webhook.site/) - Temporary webhook URLs for testing
-- [RequestBin](https://requestbin.com/) - HTTP request inspection
-- [Postman Webhooks](https://learning.postman.com/docs/designing-and-developing-your-api/monitoring-your-api/webhooks/) - Webhook testing in Postman
-
+</CodeGroup>
