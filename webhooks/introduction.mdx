@@ -3,32 +3,31 @@ title: "Webhooks Introduction"
 description: "Learn how to integrate with Gnosis Pay webhooks to receive real-time event notifications."
 ---
 
-Webhooks allow you to receive real-time notifications when events occur in the Gnosis Pay system.
+Webhooks provide real-time notifications when events happen in the Gnosis Pay system.
 
-Instead of polling our APIs for updates, you can configure webhook endpoints to receive instant notifications about user activities, KYC status changes, card transactions, and more!
+Rather than constantly polling our APIs for updates, you can configure webhook endpoints to receive instant notifications about user activities, KYC status changes, card transactions, and more.
 
-## What are Webhooks?
+## Why We Send Complete Entities
 
-Webhooks are HTTP callbacks that send event data to your application when specific actions occur in the Gnosis Pay system. This enables you to:
+<Info>
+Our [Sign-In with Ethereum (SIWE) authentication system](/auth) requires customers to generate short-lived tokens (JWTs) that expire after 1 hour. This means your application may not always have a valid token to fetch updated data from our APIs.
+</Info>
 
-- **React immediately** to user actions and system events
-- **Reduce API calls** by eliminating the need for polling
-- **Build responsive applications** that stay synchronized with Gnosis Pay
-- **Automate workflows** based on real-time events
+To minimize additional API calls, we send complete entity data whenever possible in our webhook payloads. For example, when a user updates their profile, we'll send the complete user entity rather than just the changed fields. This ensures your application has all the necessary data to process the event, even without an active authentication token.
 
 ## How Webhooks Work
 
 <Steps titleSize="h3">
   <Step title="Configure Your Endpoint">
     Set up a webhook endpoint in your application that can receive HTTP POST
-    requests. This endpoint should be publicly accessible and return a 2xx
+    requests. This endpoint must be publicly accessible and return a 2xx
     status code to acknowledge receipt.
   </Step>
   <Step title="Register with Gnosis Pay">
     Contact the Gnosis Pay team to configure your webhook URL.
   </Step>
   <Step title="Receive Events">
-    When events occur in the Gnosis Pay system, we'll send HTTP POST requests to
+    When events happen in the Gnosis Pay system, we'll send HTTP POST requests to
     your webhook endpoint with event data and cryptographic signatures.
   </Step>
   <Step title="Verify and Process">
@@ -39,7 +38,7 @@ Webhooks are HTTP callbacks that send event data to your application when specif
 
 ## Webhook Security
 
-All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptography** for security:
+All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptography**:
 
 - **`X-Webhook-Timestamp`**: Unix timestamp when the webhook was sent
 - **`X-Webhook-Signature`**: Base64-encoded Ed25519 signature
@@ -49,8 +48,19 @@ All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptog
   the webhook originated from Gnosis Pay and hasn't been tampered with.
 </Warning>
 
-You can retrieve the public key for signature verification from our API:
+Retrieve the public key for signature verification from our API:
 
 ```bash cURL
 curl -X GET https://webhooks.gnosispay.com/api/v1/public-key
 ```
+
+## Event Delivery and Reliability
+
+<Info>
+  **Retry Policy**: If your webhook endpoint returns a non-2xx status code, we'll retry delivery up to 3 times with exponential backoff (1 minute, 5 minutes, 15 minutes).
+</Info>
+
+<Warning>
+  **Timeout**: Your webhook endpoint must respond within 30 seconds. Requests that exceed this timeout are considered failed and will trigger our retry mechanism.
+</Warning>
+
