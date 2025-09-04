@@ -42,6 +42,7 @@ Retrieve the public key for signature verification from our API:
 ```bash cURL
 curl -X GET https://webhooks.gnosispay.com/api/v1/public-key
 ```
+
 </Step>
 
 <Step title="Parse and Process Event Data">
@@ -81,13 +82,15 @@ Process events idempotently to handle potential duplicates, and implement proper
 
 ```typescript Node.js
 import express from "express";
-import { verifyWebhookSignature } from "./webhook-verification";
 import crypto from "crypto";
 
 const app = express();
+
+// Use raw body parsing for webhook signature verification
+app.use("/webhook", express.raw({ type: "application/json" }));
 app.use(express.json());
 
-app.post("/webhook", async (req, res) => {
+app.post("/webhook", async (req: express.Request, res: express.Response) => {
   try {
     // Verify the webhook signature
     const isValid = await verifyWebhookSignature(req);
@@ -95,8 +98,9 @@ app.post("/webhook", async (req, res) => {
       return res.status(401).send("Invalid signature");
     }
 
-    // Process the event
-    const { eventType, data } = req.body;
+    // Parse the body after verification
+    const payload = JSON.parse(req.body.toString());
+    const { eventType, data } = payload;
     await processWebhookEvent(eventType, data);
 
     // Acknowledge receipt
@@ -107,25 +111,48 @@ app.post("/webhook", async (req, res) => {
   }
 });
 
-export async function verifyWebhookSignature(req: Request): Promise<boolean> {
-  const signature = req.headers["x-webhook-signature"] as string;
-  const timestamp = req.headers["x-webhook-timestamp"] as string;
-  const body = JSON.stringify(req.body);
+async function verifyWebhookSignature(req: express.Request): Promise<boolean> {
+  try {
+    const signature = req.headers["x-webhook-signature"] as string;
+    const timestamp = req.headers["x-webhook-timestamp"] as string;
 
-  // Retrieve the public key from Gnosis Pay
-  const publicKeyResponse = await fetch(
-    "https://webhooks.gnosispay.com/api/v1/public-key"
-  );
-  const { publicKey } = await publicKeyResponse.json();
+    // Check if required headers are present
+    if (!timestamp || !signature) {
+      console.error(
+        "Missing required headers: x-webhook-timestamp or x-webhook-signature"
+      );
+      return false;
+    }
 
-  // Create the payload for verification
-  const payload = `${timestamp}.${body}`;
+    // Use the raw body for signature verification
+    const body = req.body.toString();
 
-  // Verify the signature
-  const verifier = crypto.createVerify("ed25519");
-  verifier.update(payload);
+    // Retrieve the public key from Gnosis Pay
+    const publicKeyResponse = await fetch(
+      "https://webhooks.gnosispay.com/api/v1/public-key"
+    );
+    const keyData = await publicKeyResponse.json();
 
-  return verifier.verify(publicKey, signature, "base64");
+    if (!keyData.success || !keyData.publicKey) {
+      throw new Error("Failed to fetch public key");
+    }
+
+    const { publicKey } = keyData;
+
+    // Create the payload for verification (same as Bun implementation)
+    const signingPayload = `${timestamp}.${body}`;
+
+    // Verify the signature using the same method as Bun
+    return crypto.verify(
+      null,
+      Buffer.from(signingPayload, "utf8"),
+      publicKey,
+      Buffer.from(signature, "base64")
+    );
+  } catch (error) {
+    console.error("Signature verification failed:", error);
+    return false;
+  }
 }
 
 async function processWebhookEvent(eventType: string, data: any) {
