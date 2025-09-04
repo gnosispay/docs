@@ -16,7 +16,7 @@ To understand how a GP Safe differs from a standard Safe, let's examine the [acc
 
 <Steps titleSize="h3">
 <Step title="Safe Configuration">
-- **Ownership Transfer**: Swaps the initial owner to a new address
+- **Ownership Transfer**: Swaps the Safe owner to an inaccessible address (`0x0000000000000000000000000000000000000002`)
 - **Module Enablement**: Enables both the Roles and Delay modules on the Safe
 </Step>
 
@@ -24,7 +24,7 @@ To understand how a GP Safe differs from a standard Safe, let's examine the [acc
 - **Deployment**: Creates a new Delay module instance for the account
 - **Cooldown Configuration**: Sets the transaction delay period (typically 3 minutes)
 - **Expiration Setting**: Configures how long queued transactions remain valid
-- **Owner Access**: Grants the Safe owner access to the delay module
+- **Owner Access**: Grants the initial Safe owner (the owner before the ownership transfer) access to the delay module
 </Step>
 
 <Step title="Roles Module Setup">
