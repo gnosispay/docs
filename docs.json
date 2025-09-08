@@ -21,9 +21,9 @@
             "group": "Accounts",
             "icon": "user",
             "pages": [
-              "account/accounts",
-              "account/withdraw-funds-from-safe",
-              "account/onchain-daily-limit",
+              "account",
+              "account/update-authenticated-account",
+              "account/adding-safe-owner",      
               "account/iban-integration"
             ]
           },
@@ -44,7 +44,9 @@
             "pages": [
               "gp-onchain/overview",
               "gp-onchain/about-gp-safe",
-              "gp-onchain/sign-message"
+              "gp-onchain/sign-message",
+              "gp-onchain/onchain-daily-limit.mdx",
+              "gp-onchain/withdraw-funds-from-safe.mdx"
             ]
           }
         ]

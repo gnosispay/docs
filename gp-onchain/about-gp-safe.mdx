@@ -1,18 +1,18 @@
 --- 
-title: About the On-chain GP Safe 
+title: About the on-chain Gnosis Pay Safe 
 description: Gnosis Pay's on-chain infrastructure is built on top of the [Safe protocol](https://safe.global), providing a secure and programmable foundation for digital payments. Each user gets a unique Safe account that acts as their on-chain wallet, with additional modules that enable spending limits, time delays, and delegated spending capabilities.
 --- 
 
-The GP Safe consists of a core Safe account with three main modules attached:
+The Gnosis Pay Safe consists of a core Safe account with three main modules attached:
 
 1. **Core Safe Account**: The base Safe that holds funds and manages ownership
 2. **Delay Module**: Controls transaction timing and provides security delays
 3. **Roles Module**: Manages spending permissions and allowance limits
 4. **Bouncer Module**: Handles account access validation and security
 
-### GP Safe Setup Process
+### Gnosis Pay Safe Setup Process
 
-To understand how a GP Safe differs from a standard Safe, let's examine the [account setup flow](https://github.com/gnosispay/account-kit/blob/main/src/entrypoints/accounts-actions/accountSetup.ts#L88) that transforms a basic 1/1 Safe into a fully configured GP Safe Account:
+To understand how a Gnosis Pay Safe differs from a standard Safe, let's examine the [account setup flow](https://github.com/gnosispay/account-kit/blob/main/src/entrypoints/accounts-actions/accountSetup.ts#L88) that transforms a basic 1/1 Safe into a fully configured Gnosis Pay Safe Account:
 
 <Steps titleSize="h3">
 <Step title="Safe Configuration">

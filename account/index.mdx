@@ -3,83 +3,99 @@ title: "Accounts on Gnosis Pay"
 description: "How the Gnosis Pay Safe works"
 ---
 
-When you sign up for Gnosis Pay, a new Gnosis Pay Safe—a smart contract wallet—is created for you. 
-This Safe is exclusively controlled by you through your Externally Owned Account (EOA) Wallet. 
-Consequently, the funds in your Gnosis Pay Safe are not held by any third party; **you have sole ownership and control over them**.
+When a user signs up for Gnosis Pay, a new **Gnosis Pay Safe** a smart contract wallet is created on-chain.  
+This Safe holds the user’s funds and is controlled only by its **owners**.  
+
+A Gnosis Pay Safe owner can be either:  
+- an **EOA (Externally Owned Account)**, or  
+- another **smart wallet** (e.g. a Safe) whose owners may use passkeys, EOAs, or other signers.  
+
+Funds in a Gnosis Pay Safe are never held by Gnosis Pay or any third party; ownership and control remain entirely with the Safe owners.
 
 <Frame>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_-FoBiwBJTA?si=-6VlRlqqdYuJhW4j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </Frame>
 
-## Externally Owned Account Wallet 
+---
 
-Your EOA Wallet is your personal wallet, granting you full control over your funds, ensuring they are never managed by a third party. 
-The EOA has sole authority over your assets.
+## Authenticating sessions with wallets
 
-We support EVM compatible EOA wallets at the moment. 
-You can transfer funds from any token on any EVM chain using your EOA Wallet.
+To access the Gnosis Pay dashboard or APIs, a wallet must authenticate using [Sign-In With Ethereum (SIWE)](https://docs.login.xyz/).  
+After SIWE, a JWT token is issued and used to authorize API calls (e.g. ordering cards, fetching user info, or linking additional authenticated wallets).  
 
-## Safe Smart Account: your Smart Contract wallet
+Authenticated wallets are used **only for login and API sessions**. They do not perform on-chain actions and may or may not overlap with the Safe owners.
 
-When you open your Account with Gnosis Pay, we create a **Safe Smart Account** for you, 
-which functions as a "savings" account on Gnosis Chain L1. 
+<Tip>
+The first wallet connected during setup is automatically registered as both an **authenticated wallet** and the **initial Safe owner** (via the Delay Module).
+</Tip>
 
-Currently, we deploy a new Safe for you. We have plans on supporting existing 
-Safe multisig wallet as the Gnosis Pay Safe.
+Follow the guide on [adding an authenticated wallet](account/update-authenticated-account) for step-by-step instructions.
 
- 
-### What is a smart contract wallet? 
+---
 
-A smart contract wallet utilizes smart contracts on a blockchain to manage and automate transactions, 
-offering enhanced security and functionality beyond simple fund storage and transfer. 
-These wallets are typically owned by an EOA Wallet.
+## Safe Smart Account
 
-[Safe](https://safe.global/) is the pioneer of smart contract wallets custodying over $70+ billion in assets.
+Each Gnosis Pay user is assigned a **Safe Smart Account**, a self-custodied smart contract wallet deployed on Gnosis Chain (L1).  
+Currently, a new Safe is deployed for every user. Support for connecting an existing Safe multisig is planned.
 
-### Understanding the Safe setup 
+### What is a smart contract wallet?
 
-To explore the Safe setup further, you can access the Zodiac application in the Safe Webapp for your specific Safe by following these steps:
+Smart contract wallets are contracts that manage assets on-chain with programmable rules.  
+They enable advanced security and automation beyond EOAs.  
 
-1. Go to Gnosis Pay Dashboard
-2. Click on "View all transactions here" and this will take you to the Safe webapp
-3. Click on applications in the sidebar
-4. Search for 'Zodiac' application
+[Safe](https://safe.global/) is the leading smart contract wallet, securing over $70B in assets.
 
-The Roles Module and Delay Module are open-source smart contracts governed by the LGPL 3.0 license.
+### Exploring the Safe setup
 
-## What are modules? 
+Users can view their Safe configuration in the [Safe web app](https://app.safe.global/) via the Zodiac app:
 
-Modules are small pieces of logic that help ensure the product functions securely. 
-Controlled by the user, these modules allow Gnosis Pay to operate as configured by you, 
-ensuring self-custody of your funds in your preferred manner.
+1. Open the Gnosis Pay Dashboard.  
+2. Click **“View all transactions here”** to open the Safe web app.  
+3. In the sidebar, select **Applications**.  
+4. Search for **Zodiac**.  
 
-These modules are open source software developed as part of the zodiac standard of DAO tooling built by [Gnosis Guild](https://www.gnosisguild.org/).
-Without this configuration, we would be unable to serve you.
- 
+The **Roles Module** and **Delay Module** are open-source contracts licensed under LGPL 3.0.
+
+---
+
+## Modules
+
+Modules extend Safe functionality with custom logic.  
+In Gnosis Pay, modules enforce spending rules and transaction flows while keeping user funds in self-custody.  
+
+These modules follow the [Zodiac standard](https://gnosisguild.org/zodiac/) developed by Gnosis Guild.
+
+---
+
 ## Roles Module
 
-The roles module has 4 configurations: 
+The Roles Module enforces which actions Gnosis Pay can perform on behalf of the user. It defines:
 
-1. **Token Used** - Specifies which token Gnosis Pay can spend. 
-2. **Daily Limit** - Defines the daily limit of funds that Gnosis Pay can spend on your behalf.
-3. **Recipient address** - Indicates where the funds can be transferred. In our case, it’s another Safe owned by the card issuer, used to settle funds owed to merchants through Visa. 
-4. **Role delegated to whom** - Specifies to whom this role is delegated—in this case, Gnosis Pay. 
+1. **Token used** → which token Gnosis Pay can spend.  
+2. **Daily limit** → maximum amount spendable per day.  
+3. **Recipient address** → destination for allowed transfers (e.g. the issuer’s settlement Safe).  
+4. **Role delegation** → assigns these permissions to Gnosis Pay.  
 
-It’s important to note that this module is owned and modifiable only by you. You have complete control to change the daily spending limit in a permissionless way whenever you desire. This setup allows Gnosis Pay to process transactions on your behalf.
+Only Safe owners can update these rules.  
+For example, a user may adjust the daily spending limit at any time.
+
+---
 
 ## Delay Module
 
-The Delay Module ensures that all non-card transactions (e.g., sending funds to another address, adding funds) undergo a 3-minute delay. 
-This delay prevents double-spending conditions and ensures the availability of funds authorized and spent by the card.
+The Delay Module enforces a **3-minute delay** for all non-card transactions (e.g. transfers, deposits).  
+This ensures funds remain available for card payments and prevents race conditions.
 
 <Warning>
-The card will be paused during the 3-minute delay if there are any non-card transactions in the delay queue.
+During the 3-minute delay, the card is paused if any non-card transactions are pending.
 </Warning>
 
-The Delay Module also ensures that you have sole control over the Safe itself. 
-During the activation process, your EOA Wallet is made an indirect owner of the Safe by placing the Delay Module between the Safe and the EOA.
+The Delay Module also ensures the user’s EOA retains ultimate control.  
+During activation, the EOA becomes an indirect Safe owner via the Delay Module.  
 
-We advise against changing the configuration of the Safe to ensure that Gnosis Pay can continue to serve you effectively.
+⚠️ Reconfiguring or removing the Delay Module may prevent Gnosis Pay from functioning properly.
+
+---
 
 ## What happens if I lose access to my EOA Wallet?
 
@@ -90,4 +106,3 @@ However, if you’ve lost access to the seed phrase and cannot regain access to 
 </Warning>
 
 **To mitigate this risk, consider using a [Safe](https://safe.global/) with multiple owners instead of an EOA.**
-
