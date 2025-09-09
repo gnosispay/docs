@@ -23,7 +23,7 @@
             "pages": [
               "account",
               "account/update-authenticated-account",
-              "account/adding-safe-owner",      
+              "account/adding-safe-owner",
               "account/iban-integration"
             ]
           },
@@ -49,13 +49,15 @@
               "gp-onchain/withdraw-funds-from-safe"
             ]
           },
-          { 
+          {
             "group": "Webhooks",
             "icon": "webhook",
             "pages": [
               "webhooks/introduction",
               "webhooks/getting-started",
               "webhooks/events"
+            ]
+          }
         ]
       },
       {
@@ -109,3 +111,4 @@
     }
   }
 }
+
