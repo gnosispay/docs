@@ -19,17 +19,17 @@
           },
           {
             "group": "Accounts",
-            "icon": "file-user",
+            "icon": "user",
             "pages": [
-              "account/accounts",
-              "account/withdraw-funds-from-safe",
-              "account/onchain-daily-limit",
+              "account",
+              "account/update-authenticated-account",
+              "account/adding-safe-owner",      
               "account/iban-integration"
             ]
           },
           {
             "group": "Cards",
-            "icon": "cards",
+            "icon": "credit-card",
             "pages": [
               "cards/concepts",
               "cards/create-physical-cards",
@@ -39,13 +39,23 @@
             ]
           },
           {
+            "group": "On-chain",
+            "icon": "cubes",
+            "pages": [
+              "gp-onchain/overview",
+              "gp-onchain/about-gp-safe",
+              "gp-onchain/sign-message",
+              "gp-onchain/onchain-daily-limit",
+              "gp-onchain/withdraw-funds-from-safe"
+            ]
+          },
+          { 
             "group": "Webhooks",
             "icon": "webhook",
             "pages": [
               "webhooks/introduction",
               "webhooks/getting-started",
               "webhooks/events"
-            ]
           }
         ]
       },
