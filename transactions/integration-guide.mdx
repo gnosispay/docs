@@ -1,0 +1,244 @@
+---
+title: "Transaction Integration Guide"
+description: "Complete examples and best practices for integrating with Gnosis Pay transaction APIs"
+---
+
+This guide provides comprehensive examples and patterns for integrating with Gnosis Pay's transaction APIs, covering all three transaction kinds and their unique behaviors.
+
+## Basic Integration Setup
+
+### Authentication and API Setup
+
+<CodeGroup>
+
+```javascript JavaScript
+const GNOSIS_PAY_API = 'https://api.gnosispay.com';
+
+class GnosisPayClient {
+  constructor(authToken) {
+    this.authToken = authToken;
+  }
+
+  async getTransactions(params = {}) {
+    const queryParams = new URLSearchParams(params);
+    const response = await fetch(
+      `${GNOSIS_PAY_API}/api/v1/cards/transactions?${queryParams}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${this.authToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    return response.json();
+  }
+}
+```
+
+```python Python
+import requests
+from typing import Dict, Any, Optional
+
+class GnosisPayClient:
+    def __init__(self, auth_token: str):
+        self.auth_token = auth_token
+        self.base_url = "https://api.gnosispay.com"
+        
+    def get_transactions(self, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        headers = {
+            "Authorization": f"Bearer {self.auth_token}",
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.get(
+            f"{self.base_url}/api/v1/cards/transactions",
+            headers=headers,
+            params=params or {}
+        )
+        
+        response.raise_for_status()
+        return response.json()
+```
+
+```curl cURL
+# Get all transactions
+curl -X GET "https://api.gnosispay.com/api/v1/cards/transactions" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+
+# Get transactions with filters
+curl -X GET "https://api.gnosispay.com/api/v1/cards/transactions?limit=50&after=2024-01-01T00:00:00Z" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+</CodeGroup>
+
+## Handling Different Transaction Kinds
+
+### Transaction Processing Logic
+
+<CodeGroup>
+
+```javascript JavaScript
+class TransactionProcessor {
+  processTransactions(transactions) {
+    const processed = {
+      payments: { pending: [], completed: [] },
+      refunds: [],
+      reversals: []
+    };
+
+    transactions.forEach(transaction => {
+      switch (transaction.kind) {
+        case 'Payment':
+          this.processPayment(transaction, processed);
+          break;
+        case 'Refund':
+          this.processRefund(transaction, processed);
+          break;
+        case 'Reversal':
+          this.processReversal(transaction, processed);
+          break;
+        default:
+          console.warn('Unknown transaction kind:', transaction.kind);
+      }
+    });
+
+    return processed;
+  }
+
+  processPayment(payment, processed) {
+    if (payment.isPending) {
+      processed.payments.pending.push({
+        ...payment,
+        displayStatus: 'Processing',
+        balanceImpact: -parseInt(payment.billingAmount), // Already deducted
+        canCancel: this.canCancelPayment(payment)
+      });
+    } else {
+      processed.payments.completed.push({
+        ...payment,
+        displayStatus: this.getPaymentDisplayStatus(payment),
+        balanceImpact: 0, // Already accounted for when pending
+        settlementDate: payment.clearedAt
+      });
+    }
+  }
+
+  processRefund(refund, processed) {
+    processed.refunds.push({
+      ...refund,
+      displayStatus: 'Refund Processed',
+      balanceImpact: parseInt(refund.refundAmount), // Money returned
+      refundDate: refund.clearedAt,
+      originalTransaction: this.findOriginalTransaction(refund)
+    });
+  }
+
+  processReversal(reversal, processed) {
+    processed.reversals.push({
+      ...reversal,
+      displayStatus: 'Transaction Reversed',
+      balanceImpact: parseInt(reversal.reversalAmount), // Money returned
+      reversalDate: reversal.clearedAt,
+      reversalReason: this.determineReversalReason(reversal)
+    });
+  }
+
+  getPaymentDisplayStatus(payment) {
+    switch (payment.status) {
+      case 'Approved': return 'Completed';
+      case 'IncorrectPin': return 'Failed - Incorrect PIN';
+      case 'InsufficientFunds': return 'Failed - Insufficient Funds';
+      case 'Reversal': return 'Reversed';
+      case 'PartialReversal': return 'Partially Reversed';
+      default: return 'Completed';
+    }
+  }
+}
+```
+
+```python Python
+from dataclasses import dataclass
+from typing import List, Dict, Any
+from datetime import datetime
+
+@dataclass
+class ProcessedTransaction:
+    original: Dict[str, Any]
+    display_status: str
+    balance_impact: int
+    additional_info: Dict[str, Any]
+
+class TransactionProcessor:
+    def process_transactions(self, transactions: List[Dict[str, Any]]) -> Dict[str, List]:
+        processed = {
+            "payments": {"pending": [], "completed": []},
+            "refunds": [],
+            "reversals": []
+        }
+        
+        for transaction in transactions:
+            kind = transaction.get("kind")
+            
+            if kind == "Payment":
+                self._process_payment(transaction, processed)
+            elif kind == "Refund":
+                self._process_refund(transaction, processed)
+            elif kind == "Reversal":
+                self._process_reversal(transaction, processed)
+            else:
+                print(f"Warning: Unknown transaction kind: {kind}")
+                
+        return processed
+    
+    def _process_payment(self, payment: Dict[str, Any], processed: Dict):
+        if payment.get("isPending"):
+            processed["payments"]["pending"].append(
+                ProcessedTransaction(
+                    original=payment,
+                    display_status="Processing",
+                    balance_impact=-int(payment["billingAmount"]),
+                    additional_info={
+                        "can_cancel": self._can_cancel_payment(payment),
+                        "estimated_settlement": self._estimate_settlement_time(payment)
+                    }
+                )
+            )
+        else:
+            processed["payments"]["completed"].append(
+                ProcessedTransaction(
+                    original=payment,
+                    display_status=self._get_payment_display_status(payment),
+                    balance_impact=0,  # Already accounted for when pending
+                    additional_info={
+                        "settlement_date": payment.get("clearedAt")
+                    }
+                )
+            )
+    
+    def _get_payment_display_status(self, payment: Dict[str, Any]) -> str:
+        status_map = {
+            "Approved": "Completed",
+            "IncorrectPin": "Failed - Incorrect PIN",
+            "InsufficientFunds": "Failed - Insufficient Funds",
+            "Reversal": "Reversed",
+            "PartialReversal": "Partially Reversed"
+        }
+        return status_map.get(payment.get("status"), "Completed")
+```
+
+</CodeGroup>
+
+
+## Next Steps
+
+- [Transaction Lifecycle](/transactions/lifecycle) - Understand the detailed flow  
+- [API Reference](/api-reference/transactions/get-paginated-transactions) - Complete API documentation
+- [Transaction Overview](/transactions) - Back to main guide

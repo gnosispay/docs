@@ -1,0 +1,160 @@
+---
+title: "Card Transactions Overview"
+description: "Comprehensive guide to understanding card transaction types, lifecycle, and integration patterns"
+---
+
+Card transactions in Gnosis Pay follow the standard payment card industry lifecycle but with unique behaviors for different transaction kinds. This guide will help you understand how transactions work, when they appear in the API, and how to handle them in your integration.
+
+## Transaction Kinds
+
+The Gnosis Pay API returns three distinct types of transaction events, each with different behaviors and timing:
+
+### Payment
+Regular card transactions including purchases, ATM withdrawals, and other card usage.
+
+**Key Characteristics:**
+- **Immediate visibility**: Appears in the API immediately after authorization
+- **Status tracking**: Has a `status` field indicating approval, decline reasons, or reversals
+- **Pending behavior**: Shows `isPending: true` when authorized but not yet settled
+- **Settlement timing**: Usually settles within 24 hours, but can take up to a month for certain merchants (hotels, car rentals)
+
+**Common scenarios:**
+- Point-of-sale purchases
+- ATM cash withdrawals
+- Online purchases
+- Hotel pre-authorizations
+
+### Refund
+Money being returned to the cardholder's account, typically from product returns or service cancellations.
+
+**Key Characteristics:**
+- **Delayed visibility**: Only appears after both authorization AND clearing are processed
+- **No status field**: Unlike payments, refunds don't have approval/decline status
+- **Amount fields**: Includes `refundAmount` and `refundCurrency` fields
+- **Pending behavior**: Can still show `isPending: true` if additional clearing steps are required
+
+**Common scenarios:**
+- Product returns to merchants
+- Service cancellations
+- Merchant-initiated refunds
+- Dispute resolutions
+
+### Reversal
+Cancellation or reversal of previous transactions, often due to technical issues or merchant corrections.
+
+**Key Characteristics:**
+- **Variable timing**: Can appear immediately (authorization-level) or after clearing
+- **Amount fields**: Includes `reversalAmount` and `reversalCurrency` fields
+- **Quick processing**: Usually processed faster than refunds
+- **No status field**: Similar to refunds, no approval/decline status
+
+**Common scenarios:**
+- Duplicate transaction corrections
+- Technical payment processing errors
+- Merchant-initiated transaction cancellations
+- Partial transaction reversals
+
+## Transaction Lifecycle
+
+Understanding the transaction lifecycle is crucial for proper integration:
+
+### Authorization Phase
+1. **Card Usage**: Customer uses card at merchant
+2. **Authorization Request**: Merchant requests payment authorization
+3. **Real-time Processing**: Gnosis Pay validates funds, limits, and fraud checks
+4. **Response**: Authorization approved or declined
+5. **API Visibility**: 
+   - **Payments**: Immediately visible with `isPending: true`
+   - **Refunds**: Not yet visible (requires clearing)
+   - **Reversals**: May be visible if authorization-level reversal
+
+### Clearing Phase
+1. **Settlement Processing**: Usually within 24 hours (can be longer for certain MCCs)
+2. **Final Amount**: May differ from authorization amount
+3. **API Updates**:
+   - **Payments**: `isPending` becomes `false`, `clearedAt` is set
+   - **Refunds**: Now become visible in the API
+   - **Reversals**: Update with final amounts and timing
+
+## Integration Best Practices
+
+### Handling Different Transaction Kinds
+
+```javascript
+// Example: Processing different transaction types
+transactions.forEach(transaction => {
+  switch (transaction.kind) {
+    case 'Payment':
+      if (transaction.isPending) {
+        // Handle pending payment
+        console.log(`Pending payment: ${transaction.billingAmount}`);
+        // Show as "Processing" in UI
+      } else {
+        // Handle completed payment
+        console.log(`Completed payment: ${transaction.status}`);
+      }
+      break;
+      
+    case 'Refund':
+      // Refunds are typically not pending when they appear
+      console.log(`Refund received: ${transaction.refundAmount}`);
+      // Update account balance, notify user
+      break;
+      
+    case 'Reversal':
+      // Handle transaction reversal
+      console.log(`Transaction reversed: ${transaction.reversalAmount}`);
+      // Reverse previous transaction effects
+      break;
+  }
+});
+```
+
+### Monitoring Transaction Status
+
+```javascript
+// Example: Monitoring pending transactions
+const monitorPendingTransactions = async () => {
+  const response = await fetch('/api/v1/cards/transactions');
+  const data = await response.json();
+  
+  const pendingTransactions = data.results.filter(t => t.isPending);
+  
+  if (pendingTransactions.length > 0) {
+    console.log(`${pendingTransactions.length} transactions pending settlement`);
+    // Schedule next check or set up webhooks for updates
+  }
+};
+```
+
+### Error Handling
+
+Different transaction kinds may have different error scenarios:
+
+- **Payments**: Can be declined for various reasons (insufficient funds, incorrect PIN, etc.)
+- **Refunds**: Usually appear only when successfully processed
+- **Reversals**: Indicate correction of previous errors
+
+## Common Integration Patterns
+
+### Real-time Balance Updates
+- **Payments**: Money is immediately deducted from user account and moved to hold account on chain when `isPending: true`
+- **Refunds**: Add to balance when transaction appears (usually already cleared)
+- **Reversals**: Adjust balance based on reversal type and amount
+
+### User Notifications
+- **Payments**: Notify immediately for both pending and completed
+- **Refunds**: Notify when refund appears (money is being returned)
+- **Reversals**: Notify about transaction corrections
+
+### Transaction History Display
+- Show transaction kind clearly in the UI
+- Use `isPending` status for appropriate visual indicators
+- Handle currency conversions (billing vs transaction currency)
+- Display appropriate amounts based on transaction kind
+
+## Next Steps
+
+- [Transaction Lifecycle Details](/transactions/lifecycle) - Deep dive into authorization and clearing
+- [API Integration Guide](/transactions/integration-guide) - Complete integration examples
+- [API Reference](/api-reference/transactions/get-paginated-transactions) - Full API documentation

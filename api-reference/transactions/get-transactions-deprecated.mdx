@@ -1,0 +1,124 @@
+---
+title: "Get transactions for activated cards"
+api: "GET /api/v1/transactions"
+description: "⚠️ DEPRECATED: Use /api/v1/cards/transactions instead. Retrieves transactions for all activated cards of the authenticated user."
+---
+
+<Warning>
+  **This endpoint is deprecated.** Please use [GET /api/v1/cards/transactions](/api-reference/transactions/get-paginated-transactions) instead for paginated results and enhanced functionality.
+</Warning>
+
+Retrieves transactions for all activated cards of the authenticated user. This endpoint returns all transactions without pagination.
+
+## Request
+
+<ParamField query="cardTokens" type="string">
+  Comma-separated list of card tokens
+</ParamField>
+
+<ParamField query="before" type="string">
+  Filter transactions before this date (ISO 8601 format, e.g., "2023-04-01T00:00:00Z")
+</ParamField>
+
+<ParamField query="after" type="string">
+  Filter transactions after this date (ISO 8601 format, e.g., "2023-03-01T00:00:00Z")
+</ParamField>
+
+<ParamField query="billingCurrency" type="string">
+  Filter by billing currency code
+</ParamField>
+
+<ParamField query="transactionCurrency" type="string">
+  Filter by transaction currency code
+</ParamField>
+
+<ParamField query="mcc" type="string">
+  Filter by Merchant Category Code (MCC)
+</ParamField>
+
+<ParamField query="transactionType" type="string">
+  Filter by transaction type code (e.g., "00" for Purchase, "01" for Withdrawal)
+</ParamField>
+
+## Response
+
+Returns an array of transaction events. Each transaction has a `kind` field that determines its type and available fields.
+
+<ResponseField name="results" type="array">
+  Array of transaction events. Same structure as the paginated endpoint but without pagination metadata.
+</ResponseField>
+
+## Migration Guide
+
+To migrate to the new paginated endpoint:
+
+1. **Change the URL**: `/api/v1/transactions` → `/api/v1/cards/transactions`
+2. **Handle pagination**: Add `limit` and `offset` parameters as needed
+3. **Update response handling**: Access transactions via `response.results` instead of directly from the array
+4. **Use pagination metadata**: Utilize `count`, `next`, and `previous` fields for better UX
+
+### Before (Deprecated)
+```javascript
+const response = await fetch('/api/v1/transactions');
+const transactions = await response.json(); // Direct array
+```
+
+### After (Recommended)
+```javascript  
+const response = await fetch('/api/v1/cards/transactions?limit=100');
+const data = await response.json();
+const transactions = data.results; // Array within results
+const totalCount = data.count;
+const nextPage = data.next;
+```
+
+## Transaction Kinds
+
+This endpoint returns the same three transaction kinds as the new paginated endpoint:
+
+- **Payment**: Regular card transactions with `status` field
+- **Refund**: Money returned with `refundAmount` and `refundCurrency` fields  
+- **Reversal**: Transaction cancellations with `reversalAmount` and `reversalCurrency` fields
+
+For detailed examples of each transaction kind, see the [paginated transactions endpoint](/api-reference/transactions/get-paginated-transactions).
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gnosispay.com/api/v1/transactions?after=2024-01-01T00:00:00Z" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript  
+const response = await fetch('https://api.gnosispay.com/api/v1/transactions', {
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  }
+});
+const transactions = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json Response
+[
+  {
+    "createdAt": "2024-01-15T14:30:00Z",
+    "clearedAt": null,
+    "isPending": true,
+    "kind": "Payment",
+    "status": "Approved",
+    "billingAmount": "2550",
+    "billingCurrency": {
+      "symbol": "€",
+      "code": "EUR",
+      "decimals": 2,
+      "name": "Euro"
+    },
+    "transactionType": "00",
+    "cardToken": "4532********1234"
+  }
+]
+```
+</ResponseExample>
