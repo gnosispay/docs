@@ -1,0 +1,195 @@
+---
+title: "Transaction Lifecycle"
+description: "Deep dive into the authorization and clearing process for card transactions"
+---
+
+Understanding the transaction lifecycle is essential for building robust integrations with Gnosis Pay. This guide explains the detailed flow from card usage to final settlement.
+
+## Overview
+
+Card transactions follow a two-phase process:
+
+1. **Authorization Phase**: Real-time approval/decline of the transaction
+2. **Clearing Phase**: Final settlement and fund transfer (usually 24-48 hours later)
+
+Different transaction kinds have different behaviors in each phase.
+
+## Authorization Phase
+
+### Payment Authorization
+
+When a customer uses their Gnosis Pay card:
+
+<Steps>
+  <Step title="Card Presentation">
+    Customer presents card at merchant (physical swipe/insert or online entry)
+  </Step>
+  <Step title="Authorization Request">
+    Merchant's payment processor sends authorization request to Gnosis Pay
+  </Step>
+  <Step title="Real-time Validation">
+    Gnosis Pay performs multiple checks:
+    - Available balance verification
+    - Card status (active, not frozen)
+    - Spending limits compliance
+    - Anti-fraud analysis
+    - AML screening
+  </Step>
+  <Step title="Authorization Response">
+    Gnosis Pay responds with approval or decline
+  </Step>
+  <Step title="Fund Deduction">
+    If approved, money is immediately deducted from user account and moved to hold account on chain
+  </Step>
+  <Step title="API Visibility">
+    Transaction appears immediately in `/api/v1/cards/transactions` with:
+    - `kind: "Payment"`
+    - `isPending: true`
+    - `clearedAt: null`
+    - `status: "Approved"` (or decline reason)
+  </Step>
+</Steps>
+
+### Refund Authorization
+
+Refunds have a different authorization flow:
+
+<Steps>
+  <Step title="Merchant Initiation">
+    Merchant initiates refund (product return, service cancellation)
+  </Step>
+  <Step title="Refund Authorization">
+    Merchant sends refund authorization request
+  </Step>
+  <Step title="Authorization Processing">
+    Gnosis Pay validates the refund request
+  </Step>
+  <Step title="No Immediate API Visibility">
+    **Important**: Refund does NOT appear in API yet - requires clearing
+  </Step>
+</Steps>
+
+### Reversal Authorization
+
+Reversals can happen at the authorization level:
+
+<Steps>
+  <Step title="Error Detection">
+    System or merchant detects transaction error
+  </Step>
+  <Step title="Reversal Request">
+    Immediate reversal request sent
+  </Step>
+  <Step title="Authorization Reversal">
+    Original authorization is reversed
+  </Step>
+  <Step title="API Visibility">
+    May appear immediately as reversal or update original payment status
+  </Step>
+</Steps>
+
+## Clearing Phase
+
+The clearing phase typically occurs 24-48 hours after authorization, but timing varies by merchant type.
+
+### Standard Clearing Timeline
+
+- **Most merchants**: 24-48 hours
+- **Hotels**: Can be up to 30 days (for incidentals)
+- **Car rentals**: Up to 30 days
+- **Airlines**: Usually 24-48 hours
+- **Gas stations**: Often same day
+
+### Payment Clearing
+
+<Steps>
+  <Step title="Clearing Initiation">
+    Merchant submits clearing record (usually batch processed overnight)
+  </Step>
+  <Step title="Amount Reconciliation">
+    Clearing amount may differ from authorization:
+    - **Exact match**: Most common scenario
+    - **Partial capture**: Lower amount (unused authorization released)
+    - **Over capture**: Higher amount (allowed for specific MCCs like hotels)
+  </Step>
+  <Step title="Final Settlement">
+    Money is transferred from hold account on chain to merchant
+  </Step>
+  <Step title="API Update">
+    Transaction updates in API:
+    - `isPending: false`
+    - `clearedAt: "2024-01-15T02:30:00Z"`
+    - Amounts may be updated if different from authorization
+  </Step>
+</Steps>
+
+### Refund Clearing
+
+Refunds require both authorization AND clearing to appear:
+
+<Steps>
+  <Step title="Credit Voucher Processing">
+    Merchant submits credit voucher (BaseII transaction code "06")
+  </Step>
+  <Step title="Refund Validation">
+    System validates refund against original transaction
+  </Step>
+  <Step title="Fund Credit">
+    Funds are credited back to cardholder account
+  </Step>
+  <Step title="API Appearance">
+    Refund now appears in API:
+    - `kind: "Refund"`
+    - `isPending: false` (usually)
+    - `clearedAt: "2024-01-15T08:20:00Z"`
+    - `refundAmount` and `refundCurrency` fields
+  </Step>
+</Steps>
+
+
+## Edge Cases and Special Scenarios
+
+### Partial Authorizations and Captures
+
+Some merchants may:
+- **Partial capture**: Capture less than authorized amount
+- **Multi capture**: Multiple captures on single authorization
+- **Incremental authorization**: Additional authorizations (hotels for incidentals)
+
+### Force Captures
+
+Rare but possible scenarios:
+- **Offline transactions**: POS terminals without internet (airlines)
+- **Force capture**: Capture on previously declined authorization
+
+### Authorization Expiry
+
+If not captured within time limits:
+- Authorization expires (typically 7-30 days)
+- Money is returned from hold account back to user account on chain
+- Transaction may disappear from API or show as expired
+
+## Webhook Integration
+
+For real-time updates, consider implementing webhooks to be notified when:
+- Pending payments are settled
+- Refunds are processed
+- Reversals occur
+
+## Troubleshooting Common Issues
+
+### Missing Transactions
+- **Payments not appearing**: Check authorization was approved
+- **Refunds not appearing**: Ensure both authorization and clearing completed
+- **Delayed settlements**: Some MCCs have extended clearing times
+
+
+### Status Confusion
+- **isPending behavior**: Different meanings for different transaction kinds
+- **Timing expectations**: Clearing can take hours to days depending on merchant
+
+## Next Steps
+
+- [Integration Guide](/transactions/integration-guide) - Complete implementation examples
+- [API Reference](/api-reference/transactions/get-paginated-transactions) - Full API documentation
+- [Transaction Overview](/transactions) - Back to main transactions guide
