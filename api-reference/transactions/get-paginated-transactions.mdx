@@ -1,0 +1,382 @@
+---
+title: "Get paginated transactions for activated cards"
+api: "GET /api/v1/cards/transactions"
+description: "Retrieves paginated transactions for all activated cards of the authenticated user with clear examples of all transaction kinds"
+---
+
+Retrieves paginated transactions for all activated cards of the authenticated user. 
+
+Returns three types of transaction events:
+- **Payment**: Regular card transactions (purchases, ATM withdrawals). Can appear immediately after authorization with `isPending: true`, then update when cleared.
+- **Refund**: Money returned to your account (product returns, cancellations). Only appears after both authorization and clearing are processed.
+- **Reversal**: Cancellation of previous transactions due to technical issues or merchant corrections. Can appear immediately after authorization-level reversals.
+
+The final number might differ slightly, as one thread might contain multiple transactions.
+
+## Request
+
+<ParamField query="cardTokens" type="string">
+  Comma-separated list of card tokens
+</ParamField>
+
+<ParamField query="limit" type="integer" default="100">
+  Maximum number of transactions to return (minimum: 10)
+</ParamField>
+
+<ParamField query="offset" type="integer" default="0">
+  Number of transactions to skip (minimum: 0)
+</ParamField>
+
+<ParamField query="before" type="string">
+  Filter transactions before this date (ISO 8601 format, e.g., "2023-04-01T00:00:00Z")
+</ParamField>
+
+<ParamField query="after" type="string">
+  Filter transactions after this date (ISO 8601 format, e.g., "2023-03-01T00:00:00Z")
+</ParamField>
+
+<ParamField query="billingCurrency" type="string">
+  Filter by billing currency code
+</ParamField>
+
+<ParamField query="transactionCurrency" type="string">
+  Filter by transaction currency code
+</ParamField>
+
+<ParamField query="mcc" type="string">
+  Filter by Merchant Category Code (MCC)
+</ParamField>
+
+<ParamField query="transactionType" type="string">
+  Filter by transaction type code (e.g., "00" for Purchase, "01" for Withdrawal)
+</ParamField>
+
+## Response
+
+<ResponseField name="count" type="integer">
+  Total number of transactions available
+</ResponseField>
+
+<ResponseField name="next" type="string" nullable>
+  URL for the next page of results, null if no more pages
+</ResponseField>
+
+<ResponseField name="previous" type="string" nullable>
+  URL for the previous page of results, null if on first page
+</ResponseField>
+
+<ResponseField name="results" type="array">
+  Array of transaction events for the current page. Each transaction has a `kind` field that determines its type and available fields.
+</ResponseField>
+
+<ResponseExample>
+
+```json Payment (Pending)
+{
+  "count": 25,
+  "next": "/api/v1/cards/transactions?limit=100&offset=100",
+  "previous": null,
+  "results": [
+    {
+      "createdAt": "2024-01-15T14:30:00Z",
+      "clearedAt": null,
+      "isPending": true,
+      "kind": "Payment",
+      "status": "Approved",
+      "country": {
+        "name": "United Kingdom",
+        "numeric": "826",
+        "alpha2": "GB",
+        "alpha3": "GBR"
+      },
+      "mcc": "5411",
+      "merchant": {
+        "name": "TESCO STORES",
+        "city": "LONDON",
+        "country": {
+          "name": "United Kingdom",
+          "alpha2": "GB"
+        }
+      },
+      "billingAmount": "2550",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionAmount": "2199",
+      "transactionCurrency": {
+        "symbol": "£",
+        "code": "GBP",
+        "decimals": 2,
+        "name": "British Pound"
+      },
+      "transactionType": "00",
+      "cardToken": "4532********1234",
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x1234567890abcdef1234567890abcdef12345678",
+          "value": "2550000000000000000000",
+          "data": "0xa9059cbb",
+          "hash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```json Payment (Confirmed)
+{
+  "count": 25,
+  "next": "/api/v1/cards/transactions?limit=100&offset=100",
+  "previous": null,
+  "results": [
+    {
+      "createdAt": "2024-01-14T09:15:00Z",
+      "clearedAt": "2024-01-15T02:30:00Z",
+      "isPending": false,
+      "kind": "Payment",
+      "status": "Approved",
+      "country": {
+        "name": "Germany",
+        "numeric": "276",
+        "alpha2": "DE",
+        "alpha3": "DEU"
+      },
+      "mcc": "5814",
+      "merchant": {
+        "name": "STARBUCKS",
+        "city": "BERLIN",
+        "country": {
+          "name": "Germany",
+          "alpha2": "DE"
+        }
+      },
+      "billingAmount": "450",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionAmount": "450",
+      "transactionCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionType": "00",
+      "cardToken": "4532********1234",
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x1234567890abcdef1234567890abcdef12345678",
+          "value": "450000000000000000000",
+          "data": "0xa9059cbb",
+          "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```json Reversal
+{
+  "count": 25,
+  "next": "/api/v1/cards/transactions?limit=100&offset=100",
+  "previous": null, 
+  "results": [
+    {
+      "createdAt": "2024-01-12T11:20:00Z",
+      "clearedAt": "2024-01-12T11:25:00Z",
+      "isPending": false,
+      "kind": "Reversal",
+      "country": {
+        "name": "Netherlands",
+        "numeric": "528",
+        "alpha2": "NL",
+        "alpha3": "NLD"
+      },
+      "mcc": "5999",
+      "merchant": {
+        "name": "ONLINE STORE",
+        "city": "AMSTERDAM",
+        "country": {
+          "name": "Netherlands",
+          "alpha2": "NL"
+        }
+      },
+      "billingAmount": "1200",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionAmount": "1200",
+      "transactionCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionType": "00",
+      "cardToken": "4532********1234",
+      "reversalAmount": "1200",
+      "reversalCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x1234567890abcdef1234567890abcdef12345678",
+          "value": "1200000000000000000000",
+          "data": "0xa9059cbb",
+          "hash": "0xfedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```json Refund (Confirmed)
+{
+  "count": 25,
+  "next": "/api/v1/cards/transactions?limit=100&offset=100", 
+  "previous": null,
+  "results": [
+    {
+      "createdAt": "2024-01-13T16:45:00Z",
+      "clearedAt": "2024-01-14T08:20:00Z",
+      "isPending": false,
+      "kind": "Refund",
+      "country": {
+        "name": "France",
+        "numeric": "250",
+        "alpha2": "FR",
+        "alpha3": "FRA"
+      },
+      "mcc": "5651",
+      "merchant": {
+        "name": "H&M PARIS",
+        "city": "PARIS",
+        "country": {
+          "name": "France",
+          "alpha2": "FR"
+        }
+      },
+      "billingAmount": "7500",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionAmount": "7500",
+      "transactionCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactionType": "20",
+      "cardToken": "4532********1234",
+      "refundAmount": "7500",
+      "refundCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      },
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x1234567890abcdef1234567890abcdef12345678",
+          "value": "7500000000000000000000",
+          "data": "0xa9059cbb",
+          "hash": "0x9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba"
+        }
+      ]
+    }
+  ]
+}
+```
+
+</ResponseExample>
+
+## Transaction Kinds
+
+## Key Fields by Transaction Kind
+
+### All Transaction Types
+- `createdAt`: When the transaction occurred
+- `clearedAt`: When it was settled (null if pending)
+- `isPending`: Whether awaiting settlement
+- `billingAmount`/`billingCurrency`: Amount charged to account
+- `transactionAmount`/`transactionCurrency`: Original transaction amount
+- `transactionType`: ISO 8583 transaction type code
+- `merchant`: Information about where transaction occurred
+- `cardToken`: Which card was used
+
+### Payment-Specific Fields
+- `status`: Approval status (`"Approved"`, `"IncorrectPin"`, `"InsufficientFunds"`, etc.)
+
+### Refund-Specific Fields  
+- `refundAmount`: Amount being refunded
+- `refundCurrency`: Currency of the refund
+
+### Reversal-Specific Fields
+- `reversalAmount`: Amount being reversed
+- `reversalCurrency`: Currency of the reversal
+
+## Integration Notes
+
+### isPending Behavior
+- **Payments**: `true` when authorized but not settled, `false` when complete
+- **Refunds**: Usually `false` since they require both auth + clearing to appear
+- **Reversals**: Typically `false` as they process quickly
+
+### When Transactions Appear
+- **Payments**: Immediately after authorization
+- **Refunds**: Only after both authorization AND clearing (credit voucher)
+- **Reversals**: Timing varies - can be immediate or after clearing
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.gnosispay.com/api/v1/cards/transactions?limit=50&after=2024-01-01T00:00:00Z" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json"
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.gnosispay.com/api/v1/cards/transactions', {
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  }
+});
+const data = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    'https://api.gnosispay.com/api/v1/cards/transactions',
+    headers={
+        'Authorization': 'Bearer YOUR_JWT_TOKEN',
+        'Content-Type': 'application/json'
+    }
+)
+data = response.json()
+```
+</RequestExample>

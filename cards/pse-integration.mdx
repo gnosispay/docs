@@ -9,13 +9,17 @@ If you want to display sensitive information, such as card numbers, in your fron
 
 To initialize the SDK, you'll need an `App ID` provided to you upon registration with Gnosis Pay. You'll also need an **ephemeral-token**. This ephemeral-token can be retrieved with a call to our private PSE API using mTLS authentication.
 
-<Warning> 
-**Backend Only**: An mTLS authentication can only be performed from a back-end. For this reason, you need a back-end responsible for retrieving the ephemeral-token and sending it to your front-end upon request. We'll go through each step in this guide.
-</Warning> 
+<Warning>
+  **Backend Only**: An mTLS authentication can only be performed from a
+  back-end. For this reason, you need a back-end responsible for retrieving the
+  ephemeral-token and sending it to your front-end upon request. We'll go
+  through each step in this guide.
+</Warning>{" "}
 
 Once your front-end has the ephemeral-token, it can initialize the PSE SDK and use it to display secure elements.
 
 Here's a diagram showing each step:
+
 ```mermaid
     sequenceDiagram
         participant FE as Your Frontend
@@ -32,7 +36,6 @@ Here's a diagram showing each step:
         FE->>API: PSE SDK Requests Card Information
         API-->>FE: Display Card Information Inside an Iframe
 ```
-
 
 Reference implementations are available for a [front-end](https://github.com/gnosispay/ui) and a [back-end](https://github.com/gnosispay/ui/tree/main/pse-backend-demo).
 
@@ -85,22 +88,21 @@ ABCD....
 
 Here's a Node.js implementation to request the ephemeral-token in two different ways:
 
-
 <CodeGroup>
 
 ```js Using Axios
 const httpsAgent = new https.Agent({
-    cert: process.env.SIGNED_CERTIFICATES,
-    key: process.env.PRIVATE_KEY,
-    rejectUnauthorized: true, // Ensure SSL verification
+  cert: process.env.SIGNED_CERTIFICATES,
+  key: process.env.PRIVATE_KEY,
+  rejectUnauthorized: true, // Ensure SSL verification
 });
 
 const ephemeralTokenRequest = await axios({
-    httpsAgent: httpsAgent,
-    method: "POST",
-    url: `https://api-pse.gnosispay.com/api/v1/ephemeral-token`,
-    headers: { "Content-Type": "application/json" },
-    // Axios adds the user-agent automatically
+  httpsAgent: httpsAgent,
+  method: "POST",
+  url: `https://api-pse.gnosispay.com/api/v1/ephemeral-token`,
+  headers: { "Content-Type": "application/json" },
+  // Axios adds the user-agent automatically
 });
 ```
 
@@ -140,7 +142,7 @@ const req = https.request(
         console.log("Raw response:", data);
       }
     });
-  },
+  }
 );
 
 req.on("error", (error) => {
@@ -154,7 +156,8 @@ req.end();
 Please refer to our [API documentation](/api-reference/endpoints/generate-a-new-ephemeral-token) on the PSE service for more information about the specific endpoint.
 
 <Note>
-The ephemeral-token, as its name suggests, is valid for a very short time frame. It is advised to generate a new one for every usage of the SDK.
+  The ephemeral-token, as its name suggests, is valid for a very short time
+  frame. It is advised to generate a new one for every usage of the SDK.
 </Note>
 
 ---
@@ -170,20 +173,22 @@ For security reasons, the only way to apply custom styling to iframe elements is
 Standard styling is applied to the iframe elements by default. You can override the style of these classes and IDs as needed. Here are some of them:
 
 #### Card Data
-* `.pse-container` - A shared class for all iframe containers.
-* `#pse-card-data-container` - The main container for displaying card data.
-* `.pse-card-field` - The container for each card data field (card number, expiry date, security code).
-* `.pse-card-label` - Labels for each field.
-* `.pse-card-value` - The container for the actual card data values.
+
+- `.pse-container` - A shared class for all iframe containers.
+- `#pse-card-data-container` - The main container for displaying card data.
+- `.pse-card-field` - The container for each card data field (card number, expiry date, security code).
+- `.pse-card-label` - Labels for each field.
+- `.pse-card-value` - The container for the actual card data values.
 
 #### Set PIN Form
-* `.pse-container` - A shared class for all iframe containers.
-* `#pse-set-pin-form` - The main form container.
-* `#pse-set-pin-success-container` - The success state container.
-* `.pse-set-pin-container` - The base container class.
-* `.pse-set-pin-button` - The base class for all buttons.
-* `#pse-continue-pin-button` - The continue button.
-* `#pse-done-button` - The done button.
+
+- `.pse-container` - A shared class for all iframe containers.
+- `#pse-set-pin-form` - The main form container.
+- `#pse-set-pin-success-container` - The success state container.
+- `.pse-set-pin-container` - The base container class.
+- `.pse-set-pin-button` - The base class for all buttons.
+- `#pse-continue-pin-button` - The continue button.
+- `#pse-done-button` - The done button.
 
 ---
 
@@ -198,3 +203,18 @@ Here is a suggested workflow to customize the styling:
 
 Here is an example of overriding the `.pse-card-field` class in Firefox:
 ![custom css](./assets/css-styling.png)
+
+## React Native Integration
+
+If you'd like to integrate the PSE SDK into a React Native application, you can use the [React Native PSE SDK](https://www.npmjs.com/package/@gnosispay/pse-react-native) package to help integrating the WebView piece.
+
+However, as the PSE requires hosting on your domain, you will still need to host the PSE Frame on your backend, on your domain.
+
+This frame can be as simple as an HTML page that invokes the PSE JS SDK.
+
+In our reference implementation repository, next to the examples of implementing backend endpoint for ephemeral token generation, you can
+find [an example of such page](https://github.com/gnosispay/ui/blob/main/pse-backend-demo/src/static/native-webview.html) returned by the same backend that generates the ephemeral token.
+
+Note that this page should be responsible for fetching the ephemeral token from your backend, and passing it to the PSE JS SDK.
+
+You will then pass this URL to the React Native WebView component, through the `webViewUrl` prop, together with other parameters that you can find in the [React Native PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-react-native).
