@@ -2,9 +2,9 @@
   "theme": "mint",
   "name": "Gnosis Pay Documentation",
   "colors": {
-    "primary": "#8D9746",
-    "light": "#556B2F",
-    "dark": "#8D9746"
+    "primary": "#707A2D",
+    "light": "#D8EB81",
+    "dark": "#919E3A"
   },
   "favicon": "/static/img/favicon.ico",
   "navigation": {
@@ -52,7 +52,7 @@
             "icon": "cubes",
             "pages": [
               "gp-onchain/overview",
-              "gp-onchain/about-gp-safe",
+              "gp-onchain/about-GP-safe",
               "gp-onchain/sign-message",
               "gp-onchain/onchain-daily-limit",
               "gp-onchain/withdraw-funds-from-safe"
@@ -120,4 +120,3 @@
     }
   }
 }
-

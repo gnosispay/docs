@@ -1,7 +1,7 @@
---- 
-title: About the on-chain Gnosis Pay Safe 
+---
+title: About GP Safe
 description: Gnosis Pay's on-chain infrastructure is built on top of the [Safe protocol](https://safe.global), providing a secure and programmable foundation for digital payments. Each user gets a unique Safe account that acts as their on-chain wallet, with additional modules that enable spending limits, time delays, and delegated spending capabilities.
---- 
+---
 
 The Gnosis Pay Safe consists of a core Safe account with three main modules attached:
 
@@ -54,5 +54,5 @@ The spending process follows this pattern:
 2. **Allowance Check**: The Roles module verifies spending limits
 3. **Delay Enforcement**: If limits allow, the transaction enters the delay queue
 4. **Time Delay**: The transaction waits for the configured cooldown period
-5. **Execution**: After the delay, the transaction can be executed 
+5. **Execution**: After the delay, the transaction can be executed
 6. **Balance Update**: The allowance balance is updated accordingly
