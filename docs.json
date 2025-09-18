@@ -72,11 +72,7 @@
           },
           {
             "group": "API reference",
-            "openapi": "https://api.gnosispay.com/api-docs/spec.json",
-            "pages": [
-              "api-reference/transactions/get-paginated-transactions",
-              "api-reference/transactions/get-transactions-deprecated"
-            ]
+            "openapi": "https://api.gnosispay.com/api-docs/spec.json"
           },
           {
             "group": "PSE API",
