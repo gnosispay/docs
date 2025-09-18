@@ -1,6 +1,6 @@
 ---
-title: "Onchain Daily Limit"
-description: "Manage daily spending limits for Gnosis Pay Safe accounts" 
+title: "Change onchain daily limit of GP Safe"
+description: "Manage daily spending limits for Gnosis Pay Safe accounts"
 ---
 
 The onchain daily limit feature allows partners to manage daily spending limits for Gnosis Pay Safe accounts.
@@ -62,9 +62,9 @@ curl -X PUT /api/v1/accounts/onchain-daily-limit \
 </Step>
 <Step title="Monitor the Transaction Execution">
 
-The withdrawal is processed through a delay relay mechanism that executes after 3 minutes.
+The daily limit change is processed through a delay relay mechanism that executes after 3 minutes.
 
-You can monitor the transaction status using the [delay-relay monitoring endpoint](/api-reference/account-management/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user) 
+You can monitor the transaction status using the [delay-relay monitoring endpoint](/api-reference/account-management/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user)
 or by checking your Safe's transaction history.
 
 Additionally, you can also [poll the following endpoint to check when the new limit becomes active](/api-reference/account-management/get-current-onchain-daily-limit):
