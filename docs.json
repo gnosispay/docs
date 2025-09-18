@@ -23,7 +23,7 @@
             "pages": [
               "account",
               "account/update-authenticated-account",
-              "account/adding-safe-owner",      
+              "account/adding-safe-owner",
               "account/iban-integration"
             ]
           },
@@ -57,6 +57,15 @@
               "gp-onchain/onchain-daily-limit",
               "gp-onchain/withdraw-funds-from-safe"
             ]
+          },
+          {
+            "group": "Webhooks",
+            "icon": "webhook",
+            "pages": [
+              "webhooks/introduction",
+              "webhooks/getting-started",
+              "webhooks/events"
+            ]
           }
         ]
       },
@@ -65,18 +74,11 @@
         "groups": [
           {
             "group": "Authentication",
-            "pages": [
-              "api-reference/intro",
-              "api-reference/auth-app"
-            ]
+            "pages": ["api-reference/intro", "api-reference/auth-app"]
           },
           {
             "group": "API reference",
-            "openapi": "https://api.gnosispay.com/api-docs/spec.json",
-            "pages": [
-              "api-reference/transactions/get-paginated-transactions",
-              "api-reference/transactions/get-transactions-deprecated"
-            ]
+            "openapi": "https://api.gnosispay.com/api-docs/spec.json"
           },
           {
             "group": "PSE API",
@@ -114,14 +116,8 @@
       "display": "interactive"
     },
     "examples": {
-      "languages": [
-        "javascript",
-        "curl", 
-        "python",
-        "go",
-        "java",
-        "ruby"
-      ]
+      "languages": ["javascript", "curl", "python", "go", "java", "ruby"]
     }
   }
 }
+

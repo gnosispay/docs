@@ -1,0 +1,4504 @@
+## KYC Events
+
+### kyc.phone-validation.changed
+
+Triggered when a user's phone validation status changes.
+
+**Event Type**: `kyc.phone-validation.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "kyc.phone-validation.changed";
+  data: {
+    /** Unique user identifier */
+    id: string;
+    /** User email address */
+    email: string;
+    /** User phone number */
+    phone: string;
+    /** User first name */
+    firstName: string;
+    /** User last name */
+    lastName: string;
+    /** Primary address line */
+    address1: string;
+    /** Secondary address line */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal/ZIP code */
+    postalCode: string;
+    /** State/Province */
+    state: string;
+    /** Country */
+    country: string;
+    /** Nationality country */
+    nationalityCountry: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Wallet address */
+      address: string;
+    }[];
+    /** User's safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string;
+    }[];
+    /** KYC verification status */
+    kycStatus: "notStarted" | "documentsRequested" | "pending" | "processing" | "approved" | "resubmissionRequested" | "rejected" | "requiresAction";
+    /** Available features for the user */
+    availableFeatures: {
+      /** Whether Monerium IBAN is available */
+      moneriumIban: boolean;
+    };
+    /** User's cards */
+    cards: {
+      /** Card ID */
+      id: string;
+      /** Card token */
+      cardToken: string;
+      /** Last four digits of card */
+      lastFourDigits: string;
+      /** Name embossed on card */
+      embossedName: string;
+      /** Card activation timestamp */
+      activatedAt: string;
+      /** Whether card is virtual */
+      virtual: boolean;
+    }[];
+    /** User's banking details */
+    bankingDetails: {
+      /** Monerium IBAN */
+      moneriumIban: string;
+      /** Monerium BIC */
+      moneriumBic: string;
+      /** Monerium IBAN status */
+      moneriumIbanStatus: string;
+      /** Banking address */
+      address: string;
+    };
+    /** Whether source of funds question was answered */
+    isSourceOfFundsAnswered: boolean;
+    /** Whether phone number is validated */
+    isPhoneValidated: boolean;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "kyc.phone-validation.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a user's phone validation status changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "kyc.phone-validation.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique user identifier"
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "description": "User email address"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "User phone number"
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User first name"
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User last name"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address line"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address line"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal/ZIP code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State/Province"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "nationalityCountry": {
+                "type": "string",
+                "nullable": true,
+                "description": "Nationality country"
+              },
+              "signInWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                },
+                "description": "User's sign-in wallet addresses"
+              },
+              "safeWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "description": "Blockchain chain ID"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "chainId"
+                  ]
+                },
+                "description": "User's safe wallet addresses"
+              },
+              "kycStatus": {
+                "type": "string",
+                "enum": [
+                  "notStarted",
+                  "documentsRequested",
+                  "pending",
+                  "processing",
+                  "approved",
+                  "resubmissionRequested",
+                  "rejected",
+                  "requiresAction"
+                ],
+                "description": "KYC verification status",
+                "example": "approved"
+              },
+              "availableFeatures": {
+                "type": "object",
+                "properties": {
+                  "moneriumIban": {
+                    "type": "boolean",
+                    "description": "Whether Monerium IBAN is available"
+                  }
+                },
+                "required": [
+                  "moneriumIban"
+                ],
+                "description": "Available features for the user"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Card ID"
+                    },
+                    "cardToken": {
+                      "type": "string",
+                      "description": "Card token"
+                    },
+                    "lastFourDigits": {
+                      "type": "string",
+                      "description": "Last four digits of card"
+                    },
+                    "embossedName": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Name embossed on card"
+                    },
+                    "activatedAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Card activation timestamp"
+                    },
+                    "virtual": {
+                      "type": "boolean",
+                      "description": "Whether card is virtual"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "cardToken",
+                    "lastFourDigits",
+                    "embossedName",
+                    "activatedAt",
+                    "virtual"
+                  ]
+                },
+                "description": "User's cards"
+              },
+              "bankingDetails": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "moneriumIban": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN"
+                  },
+                  "moneriumBic": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium BIC"
+                  },
+                  "moneriumIbanStatus": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN status"
+                  },
+                  "address": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Banking address"
+                  }
+                },
+                "required": [
+                  "moneriumIban",
+                  "moneriumBic",
+                  "moneriumIbanStatus",
+                  "address"
+                ],
+                "description": "User's banking details"
+              },
+              "isSourceOfFundsAnswered": {
+                "type": "boolean",
+                "description": "Whether source of funds question was answered"
+              },
+              "isPhoneValidated": {
+                "type": "boolean",
+                "description": "Whether phone number is validated"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "lastName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "nationalityCountry",
+              "signInWallets",
+              "safeWallets",
+              "kycStatus",
+              "availableFeatures",
+              "cards",
+              "bankingDetails",
+              "isSourceOfFundsAnswered",
+              "isPhoneValidated"
+            ],
+            "description": "User data structure",
+            "example": {
+              "id": "user_123",
+              "email": "user@example.com",
+              "phone": "+1234567890",
+              "firstName": "John",
+              "lastName": "Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "nationalityCountry": "US",
+              "signInWallets": [
+                {
+                  "address": "0x1234567890abcdef1234567890abcdef12345678"
+                }
+              ],
+              "safeWallets": [
+                {
+                  "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                  "chainId": "100"
+                }
+              ],
+              "kycStatus": "approved",
+              "availableFeatures": {
+                "moneriumIban": true
+              },
+              "cards": [
+                {
+                  "id": "card_123",
+                  "cardToken": "card_token_456",
+                  "lastFourDigits": "1234",
+                  "embossedName": "John Doe",
+                  "activatedAt": "2024-01-15T10:30:00Z",
+                  "virtual": false
+                }
+              ],
+              "bankingDetails": {
+                "moneriumIban": "GB82WEST12345698765432",
+                "moneriumBic": "WESTGB22",
+                "moneriumIbanStatus": "ASSIGNED",
+                "address": "123 Main Street, New York, NY 10001"
+              },
+              "isSourceOfFundsAnswered": true,
+              "isPhoneValidated": true
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a user's phone validation status changes.",
+        "example": {
+          "eventType": "kyc.phone-validation.changed",
+          "data": {
+            "id": "user_123",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "firstName": "John",
+            "lastName": "Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "nationalityCountry": "US",
+            "signInWallets": [
+              {
+                "address": "0x1234567890abcdef1234567890abcdef12345678"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100"
+              }
+            ],
+            "kycStatus": "approved",
+            "availableFeatures": {
+              "moneriumIban": true
+            },
+            "cards": [
+              {
+                "id": "card_123",
+                "cardToken": "card_token_456",
+                "lastFourDigits": "1234",
+                "embossedName": "John Doe",
+                "activatedAt": "2024-01-15T10:30:00Z",
+                "virtual": false
+              }
+            ],
+            "bankingDetails": {
+              "moneriumIban": "GB82WEST12345698765432",
+              "moneriumBic": "WESTGB22",
+              "moneriumIbanStatus": "ASSIGNED",
+              "address": "123 Main Street, New York, NY 10001"
+            },
+            "isSourceOfFundsAnswered": true,
+            "isPhoneValidated": true
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "kyc.phone-validation.changed",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "nationalityCountry": "US",
+    "signInWallets": [
+      {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100"
+      }
+    ],
+    "kycStatus": "approved",
+    "availableFeatures": {
+      "moneriumIban": true
+    },
+    "cards": [
+      {
+        "id": "card_123",
+        "cardToken": "card_token_456",
+        "lastFourDigits": "1234",
+        "embossedName": "John Doe",
+        "activatedAt": "2024-01-15T10:30:00Z",
+        "virtual": false
+      }
+    ],
+    "bankingDetails": {
+      "moneriumIban": "GB82WEST12345698765432",
+      "moneriumBic": "WESTGB22",
+      "moneriumIbanStatus": "ASSIGNED",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    "isSourceOfFundsAnswered": true,
+    "isPhoneValidated": true
+  }
+}
+```
+
+### kyc.source-of-funds.changed
+
+Triggered when a user's source of funds information changes.
+
+**Event Type**: `kyc.source-of-funds.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "kyc.source-of-funds.changed";
+  data: {
+    /** Unique user identifier */
+    id: string;
+    /** User email address */
+    email: string;
+    /** User phone number */
+    phone: string;
+    /** User first name */
+    firstName: string;
+    /** User last name */
+    lastName: string;
+    /** Primary address line */
+    address1: string;
+    /** Secondary address line */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal/ZIP code */
+    postalCode: string;
+    /** State/Province */
+    state: string;
+    /** Country */
+    country: string;
+    /** Nationality country */
+    nationalityCountry: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Wallet address */
+      address: string;
+    }[];
+    /** User's safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string;
+    }[];
+    /** KYC verification status */
+    kycStatus: "notStarted" | "documentsRequested" | "pending" | "processing" | "approved" | "resubmissionRequested" | "rejected" | "requiresAction";
+    /** Available features for the user */
+    availableFeatures: {
+      /** Whether Monerium IBAN is available */
+      moneriumIban: boolean;
+    };
+    /** User's cards */
+    cards: {
+      /** Card ID */
+      id: string;
+      /** Card token */
+      cardToken: string;
+      /** Last four digits of card */
+      lastFourDigits: string;
+      /** Name embossed on card */
+      embossedName: string;
+      /** Card activation timestamp */
+      activatedAt: string;
+      /** Whether card is virtual */
+      virtual: boolean;
+    }[];
+    /** User's banking details */
+    bankingDetails: {
+      /** Monerium IBAN */
+      moneriumIban: string;
+      /** Monerium BIC */
+      moneriumBic: string;
+      /** Monerium IBAN status */
+      moneriumIbanStatus: string;
+      /** Banking address */
+      address: string;
+    };
+    /** Whether source of funds question was answered */
+    isSourceOfFundsAnswered: boolean;
+    /** Whether phone number is validated */
+    isPhoneValidated: boolean;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "kyc.source-of-funds.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a user's source of funds information changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "kyc.source-of-funds.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique user identifier"
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "description": "User email address"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "User phone number"
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User first name"
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User last name"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address line"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address line"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal/ZIP code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State/Province"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "nationalityCountry": {
+                "type": "string",
+                "nullable": true,
+                "description": "Nationality country"
+              },
+              "signInWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                },
+                "description": "User's sign-in wallet addresses"
+              },
+              "safeWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "description": "Blockchain chain ID"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "chainId"
+                  ]
+                },
+                "description": "User's safe wallet addresses"
+              },
+              "kycStatus": {
+                "type": "string",
+                "enum": [
+                  "notStarted",
+                  "documentsRequested",
+                  "pending",
+                  "processing",
+                  "approved",
+                  "resubmissionRequested",
+                  "rejected",
+                  "requiresAction"
+                ],
+                "description": "KYC verification status",
+                "example": "approved"
+              },
+              "availableFeatures": {
+                "type": "object",
+                "properties": {
+                  "moneriumIban": {
+                    "type": "boolean",
+                    "description": "Whether Monerium IBAN is available"
+                  }
+                },
+                "required": [
+                  "moneriumIban"
+                ],
+                "description": "Available features for the user"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Card ID"
+                    },
+                    "cardToken": {
+                      "type": "string",
+                      "description": "Card token"
+                    },
+                    "lastFourDigits": {
+                      "type": "string",
+                      "description": "Last four digits of card"
+                    },
+                    "embossedName": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Name embossed on card"
+                    },
+                    "activatedAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Card activation timestamp"
+                    },
+                    "virtual": {
+                      "type": "boolean",
+                      "description": "Whether card is virtual"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "cardToken",
+                    "lastFourDigits",
+                    "embossedName",
+                    "activatedAt",
+                    "virtual"
+                  ]
+                },
+                "description": "User's cards"
+              },
+              "bankingDetails": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "moneriumIban": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN"
+                  },
+                  "moneriumBic": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium BIC"
+                  },
+                  "moneriumIbanStatus": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN status"
+                  },
+                  "address": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Banking address"
+                  }
+                },
+                "required": [
+                  "moneriumIban",
+                  "moneriumBic",
+                  "moneriumIbanStatus",
+                  "address"
+                ],
+                "description": "User's banking details"
+              },
+              "isSourceOfFundsAnswered": {
+                "type": "boolean",
+                "description": "Whether source of funds question was answered"
+              },
+              "isPhoneValidated": {
+                "type": "boolean",
+                "description": "Whether phone number is validated"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "lastName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "nationalityCountry",
+              "signInWallets",
+              "safeWallets",
+              "kycStatus",
+              "availableFeatures",
+              "cards",
+              "bankingDetails",
+              "isSourceOfFundsAnswered",
+              "isPhoneValidated"
+            ],
+            "description": "User data structure",
+            "example": {
+              "id": "user_123",
+              "email": "user@example.com",
+              "phone": "+1234567890",
+              "firstName": "John",
+              "lastName": "Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "nationalityCountry": "US",
+              "signInWallets": [
+                {
+                  "address": "0x1234567890abcdef1234567890abcdef12345678"
+                }
+              ],
+              "safeWallets": [
+                {
+                  "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                  "chainId": "100"
+                }
+              ],
+              "kycStatus": "approved",
+              "availableFeatures": {
+                "moneriumIban": true
+              },
+              "cards": [
+                {
+                  "id": "card_123",
+                  "cardToken": "card_token_456",
+                  "lastFourDigits": "1234",
+                  "embossedName": "John Doe",
+                  "activatedAt": "2024-01-15T10:30:00Z",
+                  "virtual": false
+                }
+              ],
+              "bankingDetails": {
+                "moneriumIban": "GB82WEST12345698765432",
+                "moneriumBic": "WESTGB22",
+                "moneriumIbanStatus": "ASSIGNED",
+                "address": "123 Main Street, New York, NY 10001"
+              },
+              "isSourceOfFundsAnswered": true,
+              "isPhoneValidated": true
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a user's source of funds information changes.",
+        "example": {
+          "eventType": "kyc.source-of-funds.changed",
+          "data": {
+            "id": "user_123",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "firstName": "John",
+            "lastName": "Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "nationalityCountry": "US",
+            "signInWallets": [
+              {
+                "address": "0x1234567890abcdef1234567890abcdef12345678"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100"
+              }
+            ],
+            "kycStatus": "approved",
+            "availableFeatures": {
+              "moneriumIban": true
+            },
+            "cards": [
+              {
+                "id": "card_123",
+                "cardToken": "card_token_456",
+                "lastFourDigits": "1234",
+                "embossedName": "John Doe",
+                "activatedAt": "2024-01-15T10:30:00Z",
+                "virtual": false
+              }
+            ],
+            "bankingDetails": {
+              "moneriumIban": "GB82WEST12345698765432",
+              "moneriumBic": "WESTGB22",
+              "moneriumIbanStatus": "ASSIGNED",
+              "address": "123 Main Street, New York, NY 10001"
+            },
+            "isSourceOfFundsAnswered": true,
+            "isPhoneValidated": true
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "kyc.source-of-funds.changed",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "nationalityCountry": "US",
+    "signInWallets": [
+      {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100"
+      }
+    ],
+    "kycStatus": "approved",
+    "availableFeatures": {
+      "moneriumIban": true
+    },
+    "cards": [
+      {
+        "id": "card_123",
+        "cardToken": "card_token_456",
+        "lastFourDigits": "1234",
+        "embossedName": "John Doe",
+        "activatedAt": "2024-01-15T10:30:00Z",
+        "virtual": false
+      }
+    ],
+    "bankingDetails": {
+      "moneriumIban": "GB82WEST12345698765432",
+      "moneriumBic": "WESTGB22",
+      "moneriumIbanStatus": "ASSIGNED",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    "isSourceOfFundsAnswered": true,
+    "isPhoneValidated": true
+  }
+}
+```
+
+### kyc.status.changed
+
+Triggered when a user's KYC status changes.
+
+**Event Type**: `kyc.status.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "kyc.status.changed";
+  data: {
+    /** Unique user identifier */
+    id: string;
+    /** User email address */
+    email: string;
+    /** User phone number */
+    phone: string;
+    /** User first name */
+    firstName: string;
+    /** User last name */
+    lastName: string;
+    /** Primary address line */
+    address1: string;
+    /** Secondary address line */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal/ZIP code */
+    postalCode: string;
+    /** State/Province */
+    state: string;
+    /** Country */
+    country: string;
+    /** Nationality country */
+    nationalityCountry: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Wallet address */
+      address: string;
+    }[];
+    /** User's safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string;
+    }[];
+    /** KYC verification status */
+    kycStatus: "notStarted" | "documentsRequested" | "pending" | "processing" | "approved" | "resubmissionRequested" | "rejected" | "requiresAction";
+    /** Available features for the user */
+    availableFeatures: {
+      /** Whether Monerium IBAN is available */
+      moneriumIban: boolean;
+    };
+    /** User's cards */
+    cards: {
+      /** Card ID */
+      id: string;
+      /** Card token */
+      cardToken: string;
+      /** Last four digits of card */
+      lastFourDigits: string;
+      /** Name embossed on card */
+      embossedName: string;
+      /** Card activation timestamp */
+      activatedAt: string;
+      /** Whether card is virtual */
+      virtual: boolean;
+    }[];
+    /** User's banking details */
+    bankingDetails: {
+      /** Monerium IBAN */
+      moneriumIban: string;
+      /** Monerium BIC */
+      moneriumBic: string;
+      /** Monerium IBAN status */
+      moneriumIbanStatus: string;
+      /** Banking address */
+      address: string;
+    };
+    /** Whether source of funds question was answered */
+    isSourceOfFundsAnswered: boolean;
+    /** Whether phone number is validated */
+    isPhoneValidated: boolean;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "kyc.status.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a user's KYC status changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "kyc.status.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique user identifier"
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "description": "User email address"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "User phone number"
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User first name"
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User last name"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address line"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address line"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal/ZIP code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State/Province"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "nationalityCountry": {
+                "type": "string",
+                "nullable": true,
+                "description": "Nationality country"
+              },
+              "signInWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                },
+                "description": "User's sign-in wallet addresses"
+              },
+              "safeWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "description": "Blockchain chain ID"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "chainId"
+                  ]
+                },
+                "description": "User's safe wallet addresses"
+              },
+              "kycStatus": {
+                "type": "string",
+                "enum": [
+                  "notStarted",
+                  "documentsRequested",
+                  "pending",
+                  "processing",
+                  "approved",
+                  "resubmissionRequested",
+                  "rejected",
+                  "requiresAction"
+                ],
+                "description": "KYC verification status",
+                "example": "approved"
+              },
+              "availableFeatures": {
+                "type": "object",
+                "properties": {
+                  "moneriumIban": {
+                    "type": "boolean",
+                    "description": "Whether Monerium IBAN is available"
+                  }
+                },
+                "required": [
+                  "moneriumIban"
+                ],
+                "description": "Available features for the user"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Card ID"
+                    },
+                    "cardToken": {
+                      "type": "string",
+                      "description": "Card token"
+                    },
+                    "lastFourDigits": {
+                      "type": "string",
+                      "description": "Last four digits of card"
+                    },
+                    "embossedName": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Name embossed on card"
+                    },
+                    "activatedAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Card activation timestamp"
+                    },
+                    "virtual": {
+                      "type": "boolean",
+                      "description": "Whether card is virtual"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "cardToken",
+                    "lastFourDigits",
+                    "embossedName",
+                    "activatedAt",
+                    "virtual"
+                  ]
+                },
+                "description": "User's cards"
+              },
+              "bankingDetails": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "moneriumIban": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN"
+                  },
+                  "moneriumBic": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium BIC"
+                  },
+                  "moneriumIbanStatus": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN status"
+                  },
+                  "address": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Banking address"
+                  }
+                },
+                "required": [
+                  "moneriumIban",
+                  "moneriumBic",
+                  "moneriumIbanStatus",
+                  "address"
+                ],
+                "description": "User's banking details"
+              },
+              "isSourceOfFundsAnswered": {
+                "type": "boolean",
+                "description": "Whether source of funds question was answered"
+              },
+              "isPhoneValidated": {
+                "type": "boolean",
+                "description": "Whether phone number is validated"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "lastName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "nationalityCountry",
+              "signInWallets",
+              "safeWallets",
+              "kycStatus",
+              "availableFeatures",
+              "cards",
+              "bankingDetails",
+              "isSourceOfFundsAnswered",
+              "isPhoneValidated"
+            ],
+            "description": "User data structure",
+            "example": {
+              "id": "user_123",
+              "email": "user@example.com",
+              "phone": "+1234567890",
+              "firstName": "John",
+              "lastName": "Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "nationalityCountry": "US",
+              "signInWallets": [
+                {
+                  "address": "0x1234567890abcdef1234567890abcdef12345678"
+                }
+              ],
+              "safeWallets": [
+                {
+                  "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                  "chainId": "100"
+                }
+              ],
+              "kycStatus": "approved",
+              "availableFeatures": {
+                "moneriumIban": true
+              },
+              "cards": [
+                {
+                  "id": "card_123",
+                  "cardToken": "card_token_456",
+                  "lastFourDigits": "1234",
+                  "embossedName": "John Doe",
+                  "activatedAt": "2024-01-15T10:30:00Z",
+                  "virtual": false
+                }
+              ],
+              "bankingDetails": {
+                "moneriumIban": "GB82WEST12345698765432",
+                "moneriumBic": "WESTGB22",
+                "moneriumIbanStatus": "ASSIGNED",
+                "address": "123 Main Street, New York, NY 10001"
+              },
+              "isSourceOfFundsAnswered": true,
+              "isPhoneValidated": true
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a user's KYC status changes.",
+        "example": {
+          "eventType": "kyc.status.changed",
+          "data": {
+            "id": "user_123",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "firstName": "John",
+            "lastName": "Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "nationalityCountry": "US",
+            "signInWallets": [
+              {
+                "address": "0x1234567890abcdef1234567890abcdef12345678"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100"
+              }
+            ],
+            "kycStatus": "approved",
+            "availableFeatures": {
+              "moneriumIban": true
+            },
+            "cards": [
+              {
+                "id": "card_123",
+                "cardToken": "card_token_456",
+                "lastFourDigits": "1234",
+                "embossedName": "John Doe",
+                "activatedAt": "2024-01-15T10:30:00Z",
+                "virtual": false
+              }
+            ],
+            "bankingDetails": {
+              "moneriumIban": "GB82WEST12345698765432",
+              "moneriumBic": "WESTGB22",
+              "moneriumIbanStatus": "ASSIGNED",
+              "address": "123 Main Street, New York, NY 10001"
+            },
+            "isSourceOfFundsAnswered": true,
+            "isPhoneValidated": true
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "kyc.status.changed",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "nationalityCountry": "US",
+    "signInWallets": [
+      {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100"
+      }
+    ],
+    "kycStatus": "approved",
+    "availableFeatures": {
+      "moneriumIban": true
+    },
+    "cards": [
+      {
+        "id": "card_123",
+        "cardToken": "card_token_456",
+        "lastFourDigits": "1234",
+        "embossedName": "John Doe",
+        "activatedAt": "2024-01-15T10:30:00Z",
+        "virtual": false
+      }
+    ],
+    "bankingDetails": {
+      "moneriumIban": "GB82WEST12345698765432",
+      "moneriumBic": "WESTGB22",
+      "moneriumIbanStatus": "ASSIGNED",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    "isSourceOfFundsAnswered": true,
+    "isPhoneValidated": true
+  }
+}
+```
+
+## User Lifecycle Events
+
+### user.created
+
+Triggered when a new user account is created in the Gnosis Pay system.
+
+**Event Type**: `user.created`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "user.created";
+  data: {
+    /** Unique user identifier */
+    id: string;
+    /** User email address */
+    email: string;
+    /** User phone number */
+    phone: string;
+    /** User first name */
+    firstName: string;
+    /** User last name */
+    lastName: string;
+    /** Primary address line */
+    address1: string;
+    /** Secondary address line */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal/ZIP code */
+    postalCode: string;
+    /** State/Province */
+    state: string;
+    /** Country */
+    country: string;
+    /** Nationality country */
+    nationalityCountry: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Wallet address */
+      address: string;
+    }[];
+    /** User's safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string;
+    }[];
+    /** KYC verification status */
+    kycStatus: "notStarted" | "documentsRequested" | "pending" | "processing" | "approved" | "resubmissionRequested" | "rejected" | "requiresAction";
+    /** Available features for the user */
+    availableFeatures: {
+      /** Whether Monerium IBAN is available */
+      moneriumIban: boolean;
+    };
+    /** User's cards */
+    cards: {
+      /** Card ID */
+      id: string;
+      /** Card token */
+      cardToken: string;
+      /** Last four digits of card */
+      lastFourDigits: string;
+      /** Name embossed on card */
+      embossedName: string;
+      /** Card activation timestamp */
+      activatedAt: string;
+      /** Whether card is virtual */
+      virtual: boolean;
+    }[];
+    /** User's banking details */
+    bankingDetails: {
+      /** Monerium IBAN */
+      moneriumIban: string;
+      /** Monerium BIC */
+      moneriumBic: string;
+      /** Monerium IBAN status */
+      moneriumIbanStatus: string;
+      /** Banking address */
+      address: string;
+    };
+    /** Whether source of funds question was answered */
+    isSourceOfFundsAnswered: boolean;
+    /** Whether phone number is validated */
+    isPhoneValidated: boolean;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "user.created Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a new user account is created in the Gnosis Pay system."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "user.created"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique user identifier"
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "description": "User email address"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "User phone number"
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User first name"
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User last name"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address line"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address line"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal/ZIP code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State/Province"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "nationalityCountry": {
+                "type": "string",
+                "nullable": true,
+                "description": "Nationality country"
+              },
+              "signInWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                },
+                "description": "User's sign-in wallet addresses"
+              },
+              "safeWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "description": "Blockchain chain ID"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "chainId"
+                  ]
+                },
+                "description": "User's safe wallet addresses"
+              },
+              "kycStatus": {
+                "type": "string",
+                "enum": [
+                  "notStarted",
+                  "documentsRequested",
+                  "pending",
+                  "processing",
+                  "approved",
+                  "resubmissionRequested",
+                  "rejected",
+                  "requiresAction"
+                ],
+                "description": "KYC verification status",
+                "example": "approved"
+              },
+              "availableFeatures": {
+                "type": "object",
+                "properties": {
+                  "moneriumIban": {
+                    "type": "boolean",
+                    "description": "Whether Monerium IBAN is available"
+                  }
+                },
+                "required": [
+                  "moneriumIban"
+                ],
+                "description": "Available features for the user"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Card ID"
+                    },
+                    "cardToken": {
+                      "type": "string",
+                      "description": "Card token"
+                    },
+                    "lastFourDigits": {
+                      "type": "string",
+                      "description": "Last four digits of card"
+                    },
+                    "embossedName": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Name embossed on card"
+                    },
+                    "activatedAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Card activation timestamp"
+                    },
+                    "virtual": {
+                      "type": "boolean",
+                      "description": "Whether card is virtual"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "cardToken",
+                    "lastFourDigits",
+                    "embossedName",
+                    "activatedAt",
+                    "virtual"
+                  ]
+                },
+                "description": "User's cards"
+              },
+              "bankingDetails": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "moneriumIban": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN"
+                  },
+                  "moneriumBic": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium BIC"
+                  },
+                  "moneriumIbanStatus": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN status"
+                  },
+                  "address": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Banking address"
+                  }
+                },
+                "required": [
+                  "moneriumIban",
+                  "moneriumBic",
+                  "moneriumIbanStatus",
+                  "address"
+                ],
+                "description": "User's banking details"
+              },
+              "isSourceOfFundsAnswered": {
+                "type": "boolean",
+                "description": "Whether source of funds question was answered"
+              },
+              "isPhoneValidated": {
+                "type": "boolean",
+                "description": "Whether phone number is validated"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "lastName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "nationalityCountry",
+              "signInWallets",
+              "safeWallets",
+              "kycStatus",
+              "availableFeatures",
+              "cards",
+              "bankingDetails",
+              "isSourceOfFundsAnswered",
+              "isPhoneValidated"
+            ],
+            "description": "User data structure",
+            "example": {
+              "id": "user_123",
+              "email": "user@example.com",
+              "phone": "+1234567890",
+              "firstName": "John",
+              "lastName": "Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "nationalityCountry": "US",
+              "signInWallets": [
+                {
+                  "address": "0x1234567890abcdef1234567890abcdef12345678"
+                }
+              ],
+              "safeWallets": [
+                {
+                  "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                  "chainId": "100"
+                }
+              ],
+              "kycStatus": "approved",
+              "availableFeatures": {
+                "moneriumIban": true
+              },
+              "cards": [
+                {
+                  "id": "card_123",
+                  "cardToken": "card_token_456",
+                  "lastFourDigits": "1234",
+                  "embossedName": "John Doe",
+                  "activatedAt": "2024-01-15T10:30:00Z",
+                  "virtual": false
+                }
+              ],
+              "bankingDetails": {
+                "moneriumIban": "GB82WEST12345698765432",
+                "moneriumBic": "WESTGB22",
+                "moneriumIbanStatus": "ASSIGNED",
+                "address": "123 Main Street, New York, NY 10001"
+              },
+              "isSourceOfFundsAnswered": true,
+              "isPhoneValidated": true
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a new user account is created in the Gnosis Pay system.",
+        "example": {
+          "eventType": "user.created",
+          "data": {
+            "id": "user_123",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "firstName": "John",
+            "lastName": "Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "nationalityCountry": "US",
+            "signInWallets": [
+              {
+                "address": "0x1234567890abcdef1234567890abcdef12345678"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100"
+              }
+            ],
+            "kycStatus": "approved",
+            "availableFeatures": {
+              "moneriumIban": true
+            },
+            "cards": [
+              {
+                "id": "card_123",
+                "cardToken": "card_token_456",
+                "lastFourDigits": "1234",
+                "embossedName": "John Doe",
+                "activatedAt": "2024-01-15T10:30:00Z",
+                "virtual": false
+              }
+            ],
+            "bankingDetails": {
+              "moneriumIban": "GB82WEST12345698765432",
+              "moneriumBic": "WESTGB22",
+              "moneriumIbanStatus": "ASSIGNED",
+              "address": "123 Main Street, New York, NY 10001"
+            },
+            "isSourceOfFundsAnswered": true,
+            "isPhoneValidated": true
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "user.created",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "nationalityCountry": "US",
+    "signInWallets": [
+      {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100"
+      }
+    ],
+    "kycStatus": "approved",
+    "availableFeatures": {
+      "moneriumIban": true
+    },
+    "cards": [
+      {
+        "id": "card_123",
+        "cardToken": "card_token_456",
+        "lastFourDigits": "1234",
+        "embossedName": "John Doe",
+        "activatedAt": "2024-01-15T10:30:00Z",
+        "virtual": false
+      }
+    ],
+    "bankingDetails": {
+      "moneriumIban": "GB82WEST12345698765432",
+      "moneriumBic": "WESTGB22",
+      "moneriumIbanStatus": "ASSIGNED",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    "isSourceOfFundsAnswered": true,
+    "isPhoneValidated": true
+  }
+}
+```
+
+### user.tos.accepted
+
+Triggered when a user accepts the Terms of Service.
+
+**Event Type**: `user.tos.accepted`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "user.tos.accepted";
+  data: {
+    /** Unique user identifier */
+    id: string;
+    /** User email address */
+    email: string;
+    /** User phone number */
+    phone: string;
+    /** User first name */
+    firstName: string;
+    /** User last name */
+    lastName: string;
+    /** Primary address line */
+    address1: string;
+    /** Secondary address line */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal/ZIP code */
+    postalCode: string;
+    /** State/Province */
+    state: string;
+    /** Country */
+    country: string;
+    /** Nationality country */
+    nationalityCountry: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Wallet address */
+      address: string;
+    }[];
+    /** User's safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string;
+    }[];
+    /** KYC verification status */
+    kycStatus: "notStarted" | "documentsRequested" | "pending" | "processing" | "approved" | "resubmissionRequested" | "rejected" | "requiresAction";
+    /** Available features for the user */
+    availableFeatures: {
+      /** Whether Monerium IBAN is available */
+      moneriumIban: boolean;
+    };
+    /** User's cards */
+    cards: {
+      /** Card ID */
+      id: string;
+      /** Card token */
+      cardToken: string;
+      /** Last four digits of card */
+      lastFourDigits: string;
+      /** Name embossed on card */
+      embossedName: string;
+      /** Card activation timestamp */
+      activatedAt: string;
+      /** Whether card is virtual */
+      virtual: boolean;
+    }[];
+    /** User's banking details */
+    bankingDetails: {
+      /** Monerium IBAN */
+      moneriumIban: string;
+      /** Monerium BIC */
+      moneriumBic: string;
+      /** Monerium IBAN status */
+      moneriumIbanStatus: string;
+      /** Banking address */
+      address: string;
+    };
+    /** Whether source of funds question was answered */
+    isSourceOfFundsAnswered: boolean;
+    /** Whether phone number is validated */
+    isPhoneValidated: boolean;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "user.tos.accepted Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a user accepts the Terms of Service."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "user.tos.accepted"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique user identifier"
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "description": "User email address"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "User phone number"
+              },
+              "firstName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User first name"
+              },
+              "lastName": {
+                "type": "string",
+                "nullable": true,
+                "description": "User last name"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address line"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address line"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal/ZIP code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State/Province"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "nationalityCountry": {
+                "type": "string",
+                "nullable": true,
+                "description": "Nationality country"
+              },
+              "signInWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                },
+                "description": "User's sign-in wallet addresses"
+              },
+              "safeWallets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "description": "Blockchain chain ID"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "chainId"
+                  ]
+                },
+                "description": "User's safe wallet addresses"
+              },
+              "kycStatus": {
+                "type": "string",
+                "enum": [
+                  "notStarted",
+                  "documentsRequested",
+                  "pending",
+                  "processing",
+                  "approved",
+                  "resubmissionRequested",
+                  "rejected",
+                  "requiresAction"
+                ],
+                "description": "KYC verification status",
+                "example": "approved"
+              },
+              "availableFeatures": {
+                "type": "object",
+                "properties": {
+                  "moneriumIban": {
+                    "type": "boolean",
+                    "description": "Whether Monerium IBAN is available"
+                  }
+                },
+                "required": [
+                  "moneriumIban"
+                ],
+                "description": "Available features for the user"
+              },
+              "cards": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Card ID"
+                    },
+                    "cardToken": {
+                      "type": "string",
+                      "description": "Card token"
+                    },
+                    "lastFourDigits": {
+                      "type": "string",
+                      "description": "Last four digits of card"
+                    },
+                    "embossedName": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Name embossed on card"
+                    },
+                    "activatedAt": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Card activation timestamp"
+                    },
+                    "virtual": {
+                      "type": "boolean",
+                      "description": "Whether card is virtual"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "cardToken",
+                    "lastFourDigits",
+                    "embossedName",
+                    "activatedAt",
+                    "virtual"
+                  ]
+                },
+                "description": "User's cards"
+              },
+              "bankingDetails": {
+                "type": "object",
+                "nullable": true,
+                "properties": {
+                  "moneriumIban": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN"
+                  },
+                  "moneriumBic": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium BIC"
+                  },
+                  "moneriumIbanStatus": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Monerium IBAN status"
+                  },
+                  "address": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Banking address"
+                  }
+                },
+                "required": [
+                  "moneriumIban",
+                  "moneriumBic",
+                  "moneriumIbanStatus",
+                  "address"
+                ],
+                "description": "User's banking details"
+              },
+              "isSourceOfFundsAnswered": {
+                "type": "boolean",
+                "description": "Whether source of funds question was answered"
+              },
+              "isPhoneValidated": {
+                "type": "boolean",
+                "description": "Whether phone number is validated"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "phone",
+              "firstName",
+              "lastName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "nationalityCountry",
+              "signInWallets",
+              "safeWallets",
+              "kycStatus",
+              "availableFeatures",
+              "cards",
+              "bankingDetails",
+              "isSourceOfFundsAnswered",
+              "isPhoneValidated"
+            ],
+            "description": "User data structure",
+            "example": {
+              "id": "user_123",
+              "email": "user@example.com",
+              "phone": "+1234567890",
+              "firstName": "John",
+              "lastName": "Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "nationalityCountry": "US",
+              "signInWallets": [
+                {
+                  "address": "0x1234567890abcdef1234567890abcdef12345678"
+                }
+              ],
+              "safeWallets": [
+                {
+                  "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                  "chainId": "100"
+                }
+              ],
+              "kycStatus": "approved",
+              "availableFeatures": {
+                "moneriumIban": true
+              },
+              "cards": [
+                {
+                  "id": "card_123",
+                  "cardToken": "card_token_456",
+                  "lastFourDigits": "1234",
+                  "embossedName": "John Doe",
+                  "activatedAt": "2024-01-15T10:30:00Z",
+                  "virtual": false
+                }
+              ],
+              "bankingDetails": {
+                "moneriumIban": "GB82WEST12345698765432",
+                "moneriumBic": "WESTGB22",
+                "moneriumIbanStatus": "ASSIGNED",
+                "address": "123 Main Street, New York, NY 10001"
+              },
+              "isSourceOfFundsAnswered": true,
+              "isPhoneValidated": true
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a user accepts the Terms of Service.",
+        "example": {
+          "eventType": "user.tos.accepted",
+          "data": {
+            "id": "user_123",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "firstName": "John",
+            "lastName": "Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "nationalityCountry": "US",
+            "signInWallets": [
+              {
+                "address": "0x1234567890abcdef1234567890abcdef12345678"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100"
+              }
+            ],
+            "kycStatus": "approved",
+            "availableFeatures": {
+              "moneriumIban": true
+            },
+            "cards": [
+              {
+                "id": "card_123",
+                "cardToken": "card_token_456",
+                "lastFourDigits": "1234",
+                "embossedName": "John Doe",
+                "activatedAt": "2024-01-15T10:30:00Z",
+                "virtual": false
+              }
+            ],
+            "bankingDetails": {
+              "moneriumIban": "GB82WEST12345698765432",
+              "moneriumBic": "WESTGB22",
+              "moneriumIbanStatus": "ASSIGNED",
+              "address": "123 Main Street, New York, NY 10001"
+            },
+            "isSourceOfFundsAnswered": true,
+            "isPhoneValidated": true
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "user.tos.accepted",
+  "data": {
+    "id": "user_123",
+    "email": "user@example.com",
+    "phone": "+1234567890",
+    "firstName": "John",
+    "lastName": "Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "nationalityCountry": "US",
+    "signInWallets": [
+      {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100"
+      }
+    ],
+    "kycStatus": "approved",
+    "availableFeatures": {
+      "moneriumIban": true
+    },
+    "cards": [
+      {
+        "id": "card_123",
+        "cardToken": "card_token_456",
+        "lastFourDigits": "1234",
+        "embossedName": "John Doe",
+        "activatedAt": "2024-01-15T10:30:00Z",
+        "virtual": false
+      }
+    ],
+    "bankingDetails": {
+      "moneriumIban": "GB82WEST12345698765432",
+      "moneriumBic": "WESTGB22",
+      "moneriumIbanStatus": "ASSIGNED",
+      "address": "123 Main Street, New York, NY 10001"
+    },
+    "isSourceOfFundsAnswered": true,
+    "isPhoneValidated": true
+  }
+}
+```
+
+## Card Events
+
+### card.status.changed
+
+Triggered when a card's status changes.
+
+**Event Type**: `card.status.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "card.status.changed";
+  data: {
+    /** Card token */
+    cardToken: string;
+    /** Previous card status */
+    oldStatus: string;
+    /** New card status */
+    newStatus: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "card.status.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a card's status changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "card.status.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Card token"
+              },
+              "oldStatus": {
+                "type": "string",
+                "description": "Previous card status"
+              },
+              "newStatus": {
+                "type": "string",
+                "description": "New card status"
+              }
+            },
+            "required": [
+              "cardToken",
+              "oldStatus",
+              "newStatus"
+            ],
+            "description": "Card status change data",
+            "example": {
+              "cardToken": "card_123",
+              "oldStatus": "inactive",
+              "newStatus": "active"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a card's status changes.",
+        "example": {
+          "eventType": "card.status.changed",
+          "data": {
+            "cardToken": "card_123",
+            "oldStatus": "inactive",
+            "newStatus": "active"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "card.status.changed",
+  "data": {
+    "cardToken": "card_123",
+    "oldStatus": "inactive",
+    "newStatus": "active"
+  }
+}
+```
+
+### card.transaction.created
+
+Triggered when a new card transaction is created.
+
+**Event Type**: `card.transaction.created`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "card.transaction.created";
+  data: {
+    /** Unique card token identifier */
+    cardToken: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "card.transaction.created Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a new card transaction is created."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "card.transaction.created"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Unique card token identifier"
+              }
+            },
+            "required": [
+              "cardToken"
+            ],
+            "description": "Card token data",
+            "example": {
+              "cardToken": "card_123456789"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a new card transaction is created.",
+        "example": {
+          "eventType": "card.transaction.created",
+          "data": {
+            "cardToken": "card_123456789"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "card.transaction.created",
+  "data": {
+    "cardToken": "card_123456789"
+  }
+}
+```
+
+### physical.card.activated
+
+Triggered when a physical card is activated.
+
+**Event Type**: `physical.card.activated`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "physical.card.activated";
+  data: {
+    /** Unique card token identifier */
+    cardToken: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "physical.card.activated Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a physical card is activated."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "physical.card.activated"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Unique card token identifier"
+              }
+            },
+            "required": [
+              "cardToken"
+            ],
+            "description": "Card token data",
+            "example": {
+              "cardToken": "card_123456789"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a physical card is activated.",
+        "example": {
+          "eventType": "physical.card.activated",
+          "data": {
+            "cardToken": "card_123456789"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "physical.card.activated",
+  "data": {
+    "cardToken": "card_123456789"
+  }
+}
+```
+
+### physical.card.order.status.changed
+
+Triggered when the status of a physical card order changes.
+
+**Event Type**: `physical.card.order.status.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "physical.card.order.status.changed";
+  data: {
+    /** Card token */
+    cardToken: string;
+    /** Card order ID */
+    cardOrderId: string;
+    /** Previous order status */
+    oldStatus: string;
+    /** New order status */
+    newStatus: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "physical.card.order.status.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when the status of a physical card order changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "physical.card.order.status.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Card token"
+              },
+              "cardOrderId": {
+                "type": "string",
+                "description": "Card order ID"
+              },
+              "oldStatus": {
+                "type": "string",
+                "description": "Previous order status"
+              },
+              "newStatus": {
+                "type": "string",
+                "description": "New order status"
+              }
+            },
+            "required": [
+              "cardToken",
+              "cardOrderId",
+              "oldStatus",
+              "newStatus"
+            ],
+            "description": "Physical card order status change data",
+            "example": {
+              "cardToken": "card_123",
+              "cardOrderId": "order_456",
+              "oldStatus": "ordered",
+              "newStatus": "shipped"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when the status of a physical card order changes.",
+        "example": {
+          "eventType": "physical.card.order.status.changed",
+          "data": {
+            "cardToken": "card_123",
+            "cardOrderId": "order_456",
+            "oldStatus": "ordered",
+            "newStatus": "shipped"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "physical.card.order.status.changed",
+  "data": {
+    "cardToken": "card_123",
+    "cardOrderId": "order_456",
+    "oldStatus": "ordered",
+    "newStatus": "shipped"
+  }
+}
+```
+
+### physical.card.ordered
+
+Triggered when a physical card is ordered.
+
+**Event Type**: `physical.card.ordered`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "physical.card.ordered";
+  data: {
+    /** Card token */
+    cardToken: string;
+    /** Card order ID */
+    id: string;
+    /** Order status */
+    status: string;
+    /** Name to emboss on card */
+    embossedName: string;
+    /** Primary address */
+    address1: string;
+    /** Secondary address */
+    address2: string;
+    /** City */
+    city: string;
+    /** Postal code */
+    postalCode: string;
+    /** State */
+    state: string;
+    /** Country */
+    country: string;
+    /** Phone number */
+    phone: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "physical.card.ordered Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a physical card is ordered."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "physical.card.ordered"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Card token"
+              },
+              "id": {
+                "type": "string",
+                "description": "Card order ID"
+              },
+              "status": {
+                "type": "string",
+                "description": "Order status"
+              },
+              "embossedName": {
+                "type": "string",
+                "description": "Name to emboss on card"
+              },
+              "address1": {
+                "type": "string",
+                "nullable": true,
+                "description": "Primary address"
+              },
+              "address2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Secondary address"
+              },
+              "city": {
+                "type": "string",
+                "nullable": true,
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "nullable": true,
+                "description": "Postal code"
+              },
+              "state": {
+                "type": "string",
+                "nullable": true,
+                "description": "State"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "Phone number"
+              }
+            },
+            "required": [
+              "cardToken",
+              "id",
+              "status",
+              "embossedName",
+              "address1",
+              "address2",
+              "city",
+              "postalCode",
+              "state",
+              "country",
+              "phone"
+            ],
+            "description": "Physical card order data",
+            "example": {
+              "cardToken": "card_123",
+              "id": "order_456",
+              "status": "ordered",
+              "embossedName": "John Doe",
+              "address1": "123 Main Street",
+              "address2": "Apt 4B",
+              "city": "New York",
+              "postalCode": "10001",
+              "state": "NY",
+              "country": "US",
+              "phone": "+1234567890"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a physical card is ordered.",
+        "example": {
+          "eventType": "physical.card.ordered",
+          "data": {
+            "cardToken": "card_123",
+            "id": "order_456",
+            "status": "ordered",
+            "embossedName": "John Doe",
+            "address1": "123 Main Street",
+            "address2": "Apt 4B",
+            "city": "New York",
+            "postalCode": "10001",
+            "state": "NY",
+            "country": "US",
+            "phone": "+1234567890"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "physical.card.ordered",
+  "data": {
+    "cardToken": "card_123",
+    "id": "order_456",
+    "status": "ordered",
+    "embossedName": "John Doe",
+    "address1": "123 Main Street",
+    "address2": "Apt 4B",
+    "city": "New York",
+    "postalCode": "10001",
+    "state": "NY",
+    "country": "US",
+    "phone": "+1234567890"
+  }
+}
+```
+
+### physical.card.pin.changed
+
+Triggered when a physical card's PIN is changed.
+
+**Event Type**: `physical.card.pin.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "physical.card.pin.changed";
+  data: {
+    /** Unique card token identifier */
+    cardToken: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "physical.card.pin.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a physical card's PIN is changed."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "physical.card.pin.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Unique card token identifier"
+              }
+            },
+            "required": [
+              "cardToken"
+            ],
+            "description": "Card token data",
+            "example": {
+              "cardToken": "card_123456789"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a physical card's PIN is changed.",
+        "example": {
+          "eventType": "physical.card.pin.changed",
+          "data": {
+            "cardToken": "card_123456789"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "physical.card.pin.changed",
+  "data": {
+    "cardToken": "card_123456789"
+  }
+}
+```
+
+### virtual.card.issued
+
+Triggered when a virtual card is issued.
+
+**Event Type**: `virtual.card.issued`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "virtual.card.issued";
+  data: {
+    /** Unique card token identifier */
+    cardToken: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "virtual.card.issued Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a virtual card is issued."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "virtual.card.issued"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "cardToken": {
+                "type": "string",
+                "description": "Unique card token identifier"
+              }
+            },
+            "required": [
+              "cardToken"
+            ],
+            "description": "Card token data",
+            "example": {
+              "cardToken": "card_123456789"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a virtual card is issued.",
+        "example": {
+          "eventType": "virtual.card.issued",
+          "data": {
+            "cardToken": "card_123456789"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "virtual.card.issued",
+  "data": {
+    "cardToken": "card_123456789"
+  }
+}
+```
+
+## Account Events
+
+### account.limit.changed
+
+Triggered when an account's limit changes.
+
+**Event Type**: `account.limit.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "account.limit.changed";
+  data: {
+    /** Previous account limit */
+    oldLimit: number;
+    /** New account limit */
+    newLimit: number;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "account.limit.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an account's limit changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "account.limit.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "oldLimit": {
+                "type": "number",
+                "description": "Previous account limit"
+              },
+              "newLimit": {
+                "type": "number",
+                "description": "New account limit"
+              }
+            },
+            "required": [
+              "oldLimit",
+              "newLimit"
+            ],
+            "description": "Account limit change data",
+            "example": {
+              "oldLimit": 1000,
+              "newLimit": 2000
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an account's limit changes.",
+        "example": {
+          "eventType": "account.limit.changed",
+          "data": {
+            "oldLimit": 1000,
+            "newLimit": 2000
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "account.limit.changed",
+  "data": {
+    "oldLimit": 1000,
+    "newLimit": 2000
+  }
+}
+```
+
+### account.withdrawal.completed
+
+Triggered when an account withdrawal is completed.
+
+**Event Type**: `account.withdrawal.completed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "account.withdrawal.completed";
+  data: {
+    /** Transaction ID */
+    id: string;
+    /** Safe address */
+    safeAddress: string;
+    /** Transaction data */
+    transactionData: string;
+    /** Enqueue task ID */
+    enqueueTaskId: string;
+    /** Dispatch task ID */
+    dispatchTaskId: string;
+    /** Ready timestamp */
+    readyAt: string;
+    /** Operation type for delay transaction */
+    operationType: "CALL" | "DELEGATECALL";
+    /** User ID */
+    userId: string;
+    /** Delay transaction status */
+    status: "QUEUING" | "WAITING" | "EXECUTING" | "EXECUTED" | "FAILED";
+    /** Creation timestamp */
+    createdAt: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "account.withdrawal.completed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an account withdrawal is completed."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "account.withdrawal.completed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Transaction ID"
+              },
+              "safeAddress": {
+                "type": "string",
+                "description": "Safe address"
+              },
+              "transactionData": {
+                "type": "string",
+                "description": "Transaction data"
+              },
+              "enqueueTaskId": {
+                "type": "string",
+                "description": "Enqueue task ID"
+              },
+              "dispatchTaskId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Dispatch task ID"
+              },
+              "readyAt": {
+                "type": "string",
+                "nullable": true,
+                "format": "date",
+                "description": "Ready timestamp"
+              },
+              "operationType": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "CALL",
+                  "DELEGATECALL"
+                ],
+                "description": "Operation type for delay transaction",
+                "example": "CALL"
+              },
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "QUEUING",
+                  "WAITING",
+                  "EXECUTING",
+                  "EXECUTED",
+                  "FAILED"
+                ],
+                "description": "Delay transaction status",
+                "example": "EXECUTED"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date",
+                "description": "Creation timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "safeAddress",
+              "transactionData",
+              "enqueueTaskId",
+              "dispatchTaskId",
+              "readyAt",
+              "operationType",
+              "userId",
+              "status",
+              "createdAt"
+            ],
+            "description": "Delay transaction data",
+            "example": {
+              "id": "tx_123",
+              "safeAddress": "0x123...",
+              "transactionData": "0x456...",
+              "enqueueTaskId": "task_789",
+              "dispatchTaskId": "task_101",
+              "readyAt": "2025-09-03T16:03:21.316Z",
+              "operationType": "CALL",
+              "userId": "user_123",
+              "status": "EXECUTED",
+              "createdAt": "2025-09-03T16:03:21.316Z"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an account withdrawal is completed.",
+        "example": {
+          "eventType": "account.withdrawal.completed",
+          "data": {
+            "id": "tx_123",
+            "safeAddress": "0x123...",
+            "transactionData": "0x456...",
+            "enqueueTaskId": "task_789",
+            "dispatchTaskId": "task_101",
+            "readyAt": "2025-09-03T16:03:21.316Z",
+            "operationType": "CALL",
+            "userId": "user_123",
+            "status": "EXECUTED",
+            "createdAt": "2025-09-03T16:03:21.316Z"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "account.withdrawal.completed",
+  "data": {
+    "id": "tx_123",
+    "safeAddress": "0x123...",
+    "transactionData": "0x456...",
+    "enqueueTaskId": "task_789",
+    "dispatchTaskId": "task_101",
+    "readyAt": "2025-09-03T16:03:21.316Z",
+    "operationType": "CALL",
+    "userId": "user_123",
+    "status": "EXECUTED",
+    "createdAt": "2025-09-03T16:03:21.316Z"
+  }
+}
+```
+
+### account.withdrawal.failed
+
+Triggered when an account withdrawal fails.
+
+**Event Type**: `account.withdrawal.failed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "account.withdrawal.failed";
+  data: {
+    /** Error message */
+    error: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "account.withdrawal.failed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an account withdrawal fails."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "account.withdrawal.failed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "error": {
+                "type": "string",
+                "description": "Error message"
+              }
+            },
+            "required": [
+              "error"
+            ],
+            "description": "Error data",
+            "example": {
+              "error": "Transaction failed"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an account withdrawal fails.",
+        "example": {
+          "eventType": "account.withdrawal.failed",
+          "data": {
+            "error": "Transaction failed"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "account.withdrawal.failed",
+  "data": {
+    "error": "Transaction failed"
+  }
+}
+```
+
+## Banking Events
+
+### iban.created
+
+Triggered when an IBAN is created for a user.
+
+**Event Type**: `iban.created`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "iban.created";
+  data: {
+    /** International Bank Account Number */
+    iban: string;
+    /** Bank Identifier Code */
+    bic: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "iban.created Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an IBAN is created for a user."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "iban.created"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "iban": {
+                "type": "string",
+                "description": "International Bank Account Number"
+              },
+              "bic": {
+                "type": "string",
+                "description": "Bank Identifier Code"
+              }
+            },
+            "required": [
+              "iban",
+              "bic"
+            ],
+            "description": "IBAN data",
+            "example": {
+              "iban": "GB82WEST12345698765432",
+              "bic": "WESTGB22"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an IBAN is created for a user.",
+        "example": {
+          "eventType": "iban.created",
+          "data": {
+            "iban": "GB82WEST12345698765432",
+            "bic": "WESTGB22"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "iban.created",
+  "data": {
+    "iban": "GB82WEST12345698765432",
+    "bic": "WESTGB22"
+  }
+}
+```
+
+### iban.status.changed
+
+Triggered when an IBAN's status changes.
+
+**Event Type**: `iban.status.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "iban.status.changed";
+  data: {
+    /** IBAN status */
+    previousStatus: "NOTSTARTED" | "PENDING" | "PENDING_OAUTH" | "ASSIGNED";
+    /** IBAN status */
+    currentStatus: "NOTSTARTED" | "PENDING" | "PENDING_OAUTH" | "ASSIGNED";
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "iban.status.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an IBAN's status changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "iban.status.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "previousStatus": {
+                "type": "string",
+                "enum": [
+                  "NOTSTARTED",
+                  "PENDING",
+                  "PENDING_OAUTH",
+                  "ASSIGNED"
+                ],
+                "description": "IBAN status",
+                "example": "ASSIGNED"
+              },
+              "currentStatus": {
+                "type": "string",
+                "enum": [
+                  "NOTSTARTED",
+                  "PENDING",
+                  "PENDING_OAUTH",
+                  "ASSIGNED"
+                ],
+                "description": "IBAN status",
+                "example": "ASSIGNED"
+              }
+            },
+            "required": [
+              "previousStatus",
+              "currentStatus"
+            ],
+            "description": "IBAN status change data",
+            "example": {
+              "previousStatus": "PENDING",
+              "currentStatus": "ASSIGNED"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an IBAN's status changes.",
+        "example": {
+          "eventType": "iban.status.changed",
+          "data": {
+            "previousStatus": "PENDING",
+            "currentStatus": "ASSIGNED"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "iban.status.changed",
+  "data": {
+    "previousStatus": "PENDING",
+    "currentStatus": "ASSIGNED"
+  }
+}
+```
+
+## Safe Wallet Events
+
+### safe.created
+
+Triggered when a Safe wallet is created.
+
+**Event Type**: `safe.created`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "safe.created";
+  data: {
+    /** Safe account ID */
+    id: string;
+    /** Safe account address */
+    address: string;
+    /** Account salt */
+    salt: string;
+    /** Blockchain chain ID */
+    chainId: string;
+    /** User ID */
+    userId: string;
+    /** Token symbol */
+    tokenSymbol: "GBPe" | "EURe" | "USDCe";
+    /** Creation timestamp */
+    createdAt: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "safe.created Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a Safe wallet is created."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "safe.created"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Safe account ID"
+              },
+              "address": {
+                "type": "string",
+                "description": "Safe account address"
+              },
+              "salt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Account salt"
+              },
+              "chainId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Blockchain chain ID"
+              },
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
+              "tokenSymbol": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "GBPe",
+                  "EURe",
+                  "USDCe"
+                ],
+                "description": "Token symbol",
+                "example": "EURe"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Creation timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "address",
+              "salt",
+              "chainId",
+              "userId",
+              "tokenSymbol",
+              "createdAt"
+            ],
+            "description": "Safe account data",
+            "example": {
+              "id": "safe_123",
+              "address": "0x456...",
+              "salt": "salt_123",
+              "chainId": "100",
+              "userId": "user_123",
+              "tokenSymbol": "EURe",
+              "createdAt": "2025-09-03T16:03:21.315Z"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a Safe wallet is created.",
+        "example": {
+          "eventType": "safe.created",
+          "data": {
+            "id": "safe_123",
+            "address": "0x456...",
+            "salt": "salt_123",
+            "chainId": "100",
+            "userId": "user_123",
+            "tokenSymbol": "EURe",
+            "createdAt": "2025-09-03T16:03:21.315Z"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "safe.created",
+  "data": {
+    "id": "safe_123",
+    "address": "0x456...",
+    "salt": "salt_123",
+    "chainId": "100",
+    "userId": "user_123",
+    "tokenSymbol": "EURe",
+    "createdAt": "2025-09-03T16:03:21.315Z"
+  }
+}
+```
+
+### safe.currency.updated
+
+Triggered when a Safe's currency is updated.
+
+**Event Type**: `safe.currency.updated`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "safe.currency.updated";
+  data: {
+    /** Safe account ID */
+    id: string;
+    /** Safe account address */
+    address: string;
+    /** Account salt */
+    salt: string;
+    /** Blockchain chain ID */
+    chainId: string;
+    /** User ID */
+    userId: string;
+    /** Token symbol */
+    tokenSymbol: "GBPe" | "EURe" | "USDCe";
+    /** Creation timestamp */
+    createdAt: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "safe.currency.updated Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a Safe's currency is updated."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "safe.currency.updated"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Safe account ID"
+              },
+              "address": {
+                "type": "string",
+                "description": "Safe account address"
+              },
+              "salt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Account salt"
+              },
+              "chainId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Blockchain chain ID"
+              },
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
+              "tokenSymbol": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "GBPe",
+                  "EURe",
+                  "USDCe"
+                ],
+                "description": "Token symbol",
+                "example": "EURe"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Creation timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "address",
+              "salt",
+              "chainId",
+              "userId",
+              "tokenSymbol",
+              "createdAt"
+            ],
+            "description": "Safe account data",
+            "example": {
+              "id": "safe_123",
+              "address": "0x456...",
+              "salt": "salt_123",
+              "chainId": "100",
+              "userId": "user_123",
+              "tokenSymbol": "EURe",
+              "createdAt": "2025-09-03T16:03:21.315Z"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a Safe's currency is updated.",
+        "example": {
+          "eventType": "safe.currency.updated",
+          "data": {
+            "id": "safe_123",
+            "address": "0x456...",
+            "salt": "salt_123",
+            "chainId": "100",
+            "userId": "user_123",
+            "tokenSymbol": "EURe",
+            "createdAt": "2025-09-03T16:03:21.315Z"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "safe.currency.updated",
+  "data": {
+    "id": "safe_123",
+    "address": "0x456...",
+    "salt": "salt_123",
+    "chainId": "100",
+    "userId": "user_123",
+    "tokenSymbol": "EURe",
+    "createdAt": "2025-09-03T16:03:21.315Z"
+  }
+}
+```
+
+### safe.modules.deployed
+
+Triggered when Safe modules are deployed.
+
+**Event Type**: `safe.modules.deployed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "safe.modules.deployed";
+  data: {
+    /** Safe account ID */
+    id: string;
+    /** Safe account address */
+    address: string;
+    /** Account salt */
+    salt: string;
+    /** Blockchain chain ID */
+    chainId: string;
+    /** User ID */
+    userId: string;
+    /** Token symbol */
+    tokenSymbol: "GBPe" | "EURe" | "USDCe";
+    /** Creation timestamp */
+    createdAt: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "safe.modules.deployed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when Safe modules are deployed."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "safe.modules.deployed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Safe account ID"
+              },
+              "address": {
+                "type": "string",
+                "description": "Safe account address"
+              },
+              "salt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Account salt"
+              },
+              "chainId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Blockchain chain ID"
+              },
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
+              "tokenSymbol": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "GBPe",
+                  "EURe",
+                  "USDCe"
+                ],
+                "description": "Token symbol",
+                "example": "EURe"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Creation timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "address",
+              "salt",
+              "chainId",
+              "userId",
+              "tokenSymbol",
+              "createdAt"
+            ],
+            "description": "Safe account data",
+            "example": {
+              "id": "safe_123",
+              "address": "0x456...",
+              "salt": "salt_123",
+              "chainId": "100",
+              "userId": "user_123",
+              "tokenSymbol": "EURe",
+              "createdAt": "2025-09-03T16:03:21.315Z"
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when Safe modules are deployed.",
+        "example": {
+          "eventType": "safe.modules.deployed",
+          "data": {
+            "id": "safe_123",
+            "address": "0x456...",
+            "salt": "salt_123",
+            "chainId": "100",
+            "userId": "user_123",
+            "tokenSymbol": "EURe",
+            "createdAt": "2025-09-03T16:03:21.315Z"
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "safe.modules.deployed",
+  "data": {
+    "id": "safe_123",
+    "address": "0x456...",
+    "salt": "salt_123",
+    "chainId": "100",
+    "userId": "user_123",
+    "tokenSymbol": "EURe",
+    "createdAt": "2025-09-03T16:03:21.315Z"
+  }
+}
+```
+
+### safe.owner.added
+
+Triggered when an owner is added to a Safe.
+
+**Event Type**: `safe.owner.added`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "safe.owner.added";
+  data: {
+    /** Current owner address */
+    owner: string;
+    /** Safe address */
+    safeAddress: string;
+    /** Newly added owner address */
+    addedOwner: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "safe.owner.added Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an owner is added to a Safe."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "safe.owner.added"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "owner": {
+                "type": "string",
+                "description": "Current owner address"
+              },
+              "safeAddress": {
+                "type": "string",
+                "description": "Safe address"
+              },
+              "addedOwner": {
+                "type": "string",
+                "description": "Newly added owner address"
+              }
+            },
+            "required": [
+              "owner",
+              "safeAddress",
+              "addedOwner"
+            ],
+            "description": "Safe owner added data",
+            "example": {
+              "owner": "0x123...",
+              "safeAddress": "0x456...",
+              "addedOwner": "0x789..."
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an owner is added to a Safe.",
+        "example": {
+          "eventType": "safe.owner.added",
+          "data": {
+            "owner": "0x123...",
+            "safeAddress": "0x456...",
+            "addedOwner": "0x789..."
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "safe.owner.added",
+  "data": {
+    "owner": "0x123...",
+    "safeAddress": "0x456...",
+    "addedOwner": "0x789..."
+  }
+}
+```
+
+### safe.owner.removed
+
+Triggered when an owner is removed from a Safe.
+
+**Event Type**: `safe.owner.removed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "safe.owner.removed";
+  data: {
+    safeAddress: string;
+    removedOwner: string;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "safe.owner.removed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an owner is removed from a Safe."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "safe.owner.removed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "safeAddress": {
+                "type": "string"
+              },
+              "removedOwner": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "safeAddress",
+              "removedOwner"
+            ]
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an owner is removed from a Safe.",
+        "example": {
+          "eventType": "safe.owner.removed",
+          "data": {
+            "safeAddress": "0x456...",
+            "removedOwner": "0x789..."
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "safe.owner.removed",
+  "data": {
+    "safeAddress": "0x456...",
+    "removedOwner": "0x789..."
+  }
+}
+```
