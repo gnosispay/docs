@@ -14,7 +14,8 @@ The withdrawal process involves the following steps:
 
 <Warning>
 Please remember the following:
-- Transaction signing wallet must be one of the Gnosis Pay Safe signers
+- The signing wallet must be one of the Gnosis Pay Safe signers (EOA or smart contract wallet)
+- For smart contract wallets, signatures are verified using ERC-1271 standard
 - Withdrawals are processed after a 3-minute delay as transactions are going through the Gnosis Pay delay relay
 - Cards are temporarily frozen for 3 minutes during withdrawal processing as a security measure
 </Warning>
@@ -34,18 +35,22 @@ curl -X GET \
 The response contains EIP-712 typed data that needs to be signed by the user's wallet.
 
 </Step>
-<Step title="Sign the Transaction with the User's EOA wallet">
-The typed data from Step 1 must be signed by the user's wallet using the EIP-712 standard.
+<Step title="Sign the EIP-712 Typed Data">
+The EIP-712 typed data from Step 1 must be signed by the user's wallet using the EIP-712 signature standard.
 
-<Warning>
-The wallet which is used to sign the transaction must be a signer of the Gnosis Pay Safe account.
-</Warning>
+<Note>
+**Wallet Requirements:**
+- The wallet must be a signer of the Gnosis Pay Safe account
+- For **EOA wallets**: Standard EIP-712 signature is used
+- For **smart contract wallets**: ERC-1271 signature verification is used, and you must include the `smartWalletAddress` field in the request body
+</Note>
 </Step>
 <Step title="Submit Transaction">
 
 Once signed, [submit the transaction to execute the withdrawal](/api-reference/account-management/withdraw-from-the-users-safe-account):
 
 ```bash cURL
+# For EOA wallets
 curl -X POST \
 /api/v1/accounts/withdraw \
 -H "Content-Type: application/json" \
@@ -58,6 +63,22 @@ curl -X POST \
     "salt": "0x1234567890...abcdef",
     "data": "0x123456...00de0b6b3a7640000"
   }
+}'
+
+# For smart contract wallets (include smartWalletAddress)
+curl -X POST \
+/api/v1/accounts/withdraw \
+-H "Content-Type: application/json" \
+-d '{
+  "tokenAddress": "0x123456....",
+  "to": "0x78910...",
+  "amount": "1000000000000000000",
+  "signature": "0x1234567890abcdef...",
+  "message": {
+    "salt": "0x1234567890...abcdef",
+    "data": "0x123456...00de0b6b3a7640000"
+  },
+  "smartWalletAddress": "0x..."
 }'
 ```
 
@@ -78,8 +99,6 @@ You can monitor the transaction status using the [delay-relay monitoring endpoin
 The following example demonstrates the complete flow:
 
 ```typescript
-const safeAddress = "0x...";
-const safeSignerAddress = "0x...";
 const tokenAddress = "0x..."; // Token contract address
 const toAddress = "0x..."; // Destination address
 const amount = "1000000000000000000"; // Amount in token base units
@@ -112,6 +131,8 @@ const submitResponse = await fetch("https://api.gnosispay.com/api/v1/accounts/wi
     amount,
     signature,
     message: typedData.message,
+    // Include smartWalletAddress if using a smart contract wallet
+    // smartWalletAddress: "0x...",
   }),
 });
 
