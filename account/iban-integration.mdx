@@ -49,14 +49,15 @@ Monerium requires a specific message to be signed by the User's wallet.
 curl -X GET /api/v1/ibans/signing-message
 ```
 
-To request signature from your gnosis safe, you can follow this [demo signature implementation](#message-signing-example-with-gnosispay-account-kit).
+To request signature from the User's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
 
 <Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
 </Warning>
-</Step>
-<Step title="Request the IBAN from Monerium">
 
+</Step>
+
+<Step title="Request the IBAN from Monerium">
 
 [Make a POST request to endpoint to request IBAN integration for Gnosis Pay user](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration):
 
@@ -75,7 +76,6 @@ If the request is successful, you will receive a response with the IBAN details.
 Monerium only allows the user to have one single account with them. If monerium account **already exists**, then there is **no need** to call this endpoint.
 </Warning>
 
-
 </Step>
 
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
@@ -86,6 +86,8 @@ Monerium only allows the user to have one single account with them. If monerium 
 curl -X GET /api/v1/ibans/details
 ```
 </Step>
+
+</Steps>
 
 ## Message Signing Example with Viem
 
