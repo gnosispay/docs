@@ -69,7 +69,7 @@
           },
           {
             "group": "KYC",
-            "icon": "data",
+            "icon": "person",
             "pages": ["kyc/kyc-sharing"]
           }
         ]

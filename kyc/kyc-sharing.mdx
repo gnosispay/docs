@@ -1,16 +1,25 @@
 ---
 title: Share Gnosis Pay KYC with GP Partners
-description: This guide explains how to share your existing Gnosis Pay KYC data with GP Partners using Sumsub's reusable token system.
+description: This guide explains how to share existing Gnosis Pay KYC data with GP Partners using Sumsub's reusable token system.
 ---
+
+## KYC Sharing Partners
+
+The following partners are currently available for KYC data sharing:
+
+| Partner | Sumsub Client ID |
+|---------|------------------|
+| Noah | `noah.com_112876` |
+| BRLA | `brla.digital_101963` |
 
 <Steps titleSize="h3">
     <Step title="Get Partner's Sumsub Client ID">
-        Contact the GP Partner team to obtain their SumSub Client ID, which is required for sharing Gnosis Pay KYC data of users.
+        For existing partners available for KYC sharing, use one of the Client IDs from the table above. For partners not listed in the table, contact the Partner team to obtain their SumSub Client ID.
     </Step>
 
 <Step title="Share KYC Data">
     <p>
-      Once you have obtained the Sumsub Client ID, you can generate a reusable token using the Gnosis Pay API.
+      Once the Sumsub Client ID has been obtained, generate a reusable token using the Gnosis Pay API.
     </p>
 
       ```bash cURL
@@ -19,7 +28,7 @@ description: This guide explains how to share your existing Gnosis Pay KYC data 
         --header 'Authorization: Bearer <token>' \
         --header 'Content-Type: application/json' \
         --data '{
-        "forClientId": "CoolCoinLtd",
+        "forClientId": "noah.com_112876",
         "ttlInSecs": 600
       }'
       ```
@@ -27,7 +36,7 @@ description: This guide explains how to share your existing Gnosis Pay KYC data 
 
 <Step title="Get applicant data from Sumsub">
     <p>
-    You can pass this token to sumsub's API and import the applicant data. To learn more about how to use sumsub's API, visit their documentation [here](https://docs.sumsub.com/docs/copy-applicant).
+    Share this token to Sumsub's API to import the applicant data. To learn more about how to use Sumsub's API, visit their documentation [here](https://docs.sumsub.com/docs/copy-applicant).
     </p>
 
       ```bash cURL
