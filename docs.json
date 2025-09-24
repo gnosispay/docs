@@ -54,7 +54,7 @@
               "gp-onchain/overview",
               "gp-onchain/about-GP-safe",
               "gp-onchain/sign-message",
-              "gp-onchain/onchain-daily-limit",
+              "gp-onchain/daily-limit",
               "gp-onchain/withdraw-funds-from-safe"
             ]
           },
