@@ -21,7 +21,7 @@
             "group": "Accounts",
             "icon": "user",
             "pages": [
-              "account",
+              "account/index",
               "account/update-authenticated-account",
               "account/adding-safe-owner",
               "account/iban-integration"
@@ -66,6 +66,11 @@
               "webhooks/getting-started",
               "webhooks/events"
             ]
+          },
+          {
+            "group": "KYC",
+            "icon": "data",
+            "pages": ["kyc/kyc-sharing"]
           }
         ]
       },

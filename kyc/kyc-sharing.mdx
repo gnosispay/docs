@@ -1,0 +1,44 @@
+---
+title: Share Gnosis Pay KYC with GP Partners
+description: This guide explains how to share your existing Gnosis Pay KYC data with GP Partners using Sumsub's reusable token system.
+---
+
+<Steps titleSize="h3">
+    <Step title="Get Partner's Sumsub Client ID">
+        Contact the GP Partner team to obtain their SumSub Client ID, which is required for sharing Gnosis Pay KYC data of users.
+    </Step>
+
+<Step title="Share KYC Data">
+    <p>
+      Once you have obtained the Sumsub Client ID, you can generate a reusable token using the Gnosis Pay API.
+    </p>
+
+      ```bash cURL
+      curl --request POST \
+        --url https://api.gnosispay.com/api/v1/kyc/import-partner-applicant \
+        --header 'Authorization: Bearer <token>' \
+        --header 'Content-Type: application/json' \
+        --data '{
+        "forClientId": "CoolCoinLtd",
+        "ttlInSecs": 600
+      }'
+      ```
+</Step>
+
+<Step title="Get applicant data from Sumsub">
+    <p>
+    You can pass this token to sumsub's API and import the applicant data. To learn more about how to use sumsub's API, visit their documentation [here](https://docs.sumsub.com/docs/copy-applicant).
+    </p>
+
+      ```bash cURL
+      curl -X POST \
+         'https://api.sumsub.com/resources/applicants/-/import?shareToken=_act-0b8a43f6-b70f-4ad3-bda9-7ce904589380'
+      ```
+</Step>
+</Steps>
+
+<Note>
+    <p>
+        <strong>Note:</strong> Ensure that the GP Partner has enabled the SumSub integration in their system before sharing the KYC data.
+    </p>
+</Note>
