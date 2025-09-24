@@ -26,13 +26,13 @@ curl -X GET /api/v1/ibans/available
 If you receive a `"available": false`, the flow ends here.
 
 <Warning>
-Requirements the User must have:
+Requirements the gnosis pay user must have:
+- Valid DOB
 - An active EURe Safe Account
 - KYC verified and approved
 - Residency in a supported country
-- Valid DOB
-- Valid location fields filled in (address1 , postalCode, city and country,none of these fields can be missing)
 - First and last name defined (or name)
+- Valid location fields filled in (address1 , postalCode, city and country,none of these fields can be missing)
 - Nationality from a supported country ([see allowed and restricted nationalities](https://help.gnosispay.com/hc/en-us/articles/39558629298708-Eligible-Nationalities-for-the-Gnosis-Pay-IBAN-Feature))
 </Warning>
 
