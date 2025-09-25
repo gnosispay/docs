@@ -49,11 +49,17 @@ Monerium requires a specific message to be signed by the User's wallet.
 curl -X GET /api/v1/ibans/signing-message
 ```
 
-To request signature from the User's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
-
 <Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
 </Warning>
+
+</Step>
+
+<Step title="Sign the Message with the User's Wallet">
+
+Use the message string returned from [step 1](#signing-the-monerium-message) to generate a signature with the user's wallet.
+
+To request signature from the User's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
 
 </Step>
 
