@@ -11,13 +11,13 @@ Let's jump right in!
 
 ## 1. Authentication
 
-First things first: your users need to authenticate with our API. 
-This is covered in detail in the [Authentication Flow](/auth) section. 
+First things first: your users need to authenticate with our API.
+This is covered in detail in the [Authentication Flow](/auth) section.
 Once they're authenticated, you'll get a `jwt`, you'll need it for all the next steps.
 
 ## 2. User Registration
 
-Now that you've got your `jwt` token, it's time to register your user in the Gnosis Pay system. 
+Now that you've got your `jwt` token, it's time to register your user in the Gnosis Pay system.
 
 <Note>
 There are 2 ways to know whether they are already registered or not:
@@ -41,10 +41,10 @@ The OTP will arrive in their inbox from `team@gnosispay.com` and is valid for 5 
 </Step>
 
 <Step title="Verify the OTP">
-Once your user gets the code, you can [create a new user](/api-reference/authentication/create-a-new-user).  
+Once your user gets the code, you can [create a new user](/api-reference/authentication/create-a-new-user).
 
 <Note>
-You will need to pass the `partnerId`, which is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.  
+You will need to pass the `partnerId`, which is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.
 </Note>
 
 If you have a `referralCouponCode`, you can include it here too.
@@ -119,15 +119,15 @@ You should start the KYC process if your user is registered and their `kycStatus
 
 <Steps titleSize="h3">
 <Step title="Get the Sumsub iframe URL or SDK token">
-By default, each user gets a unique URL for their KYC process. 
+By default, each user gets a unique URL for their KYC process.
 Get it with [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification):
 
 ```bash cURL
 curl -X GET /api/v1/kyc/integration
 ```
 
-For mobile integrations, you can use the Sumsub Mobile SDK. 
-To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification-for-sdk): 
+For mobile integrations, you can use the Sumsub Mobile SDK.
+To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification-for-sdk):
 
 ```bash cURL
 curl -X GET /api/v1/kyc/integration/sdk
@@ -161,7 +161,7 @@ Users should be ready for this step if:
 - the field `isSourceOfFundsAnswered` on the user endpoint response is `false`
 </Note>
 
-You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-the-source-of-funds-questions): 
+You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-the-source-of-funds-questions):
 
 ```bash cURL
 curl -X GET /api/v1/source-of-funds
@@ -194,7 +194,7 @@ This step is needed if:
 - `isPhoneValidated` is `false` in the user endpoint response
 </Note>
 
-Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/request-an-otp-to-verify-a-phone-number): 
+Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/request-an-otp-to-verify-a-phone-number):
 
 ```bash cURL
 curl -X POST /api/v1/verification \
@@ -203,7 +203,7 @@ curl -X POST /api/v1/verification \
 }'
 ```
 
-This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/validates-an-otp-code-to-verify-a-phone-number): 
+This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/validates-an-otp-code-to-verify-a-phone-number):
 
 ```bash cURL
 curl -X POST /api/v1/verification/check \
@@ -216,17 +216,9 @@ Once that's done, `isPhoneValidated` will be `true`.
 </Step>
 </Steps>
 
-## 4. Safe Account Configuration
-
-Gnosis Pay uses Safe accounts for on-chain transactions. Once your user has completed the previous steps, you're ready to help them set up their Safe account. Here's the flow:
-
-1. Creating a Safe account [(`POST /api/v1/account`)](/api-reference/safe-management/create-or-deploy-a-safe-account-for-the-authenticated-user)
-2. Setting the Safe currency [(`POST /api/v1/safe/set-currency`)](/api-reference/safe-management/set-the-currency-for-a-users-safe-account-based-on-their-country)
-3. Getting signature data for modules setup [(`GET /api/v1/account/signature-payload`)](/api-reference/safe-management/get-signature-data-for-account-setup)
-4. Deploying Safe modules with the user's signature [(`PATCH /api/v1/account/deploy-safe-modules`)](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature)
 
 <Note>
-Your user is ready for Safe configuration if:
+User's safe is ready for configuration if:
 - They are registered (`userId` in JWT)
 - `kycStatus` is `approved`
 - `isSourceOfFundsAnswered` is `true`
@@ -234,166 +226,60 @@ Your user is ready for Safe configuration if:
 - `safeWallet` is an empty array in the user endpoint response
 </Note>
 
+## 4. Safe Account Configuration
 
-<Steps titleSize="h3">
-<Step title="Create a Safe Account">
-The first step is to create and deploy a Safe account for the user. [(spec)](/api-reference/safe-management/create-or-deploy-a-safe-account-for-the-authenticated-user)
-```bash cURL
-curl -X POST /api/v1/account \
--d '{
-  "chainId": "100"
-}'
-```
+Gnosis Pay uses Safe accounts for on-chain transactions. This endpoint deploys GP Safe with currency and setup delay and roles modules for the GP Safe.
 
-Heads up: this endpoint waits for on-chain confirmation (it can take up to 10 seconds). The response will include `deployed: true` if it worked, and a `transactionHash` you can use to track it.
-
-<Note>
-After this, `safeWallet` from the user response from  [`GET /api/v1/user` endpoint](/api-reference/user/get-the-user-profile) won't be empty anymore.
-</Note>
-</Step>
-
-<Step title="Set the Safe Currency">
-After deploying the Safe, we will need to have the currency set for the account. This currency determines which token will be used for transactions.
-
-<Note>
-Before doing this, note that the fields `tokenSymbol` and `fiatSymbol` are `null` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
-</Note>
-
-Use the following endpoint to set the currency [(spec)](/api-reference/safe-management/set-the-currency-for-a-users-safe-account-based-on-their-country):
-
-```bash cURL
-curl -X POST /api/v1/safe/set-currency
-```
-
-<Warning> 
 The currency is automatically assigned based on the user's country:
 
 - UK users (GB): GBPe
 - Brazil users (BR): USDCe
 - Users from other countries: EURe (default)
-</Warning> 
-
-</Step>
-
-<Step title="Getting Signature Data for Modules Setup">
-
-Once the Safe is deployed and the currency is set, you need to get the data that will be signed by the user's wallet to set up the Safe modules.
 
 <Note>
-Before this, note that the field `accountStatus` is `null` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
+Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
+`accountStatus: 0` would mean that the Safe modules are already deployed.
 </Note>
 
-You can get the data to be signed with the following endpoint  [(spec)](/api-reference/safe-management/get-signature-data-for-account-setup).
+
 ```bash cURL
-curl -X GET /api/v1/account/signature-payload
+curl --request POST \
+  --url https://api.gnosispay.com/api/v1/safe/deploy \
+  --header 'Authorization: Bearer <token>'
+```
+<Note>
+  If safe deployment request is successful, it will return as "accepted" from endpoint. From here it can take up to 1 minute for safe deployment and module setup.
+</Note>
+
+## 5. Monitor Safe Deployment Status
+
+After initiating the GP Safe deployment, monitor the deployment progress using the [v1/safe/deploy](https://docs.gnosispay.com/api-reference/safe-management/get-the-safe-deployment-status) endpoint:
+
+```bash cURL
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/safe/deploy \
+  --header 'Authorization: Bearer <token>'
 ```
 
-<Warning>
-- This signature setup configures Safe account allowances and delay mechanisms required for secure operation.
-- The response contains structured data compatible with the EIP-712 signature standard.
-</Warning>
+### Verify safe configuration post deployment
 
-</Step>
+Once deployment is complete, verify the Safe is fully configured by checking the account status:
 
-<Step title="Signing and Deploying Safe Modules">
-
-The final step is to sign the data with the user's wallet and deploy the Safe modules.
+```bash cURL
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/safe-config \
+  --header 'Authorization: Bearer <token>'
+```
 
 <Note>
-Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user). `accountStatus: 0` would mean that the Safe modules are already deployed.
+When `accountStatus` is **0**, the GP Safe is fully configured and ready for use.
 </Note>
 
-You can use the library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) to have a handy `AccountIntegrityStatus` enum.
+### Using Account-Kit for Integrity Status
 
-- `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed. 
+ Gnosis Pay Account-Kit library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) can provide a handy `AccountIntegrityStatus` enum.
+
+- `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed.
 - `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on.
 
  If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.
-
-
-**Signing the Data**
-
-Use the domain, types, and message from the previous step to generate an EIP-712 signature:
-
-```typescript
-// Using ethers.js wallet
-const signature = await wallet.signTypedData(
-  domain,
-  types,
-  message
-);
-
-// or using viem
-const signature = await walletClient.signTypedData({
-  domain,
-  types,
-  message
-});
-```
-
-**Deploying the Modules**
-
-Send the signature to deploy the Safe modules [(spec)](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature):
-
-```bash cURL
-curl -X PATCH /api/v1/account/deploy-safe-modules \
--d '{
-  "signature": "0x1234567890abc...bcdef1b"
-}'
-```
-
-<Warning>
-- This endpoint waits for the transaction to be confirmed on-chain, so it may take up to 10 seconds to complete.
-- The transaction configures the Safe's allowances and delay mechanisms for secure operation.
-</Warning>
-
-
-</Step>
-
-</Steps>
-
-
-### Complete Safe Configuration Example 
-
-Here's how the whole Safe setup might look in code:
-
-```typescript
-import { signTypedData } from '@wagmi/core'
-
-// 1. Create and deploy Safe account
-const createSafeResponse = await fetch('/api/v1/account', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ chainId: '100' }),
-});
-const safeData = await createSafeResponse.json();
-console.log('Safe deployed:', safeData.deployed);
-
-// 2. Set Safe currency
-const setCurrencyResponse = await fetch('/api/v1/safe/set-currency', {
-  method: 'POST',
-});
-const currencyData = await setCurrencyResponse.json();
-console.log('Currency set:', currencyData.tokenSymbol);
-
-// 3. Get signature data
-const signatureDataResponse = await fetch('/api/v1/account/signature-payload');
-const { domain, types, message } = await signatureDataResponse.json();
-
-// 4. Sign the data
-const signature = await signTypedData({ domain, types, message });
-
-// 5. Deploy Safe modules
-const deployModulesResponse = await fetch('/api/v1/account/deploy-safe-modules', {
-  method: 'PATCH',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ signature }),
-});
-const deployResult = await deployModulesResponse.json();
-console.log('Modules deployed:', deployResult.deployed);
-console.log('Transaction hash:', deployResult.transactionHash);
-```
-
-
-
-After these steps, your user's Safe account is fully configured. The `accountStatus` field will be `0` in the safe config response.
