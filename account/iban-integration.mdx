@@ -5,6 +5,16 @@ description: IBAN cash-in to the GnosisPay Account via Monerium
 
 We offer IBAN cash-in to the GnosisPay Account via Monerium for users in Europe (EU) and Switzerland.
 
+Monerium's IBAN integration enables direct connection between the owner of the GP Safe (which is the authenticated account address for SIWE) and Monerium.
+
+- No requirement on partners side for dual KYC, they can rely on this endpoint for fulfilling KYC requirements of monerium.
+
+- Partner can link new addresses and enable these accounts to work with the partner application, through [Monerium API](https://monerium.dev/api-docs/v2)
+
+- This API operates independently of the GP Safe and does not involve signatures on the delay module.
+
+
+
 ## Check Availability
 
 [First you need to check if the user is available to activate their IBAN](/api-reference/iban/check-iban-availability):
@@ -16,11 +26,14 @@ curl -X GET /api/v1/ibans/available
 If you receive a `"available": false`, the flow ends here.
 
 <Warning>
-Requirements the User must have:
+Requirements the gnosis pay user must have:
+- Valid DOB
 - An active EURe Safe Account
 - KYC verified and approved
 - Residency in a supported country
-- Nationality from a supported country ([see allowed and restricted nationalities](https://help.gnosispay.com/en/articles/9795352-nationalities-allowed-and-restricted-for-the-iban-feature))
+- First and last name defined (or name)
+- Valid location fields filled in (address1 , postalCode, city and country,none of these fields can be missing)
+- Nationality from a supported country ([see allowed and restricted nationalities](https://help.gnosispay.com/hc/en-us/articles/39558629298708-Eligible-Nationalities-for-the-Gnosis-Pay-IBAN-Feature))
 </Warning>
 
 ## Enabling the IBAN Integration
@@ -36,56 +49,41 @@ Monerium requires a specific message to be signed by the User's wallet.
 curl -X GET /api/v1/ibans/signing-message
 ```
 
-To request signature from your gnosis safe, you can follow this [demo signature implementation](#message-signing-example-with-gnosispay-account-kit).
-
 <Warning>
 We cannot request new IBANs nor transfer existing IBANs until the message signature is completed. This signature is a mandatory requirement from Monerium to verify ownership of the address.
 </Warning>
+
 </Step>
+
+<Step title="Sign the Message with the User's Wallet">
+
+Use the message string returned from [step 1](#signing-the-monerium-message) to generate a signature with the user's wallet.
+
+To request signature from the User's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
+
+</Step>
+
 <Step title="Request the IBAN from Monerium">
 
-
-[You need to call this endpoint to request your IBAN profile](): 
+[Make a POST request to endpoint to request IBAN integration for Gnosis Pay user](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration):
 
 ```bash cURL
-curl -X POST /api/v1/ibans/monerium-profile \
--d '{
-  "signature": "... signed message as a string ...",
-  "callbackUrl": "https://your-app.com/iban-callback"
+curl --request POST \
+  --url https://api.gnosispay.com/api/v1/integrations/monerium \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "signature": "<string>"
 }'
 ```
+If the request is successful, you will receive a response with the IBAN details.
+
 <Warning>
-**This endpoint can fail and it is expected:** Monerium only allows the user to have one single account with them. If the user already has an account, this call will fail to indicate you should follow the oAuth flow with Monerium.
+Monerium only allows the user to have one single account with them. If monerium account **already exists**, then there is **no need** to call this endpoint. In such cases, users can grant access to their existing Monerium account using the Monerium API directly.
 </Warning>
 
-There are two results possible here: 
-
-1. If the User is not registered with Monerium you will receive a `"success": true` and it will take 3+ minutes (due to the delay module that verifies the signature and ownership of the address) for the new Monerium account to be created;
-2. The user already has a Monerium profile, so we need to request access to it via an oAuth flow, in this case the request will fail as expected.
-
-When your User already have a Monerium account, we need to redirect the user to a URL so they can allow GnosisPay to interact with
-their existing account. So the `POST` will return a `422` error with the following body:
-
-```json
-{
-  errors: {
-    externalApiCallStatusCode: 304,
-    message: "User needs to be redirect to Monerium oAuth flow",
-    redirectUrl: "... url ...",
-  },
-}
-```
-
-You need to redirect your users when `externalApiCallStatusCode == 304`.
-After the User approves our access to their existing account, the background job will pick up from there and user will be redirected to the provided callback URL.
-
-Another way to get the redirect URL if user has Monerium profile already is to use the `/api/v1/ibans/oauth/redirect_url` endpoint.
-
-<Note>
-`callbackUrl` should always be sent as query parameter in both the cases.
-</Note>
-
 </Step>
+
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
 
 [You should monitor this endpoint until you see a status of `ASSIGNED`](/api-reference/iban/retrieve-iban-details):
@@ -93,72 +91,44 @@ Another way to get the redirect URL if user has Monerium profile already is to u
 ```bash cURL
 curl -X GET /api/v1/ibans/details
 ```
-
-Use this data to cash-in to your GnosisPay Account.
-
-| IBAN Status | Description | Action |
-| ------------- | -------------- | -------------- |
-| NOTSTARTED | Initial state when the user hasn't started the IBAN creation process yet | User needs to initiate the IBAN creation process |
-| PENDING | IBAN creation has been initiated and is being processed by Monerium | Wait for the process to complete, periodically check the status |
-| PENDING_OAUTH | User has an existing Monerium profile and needs to authorize GnosisPay via OAuth | Redirect the user to the OAuth URL provided in the response |
-| ASSIGNED | IBAN has been successfully created and assigned to the user | IBAN is ready to use for cash-in transactions |
 </Step>
-<Step title="Get the IBAN Statement (Orders list)">
 
-To get a complete statement for the orders processed through IBAN:
-
-```bash cURL
-curl -X GET /api/v1/ibans/orders
-```
-
-<Note>
-This endpoint returns only incoming orders (deposits) to the user's IBAN.
-</Note>
-</Step>
 </Steps>
 
+## Message Signing Example with Viem
 
-## Message Signing Example with GnosisPay Account Kit
-
-You can use the GnosisPay Account Kit as example to generate a signature for endpoint.
-You can find the Account Kit code in our [GitHub repository](https://github.com/gnosispay/account-kit/).
+This is an example script to generate a signature from an EOA wallet address that is an owner of GP Safe and will be linked to Monerium profile.
 
 ### Example Usage
 
 ```typescript
-import { Wallet } from 'ethers';
-import {
-  populateExecuteEnqueue,
-  predictAccountAddress,
-  createInnerSignMessageTransaction
-} from '@gnosispay/account-kit';
+import { createWalletClient, http } from 'viem';
+import { gnosis } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
 
-// Initialize your wallet
-const wallet = new Wallet(privateKey, provider);
+// Initialize wallet client with private key
+const account = privateKeyToAccount('0x...' as `0x${string}`);
+const walletClient = createWalletClient({
+  account,
+  chain: gnosis,
+  transport: http()
+});
 
-// Predict the account address
-const owner = wallet.address;
-const safeAddress = predictAccountAddress({ owner });
+// Get the message to sign from the API
+const message = "I hereby declare that I am the address owner.";
 
-// Create a transaction to sign a message
-const transaction = createInnerSignMessageTransaction(
-  "I hereby declare that I am the address owner."
-);
+// Sign the message directly with EOA
+const signature = await walletClient.signMessage({
+  message
+});
 
-// Generate the execute transaction with signature
-const enqueueTx = await populateExecuteEnqueue(
-  { account: safeAddress, chainId: 100 },
-  transaction,
-  ({ domain, types, message }) => wallet._signTypedData(domain, types, message)
-);
-
-// The transaction data contains the signature
-console.log(enqueueTx.data, '-> signature');
+console.log('Signature:', signature);
+console.log('Signer address:', account.address);
 ```
 
 <Info>
 Note:
 - The message can be fetched from the API using `GET /api/v1/ibans/signing-message`
-- The generated transaction can be submitted to prove ownership
+- The signature can be submitted to prove ownership
 - Make sure to use the correct chainId (100 for Gnosis Chain)
 </Info>
