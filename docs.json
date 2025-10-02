@@ -13,9 +13,9 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Introduction to Gnosis Pay",
             "icon": "play",
-            "pages": ["index", "auth", "onboarding-flow"]
+            "pages": ["index", "integration-model", "auth", "onboarding-flow"]
           },
           {
             "group": "Accounts",
@@ -23,8 +23,16 @@
             "pages": [
               "account",
               "account/update-authenticated-account",
-              "account/adding-safe-owner",
-              "account/iban-integration"
+              "account/adding-safe-owner"
+            ]
+          },
+          {
+            "group": "On/Off Ramps",
+            "icon": "landmark",
+            "pages": [
+              "on-off-ramps/index",
+              "on-off-ramps/iban-integration",
+              "on-off-ramps/kyc-sharing"
             ]
           },
           {
