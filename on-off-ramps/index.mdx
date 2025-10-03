@@ -18,13 +18,9 @@ On/Off ramp integrations don't require users to complete another KYC process wit
 
 Please be aware of the following integration requirements:
 
-- **Direct Provider Relationships**: Wallet/platform must establish a direct relationship with the ramp provider (e.g., Noah, Monerium, Avenia)
-- **3-Party Agreements with Ramp Providers**: Integration requires agreements between platform, the ramp provider, and SumSub
-- **Provider-Specific Requirements**:
-  - **Noah**: Requires clientID agreement + Sumsub integration
-  - **Avenia**: Requires clientID agreement + Sumsub integration
-  - **Monerium**: KYC is supported through [Gnosis Pay API endpoint](on-off-ramps/iban-integration)
-- **Mandatory Sumsub KYC**: It is mandatory to use Partner Sumsub instance to avail these integrations.
+-**Direct Provider Relationships**: The wallet/platform must establish a direct contractual relationship with the ramp provider (e.g., Noah, Monerium, Avenia) and integrate directly with their APIs. Gnosis Pay will only facilitate the KYC process by sharing the KYC collected data via Sumsub.
+
+- **Mandatory usage of Sumsub**: It is mandatory to use Sumsub instance to avail these integrations.
 
 
 For detailed KYC sharing implementation, please refer to our [KYC Sharing Integration Guide](on-off-ramps/kyc-sharing).
