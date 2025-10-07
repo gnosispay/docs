@@ -22,21 +22,33 @@ curl -X GET /api/v1/auth/nonce
 Our API accepts signatures from Externally Owned Accounts (EOAs) and Smart Accounts (EIP-1271).
 
 <Warning>
-The signer must be an owner of a Gnosis Pay account. 
+The signer must be an owner of a Gnosis Pay account.
 Non-registered users will receive `401 Unauthorized` on most authenticated routes
 </Warning>
 </Step>
 <Step title="Verify the Signature and get an Access Token">
+
+<Note>
+**JWT length validity**
+
+- **Default Validity**: JWT tokens are valid for the duration specified in `ttlInSeconds` during SIWE authentication
+- **Minimum Duration**: 1 hour
+- **Maximum Duration**: 24 hours
+</Note>
+
 After the message is signed, you need to submit both the message and the signature to [retrieve an Access Token](/api-reference/authentication/verify-siwe-signature):
 ```bash cURL
 curl -X POST /api/v1/auth/challenge \
   -H "Content-Type: application/json" \
   -d '{
     "message": "string",
-    "signature": "string"
+    "signature": "string",
+    "ttlInSeconds": 36000
   }'
 ```
 </Step>
+
+
 </Steps>
 
 <Warning>
@@ -44,7 +56,7 @@ The SIWE message contains a `domain` and a `uri` field. You should ensure their 
 </Warning>
 
 Upon successful verification, a `jwt` is generated.
-This `jwt` must be included in the Authorization header of all subsequent HTTP requests to authenticate with the Gnosis Pay API: 
+This `jwt` must be included in the Authorization header of all subsequent HTTP requests to authenticate with the Gnosis Pay API:
 
 ```bash
 Authorization: Bearer {jwt}
@@ -52,7 +64,8 @@ Authorization: Bearer {jwt}
 
 ## Details about the Access Token
 
-A `jwt` is generated upon successful Sign-In with Ethereum (SIWE) verification and remains **valid for 1 hour**.
+A `jwt` is generated upon successful Sign-In with Ethereum (SIWE) verification and can remain valid for up to **24 hours**, depending on the **`ttlInSeconds`** parameter passed to SIWE, with a minimum validity period of 1 hour.
+
 To enhance security and prevent replay attacks, each authentication attempt requires a new and unique nonce.
 
 Always ensure that the `jwt` is valid before making API requests.

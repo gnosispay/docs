@@ -27,24 +27,11 @@ There are 2 ways to know whether they are already registered or not:
 </Note>
 
 <Steps titleSize="h3">
-<Step title="Get a One-Time Password (OTP) for Email">
-To register, we'll need to send your user a [one-time password (OTP) to verify their email](/api-reference/authentication/request-otp-for-email-verification):
-
-```bash cURL
-curl -X POST /api/v1/auth/signup/otp \
--d '{
-  "email": "string"
-}'
-```
-
-The OTP will arrive in their inbox from `team@gnosispay.com` and is valid for 5 minutes.
-</Step>
-
-<Step title="Verify the OTP">
-Once your user gets the code, you can [create a new user](/api-reference/authentication/create-a-new-user).
+<Step title="Signup with email">
+You can register a user with their `email` and `partnerId`, [see api documentation](/api-reference/authentication/create-a-new-user).
 
 <Note>
-You will need to pass the `partnerId`, which is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.
+The `partnerId` is a unique identifier for your app that has been communicated to you. This is the only place where you need to include it in the request.
 </Note>
 
 If you have a `referralCouponCode`, you can include it here too.
@@ -53,7 +40,6 @@ If you have a `referralCouponCode`, you can include it here too.
 curl -X POST /api/v1/auth/signup \
 -d '{
   "authEmail": "string",
-  "otp": "string", // The 6-digit code from their email
   "partnerId": "string",
   "referralCouponCode": "string" (optional)
 }'
@@ -81,10 +67,11 @@ const tosToTitle = {
   "general-tos": "Gnosis Pay Terms of Service",
   "card-monavate-tos": "Cardholder Terms of Service",
   "cashback-tos": "Cashback Terms of Service",
+  "privacy-policy": "Gnosis Pay Privacy and Cookies Policy"
 }
 ```
 
-Once the OTP verification is successful (previous step), and the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/user/accept-terms-and-conditions):
+Once the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/user/accept-terms-and-conditions):
 ```bash cURL
 curl -X POST /api/v1/user/terms \
 -d '{
