@@ -86,11 +86,8 @@ Monerium only allows the user to have one single account with them. If monerium 
 
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
 
-[You should monitor this endpoint until you see a status of `ASSIGNED`](/api-reference/iban/retrieve-iban-details):
+To retrieve IBAN details including the IBAN number, BIC code, status, and connected blockchain address, use Monerium's dedicated [IBAN endpoint](https://monerium.dev/api-docs/v2#tag/ibans/operation/ibans) to fetch all relevant account information.
 
-```bash cURL
-curl -X GET /api/v1/ibans/details
-```
 </Step>
 
 </Steps>
