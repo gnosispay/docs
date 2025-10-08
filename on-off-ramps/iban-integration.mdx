@@ -86,14 +86,17 @@ Monerium only allows the user to have one single account with them. If monerium 
 
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
 
-[You should monitor this endpoint until you see a status of `ASSIGNED`](/api-reference/iban/retrieve-iban-details):
+To retrieve IBAN details including the IBAN number, BIC code, status, and connected blockchain address, use Monerium's dedicated [IBAN endpoint](https://monerium.dev/api-docs/v2#tag/ibans/operation/ibans) to fetch all relevant account information.
 
-```bash cURL
-curl -X GET /api/v1/ibans/details
-```
 </Step>
 
 </Steps>
+
+<Warning>
+For detailed error status codes and examples, please refer to the API Reference documentation [here for IBAN integration](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration).
+
+The Gnosis Pay API serves as a wrapper for Monerium IBAN integration. Therefore, any issues related to Monerium integration should be addressed directly between partner products and Monerium.
+</Warning>
 
 ## Message Signing Example with Viem
 
