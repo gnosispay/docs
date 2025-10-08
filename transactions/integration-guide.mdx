@@ -30,11 +30,11 @@ class GnosisPayClient {
         }
       }
     );
-    
+
     if (!response.ok) {
       throw new Error(`API Error: ${response.status}`);
     }
-    
+
     return response.json();
   }
 }
@@ -48,19 +48,19 @@ class GnosisPayClient:
     def __init__(self, auth_token: str):
         self.auth_token = auth_token
         self.base_url = "https://api.gnosispay.com"
-        
+
     def get_transactions(self, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         headers = {
             "Authorization": f"Bearer {self.auth_token}",
             "Content-Type": "application/json"
         }
-        
+
         response = requests.get(
             f"{self.base_url}/api/v1/cards/transactions",
             headers=headers,
             params=params or {}
         )
-        
+
         response.raise_for_status()
         return response.json()
 ```
@@ -183,10 +183,10 @@ class TransactionProcessor:
             "refunds": [],
             "reversals": []
         }
-        
+
         for transaction in transactions:
             kind = transaction.get("kind")
-            
+
             if kind == "Payment":
                 self._process_payment(transaction, processed)
             elif kind == "Refund":
@@ -195,9 +195,9 @@ class TransactionProcessor:
                 self._process_reversal(transaction, processed)
             else:
                 print(f"Warning: Unknown transaction kind: {kind}")
-                
+
         return processed
-    
+
     def _process_payment(self, payment: Dict[str, Any], processed: Dict):
         if payment.get("isPending"):
             processed["payments"]["pending"].append(
@@ -222,7 +222,7 @@ class TransactionProcessor:
                     }
                 )
             )
-    
+
     def _get_payment_display_status(self, payment: Dict[str, Any]) -> str:
         status_map = {
             "Approved": "Completed",
@@ -239,6 +239,6 @@ class TransactionProcessor:
 
 ## Next Steps
 
-- [Transaction Lifecycle](/transactions/lifecycle) - Understand the detailed flow  
-- [API Reference](/api-reference/transactions/get-paginated-transactions) - Complete API documentation
+- [Transaction Lifecycle](/transactions/lifecycle) - Understand the detailed flow
+- [API Reference](/api-reference/transactions/list-card-transactions) - Complete API documentation
 - [Transaction Overview](/transactions) - Back to main guide

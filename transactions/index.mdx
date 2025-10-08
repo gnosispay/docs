@@ -63,7 +63,7 @@ Understanding the transaction lifecycle is crucial for proper integration:
 2. **Authorization Request**: Merchant requests payment authorization
 3. **Real-time Processing**: Gnosis Pay validates funds, limits, and fraud checks
 4. **Response**: Authorization approved or declined
-5. **API Visibility**: 
+5. **API Visibility**:
    - **Payments**: Immediately visible with `isPending: true`
    - **Refunds**: Not yet visible (requires clearing)
    - **Reversals**: May be visible if authorization-level reversal
@@ -94,13 +94,13 @@ transactions.forEach(transaction => {
         console.log(`Completed payment: ${transaction.status}`);
       }
       break;
-      
+
     case 'Refund':
       // Refunds are typically not pending when they appear
       console.log(`Refund received: ${transaction.refundAmount}`);
       // Update account balance, notify user
       break;
-      
+
     case 'Reversal':
       // Handle transaction reversal
       console.log(`Transaction reversed: ${transaction.reversalAmount}`);
@@ -117,9 +117,9 @@ transactions.forEach(transaction => {
 const monitorPendingTransactions = async () => {
   const response = await fetch('/api/v1/cards/transactions');
   const data = await response.json();
-  
+
   const pendingTransactions = data.results.filter(t => t.isPending);
-  
+
   if (pendingTransactions.length > 0) {
     console.log(`${pendingTransactions.length} transactions pending settlement`);
     // Schedule next check or set up webhooks for updates
@@ -157,4 +157,4 @@ Different transaction kinds may have different error scenarios:
 
 - [Transaction Lifecycle Details](/transactions/lifecycle) - Deep dive into authorization and clearing
 - [API Integration Guide](/transactions/integration-guide) - Complete integration examples
-- [API Reference](/api-reference/transactions/get-paginated-transactions) - Full API documentation
+- [API Reference](/api-reference/transactions/list-card-transactions) - Full API documentation
