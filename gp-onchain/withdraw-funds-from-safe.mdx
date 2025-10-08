@@ -3,7 +3,7 @@ title: "Withdraw funds from GP Safe"
 description: "How to send funds from the Gnosis Pay Safe to your EOA or somewhere else."
 ---
 
-The withdrawal feature allows partners to withdraw tokens from Gnosis Pay Safe accounts to any external address **on the Gnosis Chain**. 
+The withdrawal feature allows partners to withdraw tokens from Gnosis Pay Safe accounts to any external address **on the Gnosis Chain**.
 All transactions are gasless, enabling users to perform these operations completely free of charge.
 
 The withdrawal process involves the following steps:
@@ -20,12 +20,12 @@ Please remember the following:
 - Cards are temporarily frozen for 3 minutes during withdrawal processing as a security measure
 </Warning>
 
-## Withdrawal Process 
+## Withdrawal Process
 
 <Steps titleSize="h3">
 <Step title="Fetch Transaction Data for Signing">
 
-Get the EIP-712 typed data that needs to be signed by the user's wallet [(spec)](/api-reference/account-management/get-typed-data-for-withdrawing-from-the-users-safe-account):
+Get the EIP-712 typed data that needs to be signed by the user's wallet [(spec)](/api-reference/account-management/retrieve-transaction-data-for-withdrawing-from-safe):
 
 ```bash cURL
 curl -X GET \
@@ -47,7 +47,7 @@ The EIP-712 typed data from Step 1 must be signed by the user's wallet using the
 </Step>
 <Step title="Submit Transaction">
 
-Once signed, [submit the transaction to execute the withdrawal](/api-reference/account-management/withdraw-from-the-users-safe-account):
+Once signed, [submit the transaction to execute the withdrawal](/api-reference/account-management/withdraw-from-safe-with-signature):
 
 ```bash cURL
 # For EOA wallets
@@ -87,7 +87,7 @@ curl -X POST \
 
 The withdrawal is processed through a **delay relay mechanism** that executes after 3 minutes.
 
-You can monitor the transaction status using the [delay-relay monitoring endpoints](/api-reference/account-management/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user) or by checking your Safe's transaction history.
+You can monitor the transaction status using the [delay-relay monitoring endpoints](/api-reference/safe-management/list-delayed-transactions) or by checking your Safe's transaction history.
 </Step>
 </Steps>
 
@@ -159,4 +159,4 @@ This feature supports withdrawing any ERC-20 token that exists in the Safe accou
 
 - Use the correct token contract address
 - Specify the amount in the token's base units (considering decimals)
-- Ensure sufficient token balance in the Safe account 
+- Ensure sufficient token balance in the Safe account
