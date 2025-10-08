@@ -26,7 +26,7 @@ The daily spending limit update process involves the following steps:
 <Steps titleSize="h3">
 <Step title="Fetch EIP-712 Typed Data for Signing">
 
-[Get the EIP-712 typed data that needs to be signed by the user's wallet](/api-reference/account-management/get-transaction-data-for-setting-daily-limit):
+[Get the EIP-712 typed data that needs to be signed by the user's wallet](/api-reference/account-management/get-eip-712-typed-data-for-setting-daily-limit):
 
 ```bash cURL
 curl -X GET \
@@ -40,7 +40,7 @@ The response contains EIP-712 typed data with `domain`, `types`, `primaryType`, 
 <Warning>
 **Safe Activation Required**: This step only works when the Gnosis Pay Safe account has been fully activated and its modules are deployed. If you receive an error during submission, ensure that the Safe account activation process has been completed first.
 
-For more information about Safe account setup and module deployment, see the [Safe Management API documentation](/api-reference/safe-management/deploy-safe-modules-with-a-user-signature).
+For more information about Safe account setup and module deployment, see the [Safe Management API documentation](/api-reference/safe-management/deploy-and-setup-a-safe).
 </Warning>
 
 The EIP-712 typed data from Step 1 must be signed by the user's wallet using the EIP-712 signature standard.
@@ -52,7 +52,7 @@ The EIP-712 typed data from Step 1 must be signed by the user's wallet using the
 - For **smart contract wallets**: ERC-1271 signature verification is used, and you must include the `smartWalletAddress` field in the request body
 </Note>
 
-Once signed, [submit the transaction to update the daily limit](/api-reference/account-management/set-daily-limit):
+Once signed, [submit the transaction to update the daily limit](/api-reference/account-management/set-new-daily-spending-limit):
 
 
 ```bash cURL
@@ -85,10 +85,10 @@ curl -X PUT /api/v1/accounts/daily-limit \
 
 The daily limit change is processed through a delay relay mechanism that executes after 3 minutes.
 
-You can monitor the transaction status using the [delay-relay monitoring endpoint](/api-reference/account-management/retrieve-the-list-of-delayed-transactions-for-the-authenticated-user)
+You can monitor the transaction status using the [delay-relay monitoring endpoint](/api-reference/safe-management/list-delayed-transactions)
 or by checking your Safe's transaction history.
 
-Additionally, you can also [poll the following endpoint to check when the new limit becomes active](/api-reference/account-management/get-current-daily-limit):
+Additionally, you can also [poll the following endpoint to check when the new limit becomes active](/api-reference/account-management/get-current-daily-spending-limit):
 
 
 ```bash cURL

@@ -56,11 +56,11 @@ We recommend having a mapping in your app, between the ToS id and their title an
 This endpoint can only be called once the user is registered. Hence the proposed mapping.
 </Info>
 
-Get the terms for the user [(spec)](/api-reference/user/get-terms-and-conditions-status):
+Get the terms for the user [(spec)](/api-reference/user/retrieve-terms-and-conditions-status):
 ```bash cURL
 curl -X GET /api/v1/user/terms
 ```
-We recommend you link each id received on this endpoint with a title in your app:
+We recommend you link each ID received on this endpoint with a title in your app:
 
 ```javascript
 const tosToTitle = {
@@ -85,7 +85,7 @@ curl -X POST /api/v1/user/terms \
 
 ## 3. KYC Process
 
-To order a card, your users will need to go through a KYC process with our partner Sumsub. The whole KYC flow happens in a Sumsub iframe, and in the background, the Gnosis Pay API keeps you updated on your user's `kycStatus` (check it with [`GET /api/v1/user`](/api-reference/user/get-the-user-profile)).
+To order a card, your users will need to go through a KYC process with our partner Sumsub. The whole KYC flow happens in a Sumsub iframe, and in the background, the Gnosis Pay API keeps you updated on your user's `kycStatus` (check it with [`GET /api/v1/user`](/api-reference/user/retrieve-user-profile)
 
 Here are the different KYC statuses you might see, and what they mean for your user:
 
@@ -107,14 +107,14 @@ You should start the KYC process if your user is registered and their `kycStatus
 <Steps titleSize="h3">
 <Step title="Get the Sumsub iframe URL or SDK token">
 By default, each user gets a unique URL for their KYC process.
-Get it with [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification):
+Get it with [(spec)](/api-reference/kyc/retrieve-link-for-web-integration):
 
 ```bash cURL
 curl -X GET /api/v1/kyc/integration
 ```
 
 For mobile integrations, you can use the Sumsub Mobile SDK.
-To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieves-kyc-integration-specification-for-sdk):
+To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieve-access-token-for-sumsub-sdk-integration):
 
 ```bash cURL
 curl -X GET /api/v1/kyc/integration/sdk
@@ -148,13 +148,13 @@ Users should be ready for this step if:
 - the field `isSourceOfFundsAnswered` on the user endpoint response is `false`
 </Note>
 
-You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-the-source-of-funds-questions):
+You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-source-of-funds-questions):
 
 ```bash cURL
 curl -X GET /api/v1/source-of-funds
 ```
 
-Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/kyc/submit-answers-to-the-source-of-funds-questionnaire):
+Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/kyc/answer-source-of-funds-questions):
 
 ```bash cURL
 curl -X POST /api/v1/source-of-funds \
@@ -181,7 +181,7 @@ This step is needed if:
 - `isPhoneValidated` is `false` in the user endpoint response
 </Note>
 
-Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/request-an-otp-to-verify-a-phone-number):
+Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/retrieve-an-otp-code-to-verify-a-phone-number):
 
 ```bash cURL
 curl -X POST /api/v1/verification \
@@ -190,7 +190,7 @@ curl -X POST /api/v1/verification \
 }'
 ```
 
-This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/validates-an-otp-code-to-verify-a-phone-number):
+This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/verify-a-phone-number-with-otp-code):
 
 ```bash cURL
 curl -X POST /api/v1/verification/check \
@@ -224,7 +224,7 @@ The currency is automatically assigned based on the user's country:
 - Users from other countries: EURe (default)
 
 <Note>
-Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-the-safe-configuration-for-the-authenticated-user).
+Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-safe-configuration).
 `accountStatus: 0` would mean that the Safe modules are already deployed.
 </Note>
 
