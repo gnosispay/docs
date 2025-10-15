@@ -2652,6 +2652,1082 @@ Triggered when a card's status changes.
 }
 ```
 
+### card.transaction.cleared
+
+Triggered when a new card transaction is cleared.
+
+**Event Type**: `card.transaction.cleared`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "card.transaction.cleared";
+  data: {
+    /** Card transaction event */
+    event: {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Payment";
+      status: "Approved" | "IncorrectPin" | "InsufficientFunds" | "ExceedsApprovalAmountLimit" | "InvalidAmount" | "PinEntryTriesExceeded" | "IncorrectSecurityCode" | "Reversal" | "PartialReversal" | "Other";
+    } | {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Refund";
+      refundAmount: string;
+      refundCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+    } | {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Reversal";
+      reversalAmount: string;
+      reversalCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+    };
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "card.transaction.cleared Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when a new card transaction is cleared."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "card.transaction.cleared"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "event": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Payment"
+                        ]
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "Approved",
+                          "IncorrectPin",
+                          "InsufficientFunds",
+                          "ExceedsApprovalAmountLimit",
+                          "InvalidAmount",
+                          "PinEntryTriesExceeded",
+                          "IncorrectSecurityCode",
+                          "Reversal",
+                          "PartialReversal",
+                          "Other"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Refund"
+                        ]
+                      },
+                      "refundAmount": {
+                        "type": "string"
+                      },
+                      "refundCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "refundAmount",
+                      "refundCurrency"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Reversal"
+                        ]
+                      },
+                      "reversalAmount": {
+                        "type": "string"
+                      },
+                      "reversalCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "reversalAmount",
+                      "reversalCurrency"
+                    ]
+                  }
+                ],
+                "example": {
+                  "event": {
+                    "kind": "Payment",
+                    "threadId": "thread_123456789",
+                    "createdAt": "2024-01-15T10:30:00.000Z",
+                    "clearedAt": "2024-01-15T10:35:00.000Z",
+                    "isPending": false,
+                    "country": {
+                      "name": "United States",
+                      "numeric": "840",
+                      "alpha2": "US",
+                      "alpha3": "USA"
+                    },
+                    "mcc": "5411",
+                    "merchant": {
+                      "name": "Grocery Store Inc",
+                      "city": "New York",
+                      "country": {
+                        "name": "United States",
+                        "numeric": "840",
+                        "alpha2": "US",
+                        "alpha3": "USA"
+                      }
+                    },
+                    "billingAmount": "5000",
+                    "billingCurrency": {
+                      "symbol": "$",
+                      "code": "840",
+                      "decimals": 2,
+                      "name": "US Dollar"
+                    },
+                    "transactionAmount": "5000",
+                    "transactionCurrency": {
+                      "symbol": "$",
+                      "code": "840",
+                      "decimals": 2,
+                      "name": "US Dollar"
+                    },
+                    "transactionType": "purchase",
+                    "cardToken": "card_token_abc123",
+                    "impactsCashback": true,
+                    "status": "Approved",
+                    "transactions": [
+                      {
+                        "status": "ExecSuccess",
+                        "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+                        "value": "5000000000000000000",
+                        "data": "0x",
+                        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                      }
+                    ]
+                  }
+                },
+                "description": "Card transaction event"
+              }
+            },
+            "required": [
+              "event"
+            ]
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when a new card transaction is cleared.",
+        "example": {
+          "eventType": "card.transaction.cleared",
+          "data": {
+            "event": {
+              "kind": "Payment",
+              "threadId": "thread_123456789",
+              "createdAt": "2024-01-15T10:30:00.000Z",
+              "clearedAt": "2024-01-15T10:35:00.000Z",
+              "isPending": false,
+              "country": {
+                "name": "United States",
+                "numeric": "840",
+                "alpha2": "US",
+                "alpha3": "USA"
+              },
+              "mcc": "5411",
+              "merchant": {
+                "name": "Grocery Store Inc",
+                "city": "New York",
+                "country": {
+                  "name": "United States",
+                  "numeric": "840",
+                  "alpha2": "US",
+                  "alpha3": "USA"
+                }
+              },
+              "billingAmount": "5000",
+              "billingCurrency": {
+                "symbol": "$",
+                "code": "840",
+                "decimals": 2,
+                "name": "US Dollar"
+              },
+              "transactionAmount": "5000",
+              "transactionCurrency": {
+                "symbol": "$",
+                "code": "840",
+                "decimals": 2,
+                "name": "US Dollar"
+              },
+              "transactionType": "purchase",
+              "cardToken": "card_token_abc123",
+              "impactsCashback": true,
+              "status": "Approved",
+              "transactions": [
+                {
+                  "status": "ExecSuccess",
+                  "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+                  "value": "5000000000000000000",
+                  "data": "0x",
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "card.transaction.cleared",
+  "data": {
+    "event": {
+      "kind": "Payment",
+      "threadId": "thread_123456789",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "clearedAt": "2024-01-15T10:35:00.000Z",
+      "isPending": false,
+      "country": {
+        "name": "United States",
+        "numeric": "840",
+        "alpha2": "US",
+        "alpha3": "USA"
+      },
+      "mcc": "5411",
+      "merchant": {
+        "name": "Grocery Store Inc",
+        "city": "New York",
+        "country": {
+          "name": "United States",
+          "numeric": "840",
+          "alpha2": "US",
+          "alpha3": "USA"
+        }
+      },
+      "billingAmount": "5000",
+      "billingCurrency": {
+        "symbol": "$",
+        "code": "840",
+        "decimals": 2,
+        "name": "US Dollar"
+      },
+      "transactionAmount": "5000",
+      "transactionCurrency": {
+        "symbol": "$",
+        "code": "840",
+        "decimals": 2,
+        "name": "US Dollar"
+      },
+      "transactionType": "purchase",
+      "cardToken": "card_token_abc123",
+      "impactsCashback": true,
+      "status": "Approved",
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+          "value": "5000000000000000000",
+          "data": "0x",
+          "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        }
+      ]
+    }
+  }
+}
+```
+
 ### card.transaction.created
 
 Triggered when a new card transaction is created.
@@ -2665,8 +3741,164 @@ Triggered when a new card transaction is created.
 {
   eventType: "card.transaction.created";
   data: {
-    /** Unique card token identifier */
-    cardToken: string;
+    /** Card transaction event */
+    event: {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Payment";
+      status: "Approved" | "IncorrectPin" | "InsufficientFunds" | "ExceedsApprovalAmountLimit" | "InvalidAmount" | "PinEntryTriesExceeded" | "IncorrectSecurityCode" | "Reversal" | "PartialReversal" | "Other";
+    } | {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Refund";
+      refundAmount: string;
+      refundCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+    } | {
+      threadId: string;
+      createdAt: string;
+      clearedAt: string;
+      isPending: boolean;
+      country: {
+        name: string;
+        numeric: string;
+        alpha2: string;
+        alpha3: string;
+      };
+      mcc: string;
+      merchant: {
+        name: string;
+        city: string;
+        country?: {
+          name: string;
+          numeric: string;
+          alpha2: string;
+          alpha3: string;
+        };
+      };
+      billingAmount: string;
+      billingCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionAmount: string;
+      transactionCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+      transactionType: string;
+      cardToken: string;
+      impactsCashback: boolean;
+      transactions: {
+        status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
+        to: string;
+        value: string;
+        data: string;
+        hash: string;
+      }[];
+      kind: "Reversal";
+      reversalAmount: string;
+      reversalCurrency: {
+        symbol: string;
+        code: string;
+        decimals: number;
+        name: string;
+      };
+    };
   };
 }
 ```
@@ -2692,18 +3924,755 @@ Triggered when a new card transaction is created.
           "data": {
             "type": "object",
             "properties": {
-              "cardToken": {
-                "type": "string",
-                "description": "Unique card token identifier"
+              "event": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Payment"
+                        ]
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "Approved",
+                          "IncorrectPin",
+                          "InsufficientFunds",
+                          "ExceedsApprovalAmountLimit",
+                          "InvalidAmount",
+                          "PinEntryTriesExceeded",
+                          "IncorrectSecurityCode",
+                          "Reversal",
+                          "PartialReversal",
+                          "Other"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Refund"
+                        ]
+                      },
+                      "refundAmount": {
+                        "type": "string"
+                      },
+                      "refundCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "refundAmount",
+                      "refundCurrency"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "threadId": {
+                        "type": "string"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "isPending": {
+                        "type": "boolean"
+                      },
+                      "country": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "numeric": {
+                            "type": "string"
+                          },
+                          "alpha2": {
+                            "type": "string"
+                          },
+                          "alpha3": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "numeric",
+                          "alpha2",
+                          "alpha3"
+                        ]
+                      },
+                      "mcc": {
+                        "type": "string"
+                      },
+                      "merchant": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "city": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "numeric": {
+                                "type": "string"
+                              },
+                              "alpha2": {
+                                "type": "string"
+                              },
+                              "alpha3": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "numeric",
+                              "alpha2",
+                              "alpha3"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "city"
+                        ]
+                      },
+                      "billingAmount": {
+                        "type": "string"
+                      },
+                      "billingCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionAmount": {
+                        "type": "string"
+                      },
+                      "transactionCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      },
+                      "transactionType": {
+                        "type": "string"
+                      },
+                      "cardToken": {
+                        "type": "string"
+                      },
+                      "impactsCashback": {
+                        "type": "boolean",
+                        "nullable": true
+                      },
+                      "transactions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "Unsubmitted",
+                                "Unconfirmed",
+                                "ExecReverted",
+                                "ExecSuccess"
+                              ]
+                            },
+                            "to": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            },
+                            "data": {
+                              "type": "string"
+                            },
+                            "hash": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "to",
+                            "value",
+                            "data",
+                            "hash"
+                          ]
+                        }
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "Reversal"
+                        ]
+                      },
+                      "reversalAmount": {
+                        "type": "string"
+                      },
+                      "reversalCurrency": {
+                        "type": "object",
+                        "properties": {
+                          "symbol": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "decimals": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "symbol",
+                          "code",
+                          "decimals",
+                          "name"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "threadId",
+                      "createdAt",
+                      "clearedAt",
+                      "isPending",
+                      "country",
+                      "mcc",
+                      "merchant",
+                      "billingAmount",
+                      "billingCurrency",
+                      "transactionAmount",
+                      "transactionCurrency",
+                      "transactionType",
+                      "cardToken",
+                      "impactsCashback",
+                      "transactions",
+                      "kind",
+                      "reversalAmount",
+                      "reversalCurrency"
+                    ]
+                  }
+                ],
+                "example": {
+                  "event": {
+                    "kind": "Payment",
+                    "threadId": "thread_123456789",
+                    "createdAt": "2024-01-15T10:30:00.000Z",
+                    "clearedAt": "2024-01-15T10:35:00.000Z",
+                    "isPending": false,
+                    "country": {
+                      "name": "United States",
+                      "numeric": "840",
+                      "alpha2": "US",
+                      "alpha3": "USA"
+                    },
+                    "mcc": "5411",
+                    "merchant": {
+                      "name": "Grocery Store Inc",
+                      "city": "New York",
+                      "country": {
+                        "name": "United States",
+                        "numeric": "840",
+                        "alpha2": "US",
+                        "alpha3": "USA"
+                      }
+                    },
+                    "billingAmount": "5000",
+                    "billingCurrency": {
+                      "symbol": "$",
+                      "code": "840",
+                      "decimals": 2,
+                      "name": "US Dollar"
+                    },
+                    "transactionAmount": "5000",
+                    "transactionCurrency": {
+                      "symbol": "$",
+                      "code": "840",
+                      "decimals": 2,
+                      "name": "US Dollar"
+                    },
+                    "transactionType": "purchase",
+                    "cardToken": "card_token_abc123",
+                    "impactsCashback": true,
+                    "status": "Approved",
+                    "transactions": [
+                      {
+                        "status": "ExecSuccess",
+                        "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+                        "value": "5000000000000000000",
+                        "data": "0x",
+                        "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                      }
+                    ]
+                  }
+                },
+                "description": "Card transaction event"
               }
             },
             "required": [
-              "cardToken"
-            ],
-            "description": "Card token data",
-            "example": {
-              "cardToken": "card_123456789"
-            }
+              "event"
+            ]
           }
         },
         "required": [
@@ -2714,7 +4683,57 @@ Triggered when a new card transaction is created.
         "example": {
           "eventType": "card.transaction.created",
           "data": {
-            "cardToken": "card_123456789"
+            "event": {
+              "kind": "Payment",
+              "threadId": "thread_123456789",
+              "createdAt": "2024-01-15T10:30:00.000Z",
+              "clearedAt": "2024-01-15T10:35:00.000Z",
+              "isPending": false,
+              "country": {
+                "name": "United States",
+                "numeric": "840",
+                "alpha2": "US",
+                "alpha3": "USA"
+              },
+              "mcc": "5411",
+              "merchant": {
+                "name": "Grocery Store Inc",
+                "city": "New York",
+                "country": {
+                  "name": "United States",
+                  "numeric": "840",
+                  "alpha2": "US",
+                  "alpha3": "USA"
+                }
+              },
+              "billingAmount": "5000",
+              "billingCurrency": {
+                "symbol": "$",
+                "code": "840",
+                "decimals": 2,
+                "name": "US Dollar"
+              },
+              "transactionAmount": "5000",
+              "transactionCurrency": {
+                "symbol": "$",
+                "code": "840",
+                "decimals": 2,
+                "name": "US Dollar"
+              },
+              "transactionType": "purchase",
+              "cardToken": "card_token_abc123",
+              "impactsCashback": true,
+              "status": "Approved",
+              "transactions": [
+                {
+                  "status": "ExecSuccess",
+                  "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+                  "value": "5000000000000000000",
+                  "data": "0x",
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                }
+              ]
+            }
           }
         }
       }
@@ -2730,7 +4749,57 @@ Triggered when a new card transaction is created.
 {
   "eventType": "card.transaction.created",
   "data": {
-    "cardToken": "card_123456789"
+    "event": {
+      "kind": "Payment",
+      "threadId": "thread_123456789",
+      "createdAt": "2024-01-15T10:30:00.000Z",
+      "clearedAt": "2024-01-15T10:35:00.000Z",
+      "isPending": false,
+      "country": {
+        "name": "United States",
+        "numeric": "840",
+        "alpha2": "US",
+        "alpha3": "USA"
+      },
+      "mcc": "5411",
+      "merchant": {
+        "name": "Grocery Store Inc",
+        "city": "New York",
+        "country": {
+          "name": "United States",
+          "numeric": "840",
+          "alpha2": "US",
+          "alpha3": "USA"
+        }
+      },
+      "billingAmount": "5000",
+      "billingCurrency": {
+        "symbol": "$",
+        "code": "840",
+        "decimals": 2,
+        "name": "US Dollar"
+      },
+      "transactionAmount": "5000",
+      "transactionCurrency": {
+        "symbol": "$",
+        "code": "840",
+        "decimals": 2,
+        "name": "US Dollar"
+      },
+      "transactionType": "purchase",
+      "cardToken": "card_token_abc123",
+      "impactsCashback": true,
+      "status": "Approved",
+      "transactions": [
+        {
+          "status": "ExecSuccess",
+          "to": "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
+          "value": "5000000000000000000",
+          "data": "0x",
+          "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        }
+      ]
+    }
   }
 }
 ```
@@ -3289,6 +5358,109 @@ Triggered when a virtual card is issued.
 
 ## Account Events
 
+### account.balance.changed
+
+Triggered when an account's balance changes.
+
+**Event Type**: `account.balance.changed`
+
+**Schema Definition**:
+
+<CodeGroup>
+```typescript TypeScript
+{
+  eventType: "account.balance.changed";
+  data: {
+    /** Total balance in wei */
+    total: number;
+    /** Spendable balance in wei */
+    spendable: number;
+    /** Pending balance in wei */
+    pending: number;
+  };
+}
+```
+```json OpenAPI Schema
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "account.balance.changed Webhook Event",
+    "version": "1.0.0",
+    "description": "Triggered when an account's balance changes."
+  },
+  "components": {
+    "schemas": {
+      "WebhookEvent": {
+        "type": "object",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "account.balance.changed"
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number",
+                "description": "Total balance in wei"
+              },
+              "spendable": {
+                "type": "number",
+                "description": "Spendable balance in wei"
+              },
+              "pending": {
+                "type": "number",
+                "description": "Pending balance in wei"
+              }
+            },
+            "required": [
+              "total",
+              "spendable",
+              "pending"
+            ],
+            "description": "Account balance change data",
+            "example": {
+              "total": 1000000000000000000,
+              "spendable": 800000000000000000,
+              "pending": 200000000000000000
+            }
+          }
+        },
+        "required": [
+          "eventType",
+          "data"
+        ],
+        "description": "Triggered when an account's balance changes.",
+        "example": {
+          "eventType": "account.balance.changed",
+          "data": {
+            "total": 1000000000000000000,
+            "spendable": 800000000000000000,
+            "pending": 200000000000000000
+          }
+        }
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+**Example**:
+
+```json
+{
+  "eventType": "account.balance.changed",
+  "data": {
+    "total": 1000000000000000000,
+    "spendable": 800000000000000000,
+    "pending": 200000000000000000
+  }
+}
+```
+
 ### account.limit.changed
 
 Triggered when an account's limit changes.
@@ -3518,11 +5690,11 @@ Triggered when an account withdrawal is completed.
               "transactionData": "0x456...",
               "enqueueTaskId": "task_789",
               "dispatchTaskId": "task_101",
-              "readyAt": "2025-09-03T16:03:21.316Z",
+              "readyAt": "2025-10-15T08:00:24.194Z",
               "operationType": "CALL",
               "userId": "user_123",
               "status": "EXECUTED",
-              "createdAt": "2025-09-03T16:03:21.316Z"
+              "createdAt": "2025-10-15T08:00:24.194Z"
             }
           }
         },
@@ -3539,11 +5711,11 @@ Triggered when an account withdrawal is completed.
             "transactionData": "0x456...",
             "enqueueTaskId": "task_789",
             "dispatchTaskId": "task_101",
-            "readyAt": "2025-09-03T16:03:21.316Z",
+            "readyAt": "2025-10-15T08:00:24.194Z",
             "operationType": "CALL",
             "userId": "user_123",
             "status": "EXECUTED",
-            "createdAt": "2025-09-03T16:03:21.316Z"
+            "createdAt": "2025-10-15T08:00:24.194Z"
           }
         }
       }
@@ -3564,11 +5736,11 @@ Triggered when an account withdrawal is completed.
     "transactionData": "0x456...",
     "enqueueTaskId": "task_789",
     "dispatchTaskId": "task_101",
-    "readyAt": "2025-09-03T16:03:21.316Z",
+    "readyAt": "2025-10-15T08:00:24.194Z",
     "operationType": "CALL",
     "userId": "user_123",
     "status": "EXECUTED",
-    "createdAt": "2025-09-03T16:03:21.316Z"
+    "createdAt": "2025-10-15T08:00:24.194Z"
   }
 }
 ```
@@ -3967,7 +6139,7 @@ Triggered when a Safe wallet is created.
               "chainId": "100",
               "userId": "user_123",
               "tokenSymbol": "EURe",
-              "createdAt": "2025-09-03T16:03:21.315Z"
+              "createdAt": "2025-10-15T08:00:24.193Z"
             }
           }
         },
@@ -3985,7 +6157,7 @@ Triggered when a Safe wallet is created.
             "chainId": "100",
             "userId": "user_123",
             "tokenSymbol": "EURe",
-            "createdAt": "2025-09-03T16:03:21.315Z"
+            "createdAt": "2025-10-15T08:00:24.193Z"
           }
         }
       }
@@ -4007,7 +6179,7 @@ Triggered when a Safe wallet is created.
     "chainId": "100",
     "userId": "user_123",
     "tokenSymbol": "EURe",
-    "createdAt": "2025-09-03T16:03:21.315Z"
+    "createdAt": "2025-10-15T08:00:24.193Z"
   }
 }
 ```
@@ -4119,7 +6291,7 @@ Triggered when a Safe's currency is updated.
               "chainId": "100",
               "userId": "user_123",
               "tokenSymbol": "EURe",
-              "createdAt": "2025-09-03T16:03:21.315Z"
+              "createdAt": "2025-10-15T08:00:24.193Z"
             }
           }
         },
@@ -4137,7 +6309,7 @@ Triggered when a Safe's currency is updated.
             "chainId": "100",
             "userId": "user_123",
             "tokenSymbol": "EURe",
-            "createdAt": "2025-09-03T16:03:21.315Z"
+            "createdAt": "2025-10-15T08:00:24.193Z"
           }
         }
       }
@@ -4159,7 +6331,7 @@ Triggered when a Safe's currency is updated.
     "chainId": "100",
     "userId": "user_123",
     "tokenSymbol": "EURe",
-    "createdAt": "2025-09-03T16:03:21.315Z"
+    "createdAt": "2025-10-15T08:00:24.193Z"
   }
 }
 ```
@@ -4271,7 +6443,7 @@ Triggered when Safe modules are deployed.
               "chainId": "100",
               "userId": "user_123",
               "tokenSymbol": "EURe",
-              "createdAt": "2025-09-03T16:03:21.315Z"
+              "createdAt": "2025-10-15T08:00:24.193Z"
             }
           }
         },
@@ -4289,7 +6461,7 @@ Triggered when Safe modules are deployed.
             "chainId": "100",
             "userId": "user_123",
             "tokenSymbol": "EURe",
-            "createdAt": "2025-09-03T16:03:21.315Z"
+            "createdAt": "2025-10-15T08:00:24.193Z"
           }
         }
       }
@@ -4311,7 +6483,7 @@ Triggered when Safe modules are deployed.
     "chainId": "100",
     "userId": "user_123",
     "tokenSymbol": "EURe",
-    "createdAt": "2025-09-03T16:03:21.315Z"
+    "createdAt": "2025-10-15T08:00:24.193Z"
   }
 }
 ```
