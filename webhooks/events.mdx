@@ -2704,13 +2704,13 @@ Triggered when a new card transaction is cleared.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Payment";
       status: "Approved" | "IncorrectPin" | "InsufficientFunds" | "ExceedsApprovalAmountLimit" | "InvalidAmount" | "PinEntryTriesExceeded" | "IncorrectSecurityCode" | "Reversal" | "PartialReversal" | "Other";
@@ -2752,13 +2752,13 @@ Triggered when a new card transaction is cleared.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Refund";
       refundAmount: string;
@@ -2806,13 +2806,13 @@ Triggered when a new card transaction is cleared.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Reversal";
       reversalAmount: string;
@@ -3024,8 +3024,7 @@ Triggered when a new card transaction is cleared.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -3065,7 +3064,6 @@ Triggered when a new card transaction is cleared.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "status"
@@ -3245,8 +3243,7 @@ Triggered when a new card transaction is cleared.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -3297,7 +3294,6 @@ Triggered when a new card transaction is cleared.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "refundAmount",
@@ -3478,8 +3474,7 @@ Triggered when a new card transaction is cleared.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -3530,7 +3525,6 @@ Triggered when a new card transaction is cleared.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "reversalAmount",
@@ -3780,13 +3774,13 @@ Triggered when a new card transaction is created.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Payment";
       status: "Approved" | "IncorrectPin" | "InsufficientFunds" | "ExceedsApprovalAmountLimit" | "InvalidAmount" | "PinEntryTriesExceeded" | "IncorrectSecurityCode" | "Reversal" | "PartialReversal" | "Other";
@@ -3828,13 +3822,13 @@ Triggered when a new card transaction is created.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Refund";
       refundAmount: string;
@@ -3882,13 +3876,13 @@ Triggered when a new card transaction is created.
       };
       transactionType: string;
       cardToken: string;
-      impactsCashback: boolean;
+      impactsCashback: boolean | null;
       transactions: {
         status: "Unsubmitted" | "Unconfirmed" | "ExecReverted" | "ExecSuccess";
         to: string;
         value: string;
         data: string;
-        hash: string;
+        hash: string | null;
       }[];
       kind: "Reversal";
       reversalAmount: string;
@@ -4100,8 +4094,7 @@ Triggered when a new card transaction is created.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -4141,7 +4134,6 @@ Triggered when a new card transaction is created.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "status"
@@ -4321,8 +4313,7 @@ Triggered when a new card transaction is created.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -4373,7 +4364,6 @@ Triggered when a new card transaction is created.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "refundAmount",
@@ -4554,8 +4544,7 @@ Triggered when a new card transaction is created.
                             "status",
                             "to",
                             "value",
-                            "data",
-                            "hash"
+                            "data"
                           ]
                         }
                       },
@@ -4606,7 +4595,6 @@ Triggered when a new card transaction is created.
                       "transactionCurrency",
                       "transactionType",
                       "cardToken",
-                      "impactsCashback",
                       "transactions",
                       "kind",
                       "reversalAmount",
