@@ -10,7 +10,7 @@ description: "Order physical cards for your Users."
 <Step title="Create a Card Order">
 
 
-[This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION`](/api-reference/card-order/create-a-new-card-order):
+[This endpoint creates a new `CardOrder` with the status of `PENDINGTRANSACTION`](/api-reference/physical-card-order/create-physical-card-order):
 
 ```bash cURL
 curl -X POST /api/v1/order/create
@@ -18,14 +18,14 @@ curl -X POST /api/v1/order/create
 
 The Card Order is created with the following data:
 
-- A shipping address can be specified by filling the `shippingAddress` field, see [endpoint specifications](/api-reference/card-order/create-a-new-card-order). If not set, the KYC address will be used for shipping.
+- A shipping address can be specified by filling the `shippingAddress` field, see [endpoint specifications](/api-reference/physical-card-order/create-physical-card-order). If not set, the KYC address will be used for shipping.
 - The total amount to be paid is set in EURe. The amount is 30.23.
 - A coupon code can be applied to reduce the amount to be paid, either at signup or in the next step
 
 </Step>
 <Step title="(Optional) Attach a Coupon">
 
-[This endpoint attaches a coupon to the `CardOrder` with `orderId`](/api-reference/card-order/attach-a-coupon-to-a-card-order):
+[This endpoint attaches a coupon to the `CardOrder` with `orderId`](/api-reference/physical-card-order/attach-a-coupon-to-a-physical-card-order):
 
 ```bash cURL
 curl -X POST /api/v1/order/{orderId}/attach-coupon
@@ -41,7 +41,7 @@ If the user has a coupon code both from the signup, and from this step, the one 
 This is only needed if the card is not free. If `CardOrder.totalAmountEUR` is the same as the `CardOrder.totalDiscountEUR` then the card is considered free.
 </Note>
 
-[This endpoint allows setting a transaction hash to the specified `orderId`](/api-reference/card-order/attach-an-on-chain-transaction-to-a-card-order).
+[This endpoint allows setting a transaction hash to the specified `orderId`](/api-reference/physical-card-order/register-payment-for-a-physical-card-order).
 
 ```bash cURL
 curl -X PUT /api/v1/order/{orderId}/attach-transaction \
@@ -59,7 +59,7 @@ The transaction can only be used once across all card orders.
 This endpoint must be called even if the card is free. It moves the card order to the `READY` status.
 </Warning>
 
-[To confirm the payment call this endpoint](/api-reference/card-order/marks-a-card-order-as-paid):
+[To confirm the payment call this endpoint](/api-reference/physical-card-order/confirm-the-payment-for-a-physical-card-order):
 
 ```bash cURL
 curl -X PUT /api/v1/order/{orderId}/confirm-payment
@@ -76,7 +76,7 @@ The conditions for the payment are:
 If all the conditions above are met, the `CardOrder.status` is set to `READY`.
 </Step>
 <Step title="Create the Physical Card">
-[Finally, you can create the Physical Card](/api-reference/card-order/create-a-card-out-of-a-card-order):
+[Finally, you can create the Physical Card](/api-reference/physical-card-order/create-a-physical-card):
 
 ```bash cURL
 curl -X POST /api/v1/order/:orderId/create-card
@@ -105,6 +105,6 @@ Use the `cardToken` returned from the previous endpoint to set the PIN.
 If a PIN is not provided upon creation, a random one will be assigned.
 Changing this randomly assigned PIN requires the user to visit an ATM. Refer to the **[card PINs section](/cards#card-pins)** to learn more about the online and offline PINs.
 
-For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](https://www.npmjs.com/package/@gnosispay/pse-sdk).
+For detailed instructions about how to change the PIN, please refer to the [PSE SDK documentation](/cards/pse-integration).
 </Step>
 </Steps>
