@@ -2562,6 +2562,8 @@ Triggered when a card's status changes.
 {
   eventType: "card.status.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** Card token */
     cardToken: string;
     /** Previous card status */
@@ -2593,6 +2595,10 @@ Triggered when a card's status changes.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Card token"
@@ -2607,12 +2613,14 @@ Triggered when a card's status changes.
               }
             },
             "required": [
+              "userId",
               "cardToken",
               "oldStatus",
               "newStatus"
             ],
             "description": "Card status change data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123",
               "oldStatus": "inactive",
               "newStatus": "active"
@@ -2627,6 +2635,7 @@ Triggered when a card's status changes.
         "example": {
           "eventType": "card.status.changed",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123",
             "oldStatus": "inactive",
             "newStatus": "active"
@@ -2645,6 +2654,7 @@ Triggered when a card's status changes.
 {
   "eventType": "card.status.changed",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123",
     "oldStatus": "inactive",
     "newStatus": "active"
@@ -2665,6 +2675,8 @@ Triggered when a new card transaction is cleared.
 {
   eventType: "card.transaction.cleared";
   data: {
+    /** User ID */
+    userId: string;
     /** Card transaction event */
     event: {
       threadId: string;
@@ -2848,6 +2860,10 @@ Triggered when a new card transaction is cleared.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "event": {
                 "anyOf": [
                   {
@@ -3589,6 +3605,7 @@ Triggered when a new card transaction is cleared.
               }
             },
             "required": [
+              "userId",
               "event"
             ]
           }
@@ -3601,6 +3618,7 @@ Triggered when a new card transaction is cleared.
         "example": {
           "eventType": "card.transaction.cleared",
           "data": {
+            "userId": "user_123",
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -3667,6 +3685,7 @@ Triggered when a new card transaction is cleared.
 {
   "eventType": "card.transaction.cleared",
   "data": {
+    "userId": "user_123",
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -3735,6 +3754,8 @@ Triggered when a new card transaction is created.
 {
   eventType: "card.transaction.created";
   data: {
+    /** User ID */
+    userId: string;
     /** Card transaction event */
     event: {
       threadId: string;
@@ -3918,6 +3939,10 @@ Triggered when a new card transaction is created.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "event": {
                 "anyOf": [
                   {
@@ -4659,6 +4684,7 @@ Triggered when a new card transaction is created.
               }
             },
             "required": [
+              "userId",
               "event"
             ]
           }
@@ -4671,6 +4697,7 @@ Triggered when a new card transaction is created.
         "example": {
           "eventType": "card.transaction.created",
           "data": {
+            "userId": "user_123",
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -4737,6 +4764,7 @@ Triggered when a new card transaction is created.
 {
   "eventType": "card.transaction.created",
   "data": {
+    "userId": "user_123",
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -4805,6 +4833,8 @@ Triggered when a physical card is activated.
 {
   eventType: "physical.card.activated";
   data: {
+    /** User ID */
+    userId: string;
     /** Unique card token identifier */
     cardToken: string;
   };
@@ -4832,16 +4862,22 @@ Triggered when a physical card is activated.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Unique card token identifier"
               }
             },
             "required": [
+              "userId",
               "cardToken"
             ],
             "description": "Card token data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123456789"
             }
           }
@@ -4854,6 +4890,7 @@ Triggered when a physical card is activated.
         "example": {
           "eventType": "physical.card.activated",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123456789"
           }
         }
@@ -4870,6 +4907,7 @@ Triggered when a physical card is activated.
 {
   "eventType": "physical.card.activated",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123456789"
   }
 }
@@ -4888,6 +4926,8 @@ Triggered when the status of a physical card order changes.
 {
   eventType: "physical.card.order.status.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** Card token */
     cardToken: string;
     /** Card order ID */
@@ -4921,6 +4961,10 @@ Triggered when the status of a physical card order changes.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Card token"
@@ -4939,6 +4983,7 @@ Triggered when the status of a physical card order changes.
               }
             },
             "required": [
+              "userId",
               "cardToken",
               "cardOrderId",
               "oldStatus",
@@ -4946,6 +4991,7 @@ Triggered when the status of a physical card order changes.
             ],
             "description": "Physical card order status change data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123",
               "cardOrderId": "order_456",
               "oldStatus": "ordered",
@@ -4961,6 +5007,7 @@ Triggered when the status of a physical card order changes.
         "example": {
           "eventType": "physical.card.order.status.changed",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123",
             "cardOrderId": "order_456",
             "oldStatus": "ordered",
@@ -4980,6 +5027,7 @@ Triggered when the status of a physical card order changes.
 {
   "eventType": "physical.card.order.status.changed",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123",
     "cardOrderId": "order_456",
     "oldStatus": "ordered",
@@ -5001,6 +5049,8 @@ Triggered when a physical card is ordered.
 {
   eventType: "physical.card.ordered";
   data: {
+    /** User ID */
+    userId: string;
     /** Card token */
     cardToken: string;
     /** Card order ID */
@@ -5048,6 +5098,10 @@ Triggered when a physical card is ordered.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Card token"
@@ -5101,6 +5155,7 @@ Triggered when a physical card is ordered.
               }
             },
             "required": [
+              "userId",
               "cardToken",
               "id",
               "status",
@@ -5115,6 +5170,7 @@ Triggered when a physical card is ordered.
             ],
             "description": "Physical card order data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123",
               "id": "order_456",
               "status": "ordered",
@@ -5137,6 +5193,7 @@ Triggered when a physical card is ordered.
         "example": {
           "eventType": "physical.card.ordered",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123",
             "id": "order_456",
             "status": "ordered",
@@ -5163,6 +5220,7 @@ Triggered when a physical card is ordered.
 {
   "eventType": "physical.card.ordered",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123",
     "id": "order_456",
     "status": "ordered",
@@ -5191,6 +5249,8 @@ Triggered when a physical card's PIN is changed.
 {
   eventType: "physical.card.pin.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** Unique card token identifier */
     cardToken: string;
   };
@@ -5218,16 +5278,22 @@ Triggered when a physical card's PIN is changed.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Unique card token identifier"
               }
             },
             "required": [
+              "userId",
               "cardToken"
             ],
             "description": "Card token data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123456789"
             }
           }
@@ -5240,6 +5306,7 @@ Triggered when a physical card's PIN is changed.
         "example": {
           "eventType": "physical.card.pin.changed",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123456789"
           }
         }
@@ -5256,6 +5323,7 @@ Triggered when a physical card's PIN is changed.
 {
   "eventType": "physical.card.pin.changed",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123456789"
   }
 }
@@ -5274,6 +5342,8 @@ Triggered when a virtual card is issued.
 {
   eventType: "virtual.card.issued";
   data: {
+    /** User ID */
+    userId: string;
     /** Unique card token identifier */
     cardToken: string;
   };
@@ -5301,16 +5371,22 @@ Triggered when a virtual card is issued.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "cardToken": {
                 "type": "string",
                 "description": "Unique card token identifier"
               }
             },
             "required": [
+              "userId",
               "cardToken"
             ],
             "description": "Card token data",
             "example": {
+              "userId": "user_123",
               "cardToken": "card_123456789"
             }
           }
@@ -5323,6 +5399,7 @@ Triggered when a virtual card is issued.
         "example": {
           "eventType": "virtual.card.issued",
           "data": {
+            "userId": "user_123",
             "cardToken": "card_123456789"
           }
         }
@@ -5339,6 +5416,7 @@ Triggered when a virtual card is issued.
 {
   "eventType": "virtual.card.issued",
   "data": {
+    "userId": "user_123",
     "cardToken": "card_123456789"
   }
 }
@@ -5359,6 +5437,8 @@ Triggered when an account's balance changes.
 {
   eventType: "account.balance.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** Total balance in wei */
     total: number;
     /** Spendable balance in wei */
@@ -5390,6 +5470,10 @@ Triggered when an account's balance changes.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "total": {
                 "type": "number",
                 "description": "Total balance in wei"
@@ -5404,12 +5488,14 @@ Triggered when an account's balance changes.
               }
             },
             "required": [
+              "userId",
               "total",
               "spendable",
               "pending"
             ],
             "description": "Account balance change data",
             "example": {
+              "userId": "user_123",
               "total": 1000000000000000000,
               "spendable": 800000000000000000,
               "pending": 200000000000000000
@@ -5424,6 +5510,7 @@ Triggered when an account's balance changes.
         "example": {
           "eventType": "account.balance.changed",
           "data": {
+            "userId": "user_123",
             "total": 1000000000000000000,
             "spendable": 800000000000000000,
             "pending": 200000000000000000
@@ -5442,6 +5529,7 @@ Triggered when an account's balance changes.
 {
   "eventType": "account.balance.changed",
   "data": {
+    "userId": "user_123",
     "total": 1000000000000000000,
     "spendable": 800000000000000000,
     "pending": 200000000000000000
@@ -5462,6 +5550,8 @@ Triggered when an account's limit changes.
 {
   eventType: "account.limit.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** Previous account limit */
     oldLimit: number;
     /** New account limit */
@@ -5491,6 +5581,10 @@ Triggered when an account's limit changes.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "oldLimit": {
                 "type": "number",
                 "description": "Previous account limit"
@@ -5501,11 +5595,13 @@ Triggered when an account's limit changes.
               }
             },
             "required": [
+              "userId",
               "oldLimit",
               "newLimit"
             ],
             "description": "Account limit change data",
             "example": {
+              "userId": "user_123",
               "oldLimit": 1000,
               "newLimit": 2000
             }
@@ -5519,6 +5615,7 @@ Triggered when an account's limit changes.
         "example": {
           "eventType": "account.limit.changed",
           "data": {
+            "userId": "user_123",
             "oldLimit": 1000,
             "newLimit": 2000
           }
@@ -5536,6 +5633,7 @@ Triggered when an account's limit changes.
 {
   "eventType": "account.limit.changed",
   "data": {
+    "userId": "user_123",
     "oldLimit": 1000,
     "newLimit": 2000
   }
@@ -5746,6 +5844,8 @@ Triggered when an account withdrawal fails.
 {
   eventType: "account.withdrawal.failed";
   data: {
+    /** User ID */
+    userId: string;
     /** Error message */
     error: string;
   };
@@ -5773,16 +5873,22 @@ Triggered when an account withdrawal fails.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "error": {
                 "type": "string",
                 "description": "Error message"
               }
             },
             "required": [
+              "userId",
               "error"
             ],
             "description": "Error data",
             "example": {
+              "userId": "user_123",
               "error": "Transaction failed"
             }
           }
@@ -5795,6 +5901,7 @@ Triggered when an account withdrawal fails.
         "example": {
           "eventType": "account.withdrawal.failed",
           "data": {
+            "userId": "user_123",
             "error": "Transaction failed"
           }
         }
@@ -5811,6 +5918,7 @@ Triggered when an account withdrawal fails.
 {
   "eventType": "account.withdrawal.failed",
   "data": {
+    "userId": "user_123",
     "error": "Transaction failed"
   }
 }
@@ -5831,6 +5939,8 @@ Triggered when an IBAN is created for a user.
 {
   eventType: "iban.created";
   data: {
+    /** User ID */
+    userId: string;
     /** International Bank Account Number */
     iban: string;
     /** Bank Identifier Code */
@@ -5860,6 +5970,10 @@ Triggered when an IBAN is created for a user.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "iban": {
                 "type": "string",
                 "description": "International Bank Account Number"
@@ -5870,11 +5984,13 @@ Triggered when an IBAN is created for a user.
               }
             },
             "required": [
+              "userId",
               "iban",
               "bic"
             ],
             "description": "IBAN data",
             "example": {
+              "userId": "user_123",
               "iban": "GB82WEST12345698765432",
               "bic": "WESTGB22"
             }
@@ -5888,6 +6004,7 @@ Triggered when an IBAN is created for a user.
         "example": {
           "eventType": "iban.created",
           "data": {
+            "userId": "user_123",
             "iban": "GB82WEST12345698765432",
             "bic": "WESTGB22"
           }
@@ -5905,6 +6022,7 @@ Triggered when an IBAN is created for a user.
 {
   "eventType": "iban.created",
   "data": {
+    "userId": "user_123",
     "iban": "GB82WEST12345698765432",
     "bic": "WESTGB22"
   }
@@ -5924,6 +6042,8 @@ Triggered when an IBAN's status changes.
 {
   eventType: "iban.status.changed";
   data: {
+    /** User ID */
+    userId: string;
     /** IBAN status */
     previousStatus: "NOTSTARTED" | "PENDING" | "PENDING_OAUTH" | "ASSIGNED";
     /** IBAN status */
@@ -5953,6 +6073,10 @@ Triggered when an IBAN's status changes.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "previousStatus": {
                 "type": "string",
                 "enum": [
@@ -5977,11 +6101,13 @@ Triggered when an IBAN's status changes.
               }
             },
             "required": [
+              "userId",
               "previousStatus",
               "currentStatus"
             ],
             "description": "IBAN status change data",
             "example": {
+              "userId": "user_123",
               "previousStatus": "PENDING",
               "currentStatus": "ASSIGNED"
             }
@@ -5995,6 +6121,7 @@ Triggered when an IBAN's status changes.
         "example": {
           "eventType": "iban.status.changed",
           "data": {
+            "userId": "user_123",
             "previousStatus": "PENDING",
             "currentStatus": "ASSIGNED"
           }
@@ -6012,6 +6139,7 @@ Triggered when an IBAN's status changes.
 {
   "eventType": "iban.status.changed",
   "data": {
+    "userId": "user_123",
     "previousStatus": "PENDING",
     "currentStatus": "ASSIGNED"
   }
@@ -6489,6 +6617,8 @@ Triggered when an owner is added to a Safe.
 {
   eventType: "safe.owner.added";
   data: {
+    /** User ID */
+    userId: string;
     /** Current owner address */
     owner: string;
     /** Safe address */
@@ -6520,6 +6650,10 @@ Triggered when an owner is added to a Safe.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "owner": {
                 "type": "string",
                 "description": "Current owner address"
@@ -6534,12 +6668,14 @@ Triggered when an owner is added to a Safe.
               }
             },
             "required": [
+              "userId",
               "owner",
               "safeAddress",
               "addedOwner"
             ],
             "description": "Safe owner added data",
             "example": {
+              "userId": "user_123",
               "owner": "0x123...",
               "safeAddress": "0x456...",
               "addedOwner": "0x789..."
@@ -6554,6 +6690,7 @@ Triggered when an owner is added to a Safe.
         "example": {
           "eventType": "safe.owner.added",
           "data": {
+            "userId": "user_123",
             "owner": "0x123...",
             "safeAddress": "0x456...",
             "addedOwner": "0x789..."
@@ -6572,6 +6709,7 @@ Triggered when an owner is added to a Safe.
 {
   "eventType": "safe.owner.added",
   "data": {
+    "userId": "user_123",
     "owner": "0x123...",
     "safeAddress": "0x456...",
     "addedOwner": "0x789..."
@@ -6592,6 +6730,8 @@ Triggered when an owner is removed from a Safe.
 {
   eventType: "safe.owner.removed";
   data: {
+    /** User ID */
+    userId: string;
     safeAddress: string;
     removedOwner: string;
   };
@@ -6619,6 +6759,10 @@ Triggered when an owner is removed from a Safe.
           "data": {
             "type": "object",
             "properties": {
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
               "safeAddress": {
                 "type": "string"
               },
@@ -6627,6 +6771,7 @@ Triggered when an owner is removed from a Safe.
               }
             },
             "required": [
+              "userId",
               "safeAddress",
               "removedOwner"
             ]
@@ -6640,6 +6785,7 @@ Triggered when an owner is removed from a Safe.
         "example": {
           "eventType": "safe.owner.removed",
           "data": {
+            "userId": "user_123",
             "safeAddress": "0x456...",
             "removedOwner": "0x789..."
           }
@@ -6657,6 +6803,7 @@ Triggered when an owner is removed from a Safe.
 {
   "eventType": "safe.owner.removed",
   "data": {
+    "userId": "user_123",
     "safeAddress": "0x456...",
     "removedOwner": "0x789..."
   }
