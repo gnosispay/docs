@@ -1,15 +1,15 @@
 ---
 title: IBAN Integration
-description: IBAN cash-in to the GnosisPay Account via Monerium
+description: IBAN cash-in to the Gnosis Pay Account via Monerium
 ---
 
-We offer IBAN cash-in to the GnosisPay Account via Monerium for users in Europe (EU) and Switzerland.
+We offer IBAN cash-in to the Gnosis Pay Account via Monerium for users in Europe (EU) and Switzerland.
 
 Monerium's IBAN integration enables direct connection between the owner of the GP Safe (which is the authenticated account address for SIWE) and Monerium.
 
-- No requirement on partners side for dual KYC, they can rely on this endpoint for fulfilling KYC requirements of monerium.
+- By calling the integrations endpoint (see below), it shares the user's KYC with Monerium.
 
-- Partner can link new addresses and enable these accounts to work with the partner application, through [Monerium API](https://monerium.dev/api-docs/v2)
+- You can use [Monerium API](https://monerium.dev/api-docs/v2) to authenticate with SIWE and perform actions enabled by the Monerium API
 
 - This API operates independently of the GP Safe and does not involve signatures on the delay module.
 
@@ -17,7 +17,7 @@ Monerium's IBAN integration enables direct connection between the owner of the G
 
 ## Check Availability
 
-[First you need to check if the user is available to activate their IBAN](/api-reference/iban/check-iban-availability):
+[First you need to check if the user is eligible to have an IBAN](/api-reference/iban/check-iban-availability):
 
 ```bash cURL
 curl -X GET /api/v1/ibans/available
@@ -26,13 +26,13 @@ curl -X GET /api/v1/ibans/available
 If you receive a `"available": false`, the flow ends here.
 
 <Warning>
-Requirements the gnosis pay user must have:
-- Valid DOB
+Requirements that the Gnosis Pay user must have:
+- Valid date of birth
 - An active EURe Safe Account
 - KYC verified and approved
 - Residency in a supported country
 - First and last name defined (or name)
-- Valid location fields filled in (address1 , postalCode, city and country,none of these fields can be missing)
+- Valid location fields filled in (address1, postalCode, city and country, none of these fields can be missing)
 - Nationality from a supported country ([see allowed and restricted nationalities](https://help.gnosispay.com/hc/en-us/articles/39558629298708-Eligible-Nationalities-for-the-Gnosis-Pay-IBAN-Feature))
 </Warning>
 
@@ -42,8 +42,8 @@ Requirements the gnosis pay user must have:
 <Steps titleSize="h3">
 <Step title="Signing the Monerium message">
 
-Monerium requires a specific message to be signed by the User's wallet.
-[Use this endpoint get the exact message that needs to be signed](/api-reference/iban/get-the-message-that-needs-to-be-signed-for-iban-activation):
+Monerium requires a specific message to be signed by the user's wallet to prove the ownership of the wallet.
+[Use this endpoint to get the exact message that needs to be signed](/api-reference/iban/get-the-message-that-needs-to-be-signed-for-iban-activation):
 
 ```bash cURL
 curl -X GET /api/v1/ibans/signing-message
@@ -59,13 +59,13 @@ We cannot request new IBANs nor transfer existing IBANs until the message signat
 
 Use the message string returned from [step 1](#signing-the-monerium-message) to generate a signature with the user's wallet.
 
-To request signature from the User's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
+To request signature from the user's wallet, you can follow this [demo signature implementation](#message-signing-example-with-viem).
 
 </Step>
 
 <Step title="Request the IBAN from Monerium">
 
-[Make a POST request to endpoint to request IBAN integration for Gnosis Pay user](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration):
+[Make a POST request to this endpoint to request IBAN integration for Gnosis Pay user](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration):
 
 ```bash cURL
 curl --request POST \
@@ -77,25 +77,39 @@ curl --request POST \
 }'
 ```
 If the request is successful, you will receive a response with the IBAN details.
+This endpoint effectively:
+- shares the user's KYC info with Monerium
+- creates an IBAN linked to the user's account
 
 <Warning>
-Monerium only allows the user to have one single account with them. If monerium account **already exists**, then there is **no need** to call this endpoint. In such cases, users can grant access to their existing Monerium account using the Monerium API directly.
+Monerium only allows the user to have one single account with them. If a Monerium account **already exists**, then there is **no need** to call this endpoint. In such cases, users can grant access to their existing Monerium account using the Monerium API directly.
 </Warning>
 
 </Step>
 
 <Step title="Get the IBAN number, BIC, Status and Connected Blockchain Address where funds are sent">
 
-To retrieve IBAN details including the IBAN number, BIC code, status, and connected blockchain address, use Monerium's dedicated [IBAN endpoint](https://monerium.dev/api-docs/v2#tag/ibans/operation/ibans) to fetch all relevant account information.
+To retrieve IBAN details including the IBAN number, BIC code, status, and connected account address, you can get them with the `bankingDetails` field from:
+```bash cURL
+curl -X GET /api/v1/user
+```
 
 </Step>
 
+<Step title="Using the Monerium API">
+
+Follow the guide available at https://monerium.dev/docs/welcome
+To authenticate with their API, you can then use the method described in https://monerium.dev/api-docs/v2#tag/auth *using the SIWE* flow.
+
+Once authenticated, you can manage IBANs, create instructions to transfer funds from one account to another, etc.
+
+</Step>
 </Steps>
 
 <Warning>
 For detailed error status codes and examples, please refer to the API Reference documentation [here for IBAN integration](https://docs.gnosispay.com/api-reference/iban/create-a-new-monerium-integration).
 
-The Gnosis Pay API serves as a wrapper for Monerium IBAN integration. Therefore, any issues related to Monerium integration should be addressed directly between partner products and Monerium.
+The Gnosis Pay API serves as a wrapper for Monerium IBAN integration. Therefore, any issues related to Monerium integration should be addressed directly between your products and Monerium.
 </Warning>
 
 ## Message Signing Example with Viem
