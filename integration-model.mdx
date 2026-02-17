@@ -48,7 +48,17 @@ Once you want to connect card activity to your app/business or expose sensitive 
 
 ## 2. Partnership Integration (Free, Startup, and Enterprise)
 
-If your company is interested in deeper collaboration—such as branded cards, custom user experiences, fee rebates, or co-marketing opportunities — [you can apply to become a Gnosis Pay partner](https://form.typeform.com/to/naN3irHW?typeform-source=gnosispay.com).
+If your company is interested in deeper collaboration—such as branded cards, custom user experiences, fee rebates, or co-marketing opportunities — you can sign up through our [Partners Dashboard](https://partners.gnosispay.com/).
+
+<Warning>
+**Domain Whitelisting Required**: During partner signup, you must provide all production and staging domains where your application will be hosted. These domains are whitelisted for SIWE (Sign-In with Ethereum) authentication and CORS.
+
+- **localhost**: Automatically allowed for local development (e.g., `localhost:3000`)
+- **Production/Staging**: All non-localhost domains must be registered during signup
+- Applications running on non-whitelisted domains will face authentication failures
+</Warning>
+
+
 
 <img
   src="/static/img/API Flows_partnership.png"
@@ -88,14 +98,21 @@ If your company is interested in deeper collaboration—such as branded cards, c
 
 ## **Getting Your PartnerID and APP_ID**
 
-Once your partnership application is approved, our team will provide you with:
-- **PartnerID**: A unique identifier for your partner organization within the Gnosis Pay ecosystem, enabling us to track user acquisition and attribute activity to your integration.
+Through our self-service [Partners Dashboard](https://partners.gnosispay.com/), partners can:
+- **PartnerID**: A unique identifier for partner organization within the Gnosis Pay ecosystem, enabling us to track user acquisition and attribute activity to integration.
 
 - **APP_ID**: An application-specific identifier that allows partners to authenticate with the PSE (Partner Secure Elements) and establish secure mTLS connection authentication between partner and Gnosis Pay.
-
+    <img
+      src="/static/img/partner_dashboard.png"
+      alt="Partners Dashboard - Self-service partner registration and management"
+      className="rounded-lg shadow-lg"
+    />
 <Info>
-    To get your PartnerID and APP_ID, please follow these steps:
-    1. Submit your partnership application through the [provided link](https://form.typeform.com/to/naN3irHW?typeform-source=gnosispay.com).
-    2. Wait for approval from Gnosis Pay team.
-    3. Once approved, you will receive an invite to join slack where we will communicate your PartnerID and APP_ID and provide technical support.
+    To get your PartnerID and APP_ID through the Partners Dashboard:
+    1. Sign up at [partners.gnosispay.com](https://partners.gnosispay.com/)
+    2. Include your company details and app domains (required for CORS whitelisting)
+    3. Get your PartnerID and APP_ID instantly upon registration
+    4. Handle PSE integration setup, CSR signature, and webhook configuration directly through the dashboard
+
+    **Critical**: You must include all your production and staging domains during signup. While localhost is automatically allowed for development, all other domains must be whitelisted for both CORS and SIWE authentication. Missing domains will cause authentication failures and API access issues.
 </Info>
