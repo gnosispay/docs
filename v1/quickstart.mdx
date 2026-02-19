@@ -1,0 +1,272 @@
+---
+title: Onboard Users to Gnosis Pay
+description: How to onboard new Users to Gnosis Pay.
+---
+
+Welcome! This guide will walk you through the journey to implement the complete onboarding of a user, from the first time they connect their wallet, to the point where they can order a card (physical or virtual) and start using it.
+
+If you want to see how it all comes together, check out our open-source [Gnosis Pay UI](https://github.com/gnosispay/ui) for a reference implementation.
+
+Let's jump right in!
+
+## 1. Authentication
+
+First things first: your users need to authenticate with our API.
+This is covered in detail in the [Authentication Flow](/auth) section.
+Once they're authenticated, you'll get a `jwt`, you'll need it for all the next steps.
+
+## 2. User Registration
+
+Now that you've got your `jwt` token, it's time to register your user in the Gnosis Pay system.
+
+<Note>
+There are 2 ways to know whether they are already registered or not:
+
+- **Check the JWT:** If the decoded JWT has a `userId`, your user is already registered.
+- **Or, call the user endpoint:** Try [`GET /api/v1/user`](/api-reference/user/get-the-user-profile). If you get a `401 Unauthorized Error`, the user isn't registered yet.
+</Note>
+
+<Steps titleSize="h3">
+<Step title="Signup with email">
+You can register a user with their `email` and `partnerId`, [see api documentation](/api-reference/authentication/create-a-new-user).
+
+<Note>
+The `partnerId` is a unique identifier for your app that you can get instantly from the [Partners Dashboard](https://partners.gnosispay.com/). This is the only place where you need to include it in the request.
+</Note>
+
+If you have a `referralCouponCode`, you can include it here too.
+
+```bash cURL
+curl -X POST /api/v1/auth/signup \
+-d '{
+  "authEmail": "string",
+  "partnerId": "string",
+  "referralCouponCode": "string" (optional)
+}'
+```
+
+</Step>
+<Step title="Accept Terms of Service (ToS)">
+At this point, the user is registered in the Gnosis Pay system and has an associated user id.
+Users need to accept our terms of service and those from our partners. To streamline the process, you can do this step together with the previous one.
+
+We recommend having a mapping in your app, between the ToS id and their title and urls, so you can display the title and link out for users to read the full text. Make sure they check a box to accept before moving on!
+
+<Info>
+This endpoint can only be called once the user is registered. Hence the proposed mapping.
+</Info>
+
+Get the terms for the user [(spec)](/api-reference/user/retrieve-terms-and-conditions-status):
+```bash cURL
+curl -X GET /api/v1/user/terms
+```
+We recommend you link each ID received on this endpoint with a title in your app:
+
+```javascript
+const tosToTitle = {
+  "general-tos": "Gnosis Pay Terms of Service",
+  "card-monavate-tos": "Cardholder Terms of Service",
+  "cashback-tos": "Cashback Terms of Service",
+  "privacy-policy": "Gnosis Pay Privacy and Cookies Policy"
+}
+```
+
+Once the user has reviewed and accepted the ToS, you can call the endpoint to accept each ToS that the user hadn't accepted yet [(spec)](/api-reference/user/accept-terms-and-conditions):
+```bash cURL
+curl -X POST /api/v1/user/terms \
+-d '{
+  "terms": "string", // e.g. "general-tos"
+  "version": "string" // e.g. "TOS_GENERAL_VERSION_1"
+}'
+```
+
+</Step>
+</Steps>
+
+## 3. KYC Process
+
+To order a card, your users will need to go through a KYC process with our partner Sumsub. The whole KYC flow happens in a Sumsub iframe, and in the background, the Gnosis Pay API keeps you updated on your user's `kycStatus` (check it with [`GET /api/v1/user`](/api-reference/user/retrieve-user-profile)
+
+Here are the different KYC statuses you might see, and what they mean for your user:
+
+| **KYC Status**                | **Description**                                                                                                          | **What your user should do**              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| `notStarted`                  | No KYC process started                                                                                                   | Start KYC                                 |
+| `documentsRequested`          | Applicant must upload documents. Status moves to `pending` when done.                                                    | Upload documents                          |
+| `pending`                     | Awaiting verification processing                                                                                         | Nothing—just wait!                        |
+| `processing`                  | Profile is being processed                                                                                               | Nothing—system is checking                |
+| `approved`                    | All verification checks passed                                                                                           | Nothing—KYC is complete                   |
+| `resubmissionRequested`       | Some checks failed; user can re-submit required steps                                                                    | Re-submit documents                       |
+| `rejected`                    | Final rejection; user cannot try again                                                                                   | Nothing (final rejection)                 |
+| `requiresAction`              | Manual check required by our team                                                                                        | Wait or contact support                   |
+
+<Note>
+You should start the KYC process if your user is registered and their `kycStatus` is `notStarted` or `documentsRequested`.
+</Note>
+
+<Steps titleSize="h3">
+<Step title="Get the Sumsub iframe URL or SDK token">
+By default, each user gets a unique URL for their KYC process.
+Get it with [(spec)](/api-reference/kyc/retrieve-link-for-web-integration):
+
+```bash cURL
+curl -X GET /api/v1/kyc/integration
+```
+
+For mobile integrations, you can use the Sumsub Mobile SDK.
+To instantiate their SDK you need an access token that you can get from [(spec)](/api-reference/kyc/retrieve-access-token-for-sumsub-sdk-integration):
+
+```bash cURL
+curl -X GET /api/v1/kyc/integration/sdk
+```
+
+</Step>
+<Step title="Monitor KYC Status">
+
+While the whole KYC flow happens in an iframe, it is advised to constantly monitor the `kycStatus` from the user endpoint, and act if users are in certain states.
+
+Provide a way to contact your support if the `kycStatus` is:
+- `requiresAction`
+- `rejected`
+
+If the status is one of the following, there's nothing to do on your side:
+  - `pending`
+  - `processing`
+  - `resubmissionRequested`
+
+Finally, if the status is `approved`, you can move on to the next step.
+
+</Step>
+<Step title="Source of funds questionnaire">
+
+For regulatory reasons, users need to answer a couple of questions regarding the source of funds for their card.
+
+<Note>
+Users should be ready for this step if:
+- they are registered (a `userId` is present in the JWT)
+- their `kycStatus` is `approved`
+- the field `isSourceOfFundsAnswered` on the user endpoint response is `false`
+</Note>
+
+You can get the list of questions and possible answers at this endpoint [(spec)](/api-reference/kyc/retrieve-source-of-funds-questions):
+
+```bash cURL
+curl -X GET /api/v1/source-of-funds
+```
+
+Show these questions to your user and collect their answers. You'll need to send all the answers together in one go [(spec)](/api-reference/kyc/answer-source-of-funds-questions):
+
+```bash cURL
+curl -X POST /api/v1/source-of-funds \
+-d '[
+  {
+    question: "string",
+    answer: "string"
+  },
+  ...
+]'
+```
+
+Don't forget to include the question title with each answer. If you want to see how this looks in practice, check out [Gnosis Pay UI](https://github.com/gnosispay/ui).
+
+</Step>
+<Step title="Phone Verification with OTP">
+
+Last but not least, your users need to verify their mobile phone. Just like with email, they'll enter their phone number, get a one-time password (OTP), and we'll verify it.
+
+<Note>
+This step is needed if:
+- The user is registered (`userId` in JWT)
+- `kycStatus` is `approved`
+- `isPhoneValidated` is `false` in the user endpoint response
+</Note>
+
+Validate the phone number by first requesting an OTP [(spec)](/api-reference/kyc/retrieve-an-otp-code-to-verify-a-phone-number):
+
+```bash cURL
+curl -X POST /api/v1/verification \
+-d '{
+  "phoneNumber": "string"
+}'
+```
+
+This will send a code to the user's phone number, which in turn needs to be passed on to the check endpoint [(spec)](/api-reference/kyc/verify-a-phone-number-with-otp-code):
+
+```bash cURL
+curl -X POST /api/v1/verification/check \
+-d '{
+  "code": "string"
+}'
+```
+
+Once that's done, `isPhoneValidated` will be `true`.
+</Step>
+</Steps>
+
+
+<Note>
+User's safe is ready for configuration if:
+- They are registered (`userId` in JWT)
+- `kycStatus` is `approved`
+- `isSourceOfFundsAnswered` is `true`
+- `isPhoneValidated` is `true`
+- `safeWallet` is an empty array in the user endpoint response
+</Note>
+
+## 4. Safe Account Configuration
+
+Gnosis Pay uses Safe accounts for on-chain transactions. This endpoint deploys GP Safe with currency and setup delay and roles modules for the GP Safe.
+
+The currency is automatically assigned based on the user's country:
+
+- UK users (GB): GBPe
+- Brazil users (BR): USDCe
+- Users from other countries: EURe (default)
+
+<Note>
+Before this, note that the field `accountStatus` is a number that is not `0` in the response from [`GET /api/v1/safe-config`](/api-reference/safe-management/retrieve-safe-configuration).
+`accountStatus: 0` would mean that the Safe modules are already deployed.
+</Note>
+
+
+```bash cURL
+curl --request POST \
+  --url https://api.gnosispay.com/api/v1/safe/deploy \
+  --header 'Authorization: Bearer <token>'
+```
+<Note>
+  If safe deployment request is successful, it will return as "accepted" from endpoint. From here it can take up to 1 minute for safe deployment and module setup.
+</Note>
+
+## 5. Monitor Safe Deployment Status
+
+After initiating the GP Safe deployment, monitor the deployment progress using the [v1/safe/deploy](https://docs.gnosispay.com/api-reference/safe-management/get-the-safe-deployment-status) endpoint:
+
+```bash cURL
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/safe/deploy \
+  --header 'Authorization: Bearer <token>'
+```
+
+### Verify safe configuration post deployment
+
+Once deployment is complete, verify the Safe is fully configured by checking the account status:
+
+```bash cURL
+curl --request GET \
+  --url https://api.gnosispay.com/api/v1/safe-config \
+  --header 'Authorization: Bearer <token>'
+```
+
+<Note>
+When `accountStatus` is **0**, the GP Safe is fully configured and ready for use.
+</Note>
+
+### Using Account-Kit for Integrity Status
+
+ Gnosis Pay Account-Kit library [`@gnosispay/account-kit`](https://github.com/gnosispay/account-kit) can provide a handy `AccountIntegrityStatus` enum.
+
+- `AccountIntegrityStatus.Ok`, which is `0`, means that the Safe modules are already deployed.
+- `AccountIntegrityStatus.DelayQueueNotEmpty`, which is `7`, means the module is deployed correctly, but the Safe has a pending transaction, which could happen later on.
+
+ If your interface is verifying the Safe modules deployment, both these statuses should be considered as valid.

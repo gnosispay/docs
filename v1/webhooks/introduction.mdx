@@ -1,0 +1,23 @@
+---
+title: "Introduction"
+description: "Learn how to integrate with Gnosis Pay webhooks to receive real-time event notifications."
+---
+
+Webhooks provide real-time notifications when events happen in the Gnosis Pay system. Rather than constantly polling our APIs for updates, you can configure webhook endpoints to receive instant notifications about user activities, KYC status changes, card transactions, and more.
+
+Our [Sign-In with Ethereum (SIWE) authentication system](/auth) requires customers to generate short-lived tokens (JWTs) that expire after 1 hour. This means your application may not always have a valid token to fetch updated data from our APIs.
+To avoid problems, we send complete entity data whenever possible in our webhook payloads.
+
+## Enable Webhooks
+
+To enable webhooks for your account:
+
+1. **Contact your Gnosis Pay partner manager** or reach out to our technical support team
+2. **Provide your webhook endpoint URL** (must be publicly accessible and use HTTPS)
+3. **Wait for confirmation** that your webhook has been configured
+
+<Info>
+  **Setup Time**: Webhook configuration typically takes 1-2 business days after
+  you provide the required information.
+</Info>
+

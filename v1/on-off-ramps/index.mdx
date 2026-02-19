@@ -1,0 +1,61 @@
+---
+title: "On/Off Ramp Integrations"
+description: "Complete guide to fiat-to-crypto conversions with Gnosis Pay's integrated ramp partners"
+---
+
+# On/Off Ramp Integrations
+
+Convert between fiat currencies and stablecoins seamlessly with Gnosis Pay's integrated ramp partners.
+
+<Warning>
+**No Double KYC Required**
+
+On/Off ramp integrations don't require users to complete another KYC process with Gnosis Pay - they can use their existing verification from our integrated partners.
+</Warning>
+
+<Info>
+**Important Partnership Requirements**
+
+Please be aware of the following integration requirements:
+
+-**Direct Provider Relationships**: The wallet/platform must establish a direct contractual relationship with the ramp provider (e.g., Noah, Monerium, Avenia) and integrate directly with their APIs. Gnosis Pay will only facilitate the KYC process by sharing the KYC collected data via Sumsub.
+
+- **Mandatory usage of Sumsub**: It is mandatory to use Sumsub instance to avail these integrations.
+
+
+For detailed KYC sharing implementation, please refer to our [KYC Sharing Integration Guide](on-off-ramps/kyc-sharing).
+</Info>
+
+## Available Integrations
+
+<CardGroup cols={3}>
+  <Card
+    title="💶 EUR Integration"
+    icon="euro-sign"
+    href="on-off-ramps/iban-integration"
+  >
+    **EUR to EUR.e via Monerium**
+
+    Full SEPA integration with IBAN support for European users.
+  </Card>
+
+  <Card
+    title="💵 USD Integration"
+    icon="dollar-sign"
+    href="https://docs.noah.com/"
+  >
+    **USD to USDC.e via Noah**
+
+    Fast and reliable USD conversion for North American markets.
+  </Card>
+
+  <Card
+    title="🇧🇷 BRL Integration"
+    icon="brazilian-real-sign"
+    href="https://integration-guide.avenia.io/"
+  >
+    **BRL to BRLA via Avenia**
+
+    Brazilian Real support specifically designed for LatAm markets.
+  </Card>
+</CardGroup>

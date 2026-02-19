@@ -1,6 +1,7 @@
 {
   "theme": "mint",
   "name": "Gnosis Pay Documentation",
+  "versions": ["GPv2", "GPv1"],
   "colors": {
     "primary": "#707A2D",
     "light": "#D8EB81",
@@ -8,90 +9,133 @@
   },
   "favicon": "/static/img/favicon.ico",
   "navigation": {
-    "tabs": [
+    "versions": [
       {
-        "tab": "Guides",
-        "groups": [
+        "version": "GP v2",
+        "tabs": [
           {
-            "group": "Introduction to Gnosis Pay",
-            "icon": "play",
-            "pages": ["index", "integration-model", "auth", "onboarding-flow"]
-          },
-          {
-            "group": "Accounts",
-            "icon": "user",
-            "pages": [
-              "account",
-              "account/update-authenticated-account",
-              "account/adding-safe-owner"
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Getting Started",
+                "icon": "play",
+                "pages": ["v2/v2-overview", "v2/v2-quickstart"]
+              },
+              {
+                "group": "Onboarding users to V2",
+                "icon": "key",
+                "pages": ["v2/v2-onboard"]
+              }
             ]
           },
           {
-            "group": "On/Off Ramps",
-            "icon": "landmark",
-            "pages": [
-              "on-off-ramps/index",
-              "on-off-ramps/iban-integration",
-              "on-off-ramps/kyc-sharing"
-            ]
-          },
-          {
-            "group": "Cards",
-            "icon": "credit-card",
-            "pages": [
-              "cards/concepts",
-              "cards/create-physical-cards",
-              "cards/create-virtual-cards",
-              "cards/card-order-state-transitions",
-              "cards/pse-integration"
-            ]
-          },
-          {
-            "group": "Card Transactions",
-            "icon": "receipt",
-            "pages": [
-              "transactions/index",
-              "transactions/lifecycle",
-              "transactions/integration-guide"
-            ]
-          },
-          {
-            "group": "On-chain",
-            "icon": "cubes",
-            "pages": [
-              "gp-onchain/overview",
-              "gp-onchain/about-GP-safe",
-              "gp-onchain/sign-message",
-              "gp-onchain/daily-limit",
-              "gp-onchain/withdraw-funds-from-safe",
-              "gp-onchain/third-party-bridges"
-            ]
-          },
-          {
-            "group": "Webhooks",
-            "icon": "webhook",
-            "pages": [
-              "webhooks/introduction",
-              "webhooks/getting-started",
-              "webhooks/events"
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "API Overview",
+                "pages": ["v2/api-reference/overview"]
+              },
+              {
+                "group": "Auth Module API",
+                "openapi": "https://gp-auth-module.sandbox.gnosispay.in/openapi.json"
+              }
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
+        "version": "GP v1",
+        "tabs": [
           {
-            "group": "Authentication",
-            "pages": ["api-reference/intro", "api-reference/auth-app"]
+            "tab": "Guides",
+            "groups": [
+              {
+                "group": "Introduction to Gnosis Pay",
+                "icon": "play",
+                "pages": [
+                  "v1/overview",
+                  "v1/integration-model",
+                  "v1/auth",
+                  "v1/quickstart"
+                ]
+              },
+              {
+                "group": "Accounts",
+                "icon": "user",
+                "pages": [
+                  "v1/account",
+                  "v1/account/update-authenticated-account",
+                  "v1/account/adding-safe-owner"
+                ]
+              },
+              {
+                "group": "On/Off Ramps",
+                "icon": "landmark",
+                "pages": [
+                  "v1/on-off-ramps/index",
+                  "v1/on-off-ramps/iban-integration",
+                  "v1/on-off-ramps/kyc-sharing"
+                ]
+              },
+              {
+                "group": "Cards",
+                "icon": "credit-card",
+                "pages": [
+                  "v1/cards/concepts",
+                  "v1/cards/create-physical-cards",
+                  "v1/cards/create-virtual-cards",
+                  "v1/cards/card-order-state-transitions",
+                  "v1/cards/pse-integration"
+                ]
+              },
+              {
+                "group": "Card Transactions",
+                "icon": "receipt",
+                "pages": [
+                  "v1/transactions/index",
+                  "v1/transactions/lifecycle",
+                  "v1/transactions/integration-guide"
+                ]
+              },
+              {
+                "group": "On-chain",
+                "icon": "cubes",
+                "pages": [
+                  "v1/gp-onchain/overview",
+                  "v1/gp-onchain/about-GP-safe",
+                  "v1/gp-onchain/sign-message",
+                  "v1/gp-onchain/daily-limit",
+                  "v1/gp-onchain/withdraw-funds-from-safe",
+                  "v1/gp-onchain/third-party-bridges"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "icon": "webhook",
+                "pages": [
+                  "v1/webhooks/introduction",
+                  "v1/webhooks/getting-started",
+                  "v1/webhooks/events"
+                ]
+              }
+            ]
           },
           {
-            "group": "API reference",
-            "openapi": "https://api.gnosispay.com/api-docs/spec.json"
-          },
-          {
-            "group": "PSE API",
-            "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
+            "tab": "API reference",
+            "groups": [
+              {
+                "group": "Authentication",
+                "pages": ["v1/api-reference/intro", "v1/api-reference/auth-app"]
+              },
+              {
+                "group": "API reference",
+                "openapi": "https://api.gnosispay.com/api-docs/spec.json"
+              },
+              {
+                "group": "PSE API",
+                "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
+              }
+            ]
           }
         ]
       }
