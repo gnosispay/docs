@@ -6,6 +6,10 @@ description: Use Sign-In with Ethereum (SIWE) to authenticate API requests.
 Our authentication system uses Sign-In with Ethereum (SIWE) to generate a `jwt` to interact with our API.
 This means you don't need to handle the storage of a powerful API key or spend hours configuring granular permissions.
 
+<Info>
+**For Partners**: If you're building a partner integration, make sure to register your domains through the [Partners Dashboard](https://partners.gnosispay.com/) during signup. This ensures your domains are whitelisted for SIWE authentication and prevents authentication failures.
+</Info>
+
 
 ## Authentication Process
 
@@ -52,7 +56,13 @@ curl -X POST /api/v1/auth/challenge \
 </Steps>
 
 <Warning>
-The SIWE message contains a `domain` and a `uri` field. You should ensure their values are **not** `127.0.0.1` or `localhost`, even when working locally. Override these fields (e.g., with `domain: "somedomain.com", uri: "https://www.somedomain.com"`) to prevent firewall blocks and "WAFForbidden" errors.
+**Domain Whitelisting**: Gnosis Pay validates SIWE domains against a whitelist for security. 
+
+- **localhost**: `localhost` (with or without ports like `localhost:3000`) is automatically allowed for local development
+- **Production domains**: All production and staging domains must be registered through the [Partners Dashboard](https://partners.gnosispay.com/) during signup
+- **127.0.0.1**: Avoid using `127.0.0.1` in SIWE messages as it may cause firewall blocks and "WAFForbidden" errors
+
+Only whitelisted domains (plus localhost) will be accepted for SIWE authentication.
 </Warning>
 
 Upon successful verification, a `jwt` is generated.
