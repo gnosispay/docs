@@ -1,0 +1,101 @@
+---
+title: "Onboard to Gnosis Pay V2"
+description: "User onboarding using Gnosis Pay V2 sandbox environment"
+---
+This documentation provides a step-by-step guide on how to test the user onboarding experience for Gnosis Pay V2 in a sandbox environment.
+
+## 1. Authentication
+<Steps>
+<Step title="Get Access Token">
+
+</Step>
+</Steps>
+
+## 2. User Registration to V2
+
+<Steps>
+<Step title="Request email verification ">
+    Send an email verification request with a One-Time Password (OTP) to the user's email address.
+</Step>
+
+<Step title="Register user">
+    Register a new user with email OTP and create a user profile. This endpoint will return a new JWT access token with userID that will be used as bearer token for all the API requests. Optionally provide a shareToken for Sumsub reusable KYC.
+</Step>
+
+<Step title="Get onboarding status of user">
+    After user registration, use the access token to retrieve the user's current onboarding status. This API call will indicate the next required step in the onboarding process. At this point, users must accept the Terms of Service to proceed.
+</Step>
+
+<Step title="Retrieve Terms of Service">
+    Fetch the current Terms of Service that users must agree to before continuing with the onboarding process.
+</Step>
+
+<Step title="Accept Terms of Service">
+    Submit user acceptance of the Terms of Service to complete this step of the onboarding process.
+</Step>
+</Steps>
+
+## 3. KYC Process in Sandbox Environment
+
+Once TOS is accepted, we can proceed with the KYC process.
+
+<Steps>
+    <Step title="Get onboarding status">
+     When you call the `GET Onboarding Status` API, it will return the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. It will return the status and webSdkURL.
+     ```json
+     {
+         "status": "action_complete_kyc",
+         "webSdkUrl": "https://in.sumsub.com/websdk/p/sbx_yeuhsxyuhkio"
+     }
+     ```
+
+    </Step>
+
+<Step title="Verify KYC">
+    Click on Sumsub URL link, which will take you to sumsub screen. As you are in sandbox version of sumsub, you can use templates from Sumsub and use one of the templates for submitting details around POI/POA along with liveness check [verification document templates.](https://docs.sumsub.com/docs/verification-document-templates)
+
+</Step>
+
+<Step title="Complete SOF">
+    After completing the KYC process, proceed to the Source of Funds (SOF) verification step. Call the `GET Onboarding Status` API, which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the `GET SoF Questions` endpoint.
+
+    Once all SOF questions have been reviewed and answered, submit the responses through the `POST Submit SOF Answers` API endpoint to complete this step of the onboarding process.
+</Step>
+
+</Steps>
+
+## 4. Account Setup
+<Steps>
+    <Step title="Create GP Account">
+        Once the SOF is submitted, proceed with account setup provisioning. Create an account for the authenticated user. This requires successful onboarding completion and no existing account.
+
+        The onboarding status will be updated to:
+        ```json
+        {
+            "status": "awaiting_account_setup"
+        }
+        ```
+    </Step>
+
+    <Step title="Verify Phone Number">
+        The onboarding status will update to the following once your account is created:
+        ```json
+        {
+            "status": "action_verify_phone"
+        }
+        ```
+
+        **Submit Phone Number**: First, submit your phone number for verification purposes and to enable the creation of a CardholderID.
+
+        **Submit OTP**: After submitting your phone number, you will receive a One-Time Password (OTP) via SMS. Submit this OTP to complete the phone verification process.
+
+        Once the OTP is successfully verified, the onboarding status will be marked as complete.
+        ```json
+        {
+            "status": "completed"
+        }
+        ```
+
+    </Step>
+
+</Steps>
