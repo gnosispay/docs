@@ -26,7 +26,7 @@
                 "icon": "cube",
                 "pages": [
                   "v2/gp-onchain/v2-account",
-                  "v2/gp-onchain/v2-deposit-withdrawal"
+                  "v2/gp-onchain/v2-account-statement"
                 ]
               },
               {
