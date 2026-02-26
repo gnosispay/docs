@@ -1,47 +1,162 @@
 ---
 title: "Onboard to Gnosis Pay V2"
-description: "User onboarding using Gnosis Pay V2 sandbox environment"
+description: "User onboarding using Gnosis Pay V2"
 ---
 This documentation provides a step-by-step guide on how to test the user onboarding experience for Gnosis Pay V2 in a sandbox environment.
 
 ## 1. Authentication
 <Steps>
-<Step title="Get Access Token">
+<Step title="Get access token">
+
+To get access token, please go through the authentication guide here.
 
 </Step>
 </Steps>
 
 ## 2. User Registration
 
-<Steps>
-<Step title="Request email verification ">
+<Steps titleSize="h3">
+<Step title="Sign up with email ">
     Send an email verification request with a One-Time Password (OTP) to the user's email address.
+    <Tabs>
+      <Tab title="Sandbox">
+          ```bash cURL
+          curl --request POST \
+            --url https://gp-auth-module.sandbox.gnosispay.in/email-verification \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "email": "jsmith@example.com"
+          }'
+          ```
+      </Tab>
+    </Tabs>
 </Step>
 
 <Step title="Register user">
-    Register a new user with email OTP and create a user profile. This endpoint will return a new JWT access token with userID that will be used as bearer token for all the API requests. Optionally provide a shareToken for Sumsub reusable KYC.
+Register a new user with email OTP and create a user profile. This endpoint will return a new JWT access token with userID that will be used as bearer token for all the API requests. Optionally provide a shareToken for Sumsub reusable KYC.
+
+<Note>
+   If the access token lacks a `userID`, it indicates that user registration failed because the email was never properly submitted.
+</Note>
+
+    <Tabs>
+      <Tab title="Sandbox">
+          ```bash cURL
+          curl --request POST \
+            --url https://gp-auth-module.sandbox.gnosispay.in/user \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "email": "jsmith@example.com",
+            "otp": "<string>",
+            "shareToken": "<string>"
+          }'
+          ```
+      </Tab>
+    </Tabs>
 </Step>
 
 <Step title="Get onboarding status of user">
-    After user registration, use the access token to retrieve the user's current onboarding status. This API call will indicate the next required step in the onboarding process. At this point, users must accept the Terms of Service to proceed.
+    After user registration, use the access token to retrieve the user's current onboarding status.[`GET /user/onboarding`](/api-reference/user/get-onboarding-status) will indicate the next required step in the onboarding process.
+
+    #### User Onboarding States
+
+    The onboarding status values to indicate the current step and required user actions:
+
+    | Status | Description | User Action Required |
+    |--------|-------------|---------------------|
+    | `action_accept_tos` | Terms of Service acceptance required - user registered but hasn't accepted required terms | Review and accept Terms of Service |
+    | `waiting_kyc_setup` | KYC initialization in progress - all terms accepted, KYC process being set up | Wait for KYC setup completion |
+    | `action_complete_kyc` | KYC verification pending - KYC check created but pending user completion | Complete KYC verification via Sumsub |
+    | `action_complete_sof` | Source of Funds questionnaire required - KYC approved, SOF answers needed | Answer Source of Funds questionnaire |
+    | `action_create_account` | Ready for account creation - KYC approved and SOF completed | Proceed with account creation |
+    | `waiting_account_setup` | Account provisioning in progress - account is being set up in the system | Wait for account setup completion |
+    | `action_verify_phone` | Phone verification required - account is active but missing cardholder ID | Submit and verify phone number |
+    | `completed` | Onboarding complete - account is active with cardholder ID | Start using the platform |
+    | `rejected` | Onboarding rejected - account is blocked, closed, or KYC verification failed | Contact support or retry if applicable |
+
+
+     <Tabs>
+      <Tab title="Sandbox">
+          ```bash cURL
+          curl --request GET \
+            --url https://gp-auth-module.sandbox.gnosispay.in/user/onboarding
+          ```
+      </Tab>
+    </Tabs>
+
 </Step>
 
-<Step title="Retrieve Terms of Service">
-    Fetch the current Terms of Service that users must agree to before continuing with the onboarding process.
-</Step>
+<Step title="Accept Terms of Service (ToS)">
+    At this point, the user is registered in the Gnosis Pay system and has an associated `userID`. Call the endpoint [`GET /user/onboarding`](/api-reference/user/get-onboarding-status). The response from JSON will be following returned with status of `action_accept_tos`.
+    ```json
+    {
+      "status": "action_accept_tos",
+      "terms": [
+        {
+          "type": "string",
+          "currentVersion": "string",
+          "name": "string",
+          "url": null,
+          "accepted": true,
+          "acceptedVersion": null,
+          "acceptedAt": null
+        }
+      ]
+    }
+    ```
+    #### Request Terms of Service
+    Fetch the current `Terms of Service` that users must agree to before continuing with the onboarding process via the endpoint [`GET /terms`](/api-reference/terms/list-available-terms).
 
-<Step title="Accept Terms of Service">
-    Submit user acceptance of the Terms of Service to complete this step of the onboarding process.
+    <Tabs>
+      <Tab title="Sandbox">
+    ```bash cURL
+    curl --request GET \
+      --url https://gp-auth-module.sandbox.gnosispay.in/terms
+    ```
+    </Tab>
+    </Tabs>
+
+    Submit the accepted Terms of Service via the [`POST /user/terms`](/api-reference/terms/accept-terms) endpoint.
+
+    <Tabs>
+      <Tab title="Sandbox">
+
+    ```bash cURL
+    curl --request POST \
+      --url https://gp-auth-module.sandbox.gnosispay.in/user/terms \
+      --header 'Content-Type: application/json' \
+      --data '{
+      "terms": [
+        {
+          "type": "<string>",
+          "version": "<string>"
+        }
+      ]
+    }'
+    ```
+    </Tab>
+    </Tabs>
+
+    You can check the status of the user's acceptance of the Terms of Service via the [`GET /user/terms`](/api-reference/terms/get-user-terms) endpoint.
+
+    <Tabs>
+    <Tab title="Sandbox">
+    ```bash cURL
+    curl --request GET \
+      --url https://gp-auth-module.sandbox.gnosispay.in/user/terms
+
+    ```
+    </Tab>
+    </Tabs>
+
 </Step>
 </Steps>
 
-## 3. KYC Process in Sandbox Environment
-
-Once TOS is accepted, we can proceed with the KYC process.
+## 3. KYC Process
 
 <Steps>
     <Step title="Get onboarding status">
-     When you call the `GET Onboarding Status` API, it will return the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. It will return the status and webSdkURL.
+     Call the `GET /user/onboarding` API to retrieve the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. The response will include the status and a webSdkURL for completing KYC verification.
      ```json
      {
          "status": "action_complete_kyc",
@@ -51,51 +166,154 @@ Once TOS is accepted, we can proceed with the KYC process.
 
     </Step>
 
-<Step title="Verify KYC">
-    Click on Sumsub URL link, which will take you to sumsub screen. As you are in sandbox version of sumsub, you can use templates from Sumsub and use one of the templates for submitting details around POI/POA along with liveness check [verification document templates.](https://docs.sumsub.com/docs/verification-document-templates)
+<Step title="Complete KYC">
+
+ <Tabs>
+      <Tab title="Sandbox">
+          Access the Sumsub URL provided in the response to begin the KYC verification process. In the sandbox environment, you can use Sumsub's predefined templates for testing purposes.
+
+          To complete the verification process:
+          1. Navigate to the provided `webSdkUrl`
+          2. Use the [verification document templates](https://docs.sumsub.com/docs/verification-document-templates) for Proof of Identity (POI) and Proof of Address (POA)
+          3. Complete the liveness check as prompted
+ </Tab>
+ </Tabs>
 
 </Step>
+
 
 <Step title="Complete SOF">
-    After completing the KYC process, proceed to the Source of Funds (SOF) verification step. Call the `GET Onboarding Status` API, which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the `GET SoF Questions` endpoint.
+    After completing the KYC process, the next steps is to proceed to the Source of Funds (SOF) verification step. Call the `GET /user/onboarding`, which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the `GET SoF Questions` endpoint.
 
-    Once all SOF questions have been reviewed and answered, submit the responses through the `POST Submit SOF Answers` API endpoint to complete this step of the onboarding process.
+    <Tabs>
+      <Tab title="Sandbox">
+      ```cURL
+      curl --request GET \
+        --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds
+      ```
+    </Tab>
+    </Tabs>
+
+    Once all SOF questions have been reviewed and answered by user, submit the responses through the `POST /source-of-funds`endpoint to complete this step of the onboarding process.
+
+     <Tabs>
+      <Tab title="Sandbox">
+      ```cURL
+      curl --request POST \
+        --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds \
+        --header 'Content-Type: application/json' \
+        --data '{
+        "answers": [
+          {
+            "question": "<string>",
+            "answer": "<string>"
+          }
+        ]
+      }'
+      ```
+    </Tab>
+    </Tabs>
+
 </Step>
-
 </Steps>
 
 ## 4. Account Setup
 <Steps>
-    <Step title="Create GP Account">
-        Once the SOF is submitted, proceed with account setup provisioning. Create an account for the authenticated user. This requires successful onboarding completion and no existing account.
 
-        The onboarding status will be updated to:
+    <Step title="Check onboarding status">
+        Check the user's onboarding status using the `GET /user/onboarding`endpoint to determine if their KYC verification has been accepted. If the KYC is approved, the user status will transition to `action_create_account`. In next step, we will create GP spending safe wallet address.
+    </Step>
+
+    <Step title="Create GP Account">
+        In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call `POST /user/account` endpoint to create an account for the authenticated user.
+
+        <Tabs>
+        <Tab title="Sandbox">
+        ```cURL
+        curl --request POST \
+          --url https://gp-auth-module.sandbox.gnosispay.in/user/account \
+          --header 'Content-Type: application/json' \
+          --data '{
+          "celoConfig": {
+            "dailyLimits": {
+              "usdt": 1,
+              "usdc": 1
+            }
+          }
+        }'
+        ```
+        </Tab>
+        </Tabs>
+
+        Once the account provisioning begins, the onboarding status will be updated to `waiting_account_setup` state, indicating that the account is being set up in the system.
         ```json
         {
-            "status": "awaiting_account_setup"
+            "status": "waiting_account_setup"
         }
         ```
     </Step>
 
     <Step title="Verify Phone Number">
-        The onboarding status will update to the following once your account is created:
+
+        Call the `GET /user/onboarding` endpoint to check the status.
+
+        The onboarding status will update to the following once the account is created:
         ```json
         {
             "status": "action_verify_phone"
         }
         ```
 
-        **Submit Phone Number**: First, submit your phone number for verification purposes and to enable the creation of a CardholderID.
+        **Submit Phone Number**: Submit the phone number for verification purposes and to enable card creation.
 
-        **Submit OTP**: After submitting your phone number, you will receive a One-Time Password (OTP) via SMS. Submit this OTP to complete the phone verification process.
+        <Tabs>
+        <Tab title="Sandbox">
+        ```cURL
+        curl --request POST \
+          --url https://gp-auth-module.sandbox.gnosispay.in/phone/otp \
+          --header 'Content-Type: application/json' \
+          --data '{
+          "phone": "<string>"
+        }'
+        ```
+        </Tab>
+        </Tabs>
 
-        Once the OTP is successfully verified, the onboarding status will be marked as complete.
+        **Submit OTP**: After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process.
+
+        <Tabs>
+        <Tab title="Sandbox">
+        ```cURL
+        curl --request POST \
+          --url https://gp-auth-module.sandbox.gnosispay.in/phone \
+          --header 'Content-Type: application/json' \
+          --data '{
+          "phone": "<string>",
+          "code": "<string>"
+        }'
+        ```
+        </Tab>
+        </Tabs>
+
+        Once the OTP is successfully verified, call `GET /user/onboarding`. At this stage, the user can create virtual cards and the user onboarding is fully completed.
         ```json
         {
             "status": "completed"
         }
         ```
-
     </Step>
 
+    <Step title="Retrieve Authenticated User">
+        Call the `GET /user` endpoint to retrieve the full user profile, including their GP spending wallet address.
+        <Tabs>
+        <Tab title="Sandbox">
+        ```cURL
+        curl --request GET \
+          --url https://gp-auth-module.sandbox.gnosispay.in/user \
+          --header 'Content-Type: application/json'
+        ```
+        </Tab>
+        </Tabs>
+
+    </Step>
 </Steps>
