@@ -105,6 +105,9 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       ]
     }
     ```
+    <Note>
+        UX tip: Handle ToS acceptance within the email registration flow to avoid introducing an additional screen in the onboarding process. In the same screen, render the Terms (or link to them) and include a mandatory “I agree to the Terms of Service” checkbox. Disable form submission until the checkbox is selected. After successful registration and token issuance, automatically trigger the SoF acceptance call with the new token.
+    </Note>
     #### Request Terms of Service
     Fetch the current `Terms of Service` that users must agree to before continuing with the onboarding process via the endpoint [`GET /terms`](/api-reference/terms/list-available-terms).
 
