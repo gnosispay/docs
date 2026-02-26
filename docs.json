@@ -26,7 +26,8 @@
                 "icon": "cube",
                 "pages": [
                   "v2/gp-onchain/v2-account",
-                  "v2/gp-onchain/v2-account-statement"
+                  "v2/gp-onchain/v2-account-statement",
+                  "v2/gp-onchain/v2-withdraw"
                 ]
               },
               {
@@ -34,6 +35,7 @@
                 "icon": "credit-card",
                 "pages": [
                   "v2/cards/v2-virtual-card",
+                  "v2/cards/v2-card-details",
                   "v2/cards/v2-simulate-card"
                 ]
               }
