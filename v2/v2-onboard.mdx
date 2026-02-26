@@ -138,7 +138,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     </Tab>
     </Tabs>
 
-    You can check the status of the user's acceptance of the Terms of Service via the [`GET /user/terms`](/api-reference/terms/get-user-terms) endpoint.
+    You can check the status of the user's acceptance of the Terms of Service via the [`GET /user/terms`](api-reference/terms/get-user-terms-status) endpoint.
 
     <Tabs>
     <Tab title="Sandbox">
@@ -189,7 +189,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 
 <Step title="Complete SOF">
     After completing the KYC process, the next steps is to proceed to the Source of Funds (SOF) verification step. Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status), which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the [`GET /
-    source-of-funds`](/api-reference/user/get-sof-questions) endpoint.
+    source-of-funds`](/api-reference/source-of-funds/get-sof-questions) endpoint.
 
     <Tabs>
       <Tab title="Sandbox">
@@ -231,7 +231,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     </Step>
 
     <Step title="Create GP Account">
-        In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call [`POST /user/account`](/api-reference/user/account) endpoint to create an account for the authenticated user.
+        In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call [`POST /user/account`](/api-reference/user/create-account) endpoint to create an account for the authenticated user.
 
         <Tabs>
         <Tab title="Sandbox">
