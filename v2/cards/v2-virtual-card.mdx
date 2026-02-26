@@ -1,0 +1,19 @@
+---
+title: Create Virtual Card
+description: Create and Manage Virtual Cards for Users.
+---
+
+Pre-requisites for creating a virtual card :
+- verified phone number
+Virtual card activate right after creation and can be utilized for online pucrchases
+
+To create card for user, call [`POST /cards/virtual`](/api-reference/cards/create-virtual-card) along with cardName. Once successful, you will get a CardID.
+
+```bash
+curl --request POST \
+  --url https://gp-auth-module.sandbox.gnosispay.in/cards/virtual \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "cardName": "<string>"
+}'
+```

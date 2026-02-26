@@ -17,7 +17,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 
 <Steps titleSize="h3">
 <Step title="Sign up with email ">
-    Send an email verification request with a One-Time Password (OTP) to the user's email address.
+    Send an email verification request to [`POST /email-verification`](/api-reference/auth/request-email-verification) with a One-Time Password (OTP) to the user's email address.
     <Tabs>
       <Tab title="Sandbox">
           ```bash cURL
@@ -33,8 +33,9 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 </Step>
 
 <Step title="Register user">
-Register a new user with email OTP and create a user profile. This endpoint will return a new access token with userID that will be used as bearer token for all the subsequent API requests. Optionally provide a shareToken for Sumsub reusable KYC.
+    Register a new user with email OTP and create a user profile. POST [`/user`](/api-reference/user/register-user) endpoint returns a new access token with userID that must be used as the bearer token for all subsequent API requests - otherwise the calls will fail.
 
+    Optionally, provide a shareToken for Sumsub reusable KYC.
 <Note>
    If the access token lacks a `userID`, it indicates that user registration failed because the email was never properly submitted.
 </Note>
@@ -156,7 +157,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
 <Steps>
     <Step title="Get onboarding status">
-     Call the `GET /user/onboarding` API to retrieve the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. The response will include the status and a webSdkURL for completing KYC verification.
+     Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) API to retrieve the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. The response will include the status and a `webSdkURL` for completing KYC verification.
      ```json
      {
          "status": "action_complete_kyc",
@@ -172,8 +173,12 @@ Register a new user with email OTP and create a user profile. This endpoint will
       <Tab title="Sandbox">
           Access the Sumsub URL provided in the response to begin the KYC verification process. In the sandbox environment, you can use Sumsub's predefined templates for testing purposes.
 
+          <Note>
+          As you are in the sandbox environment, you can use fake documents or use one provided by Sumsub.
+          </Note>
+
           To complete the verification process:
-          1. Navigate to the provided `webSdkUrl`
+          1. Open an iframe with the provided `webSdkUrl`
           2. Use the [verification document templates](https://docs.sumsub.com/docs/verification-document-templates) for Proof of Identity (POI) and Proof of Address (POA)
           3. Complete the liveness check as prompted
  </Tab>
@@ -183,7 +188,8 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
 
 <Step title="Complete SOF">
-    After completing the KYC process, the next steps is to proceed to the Source of Funds (SOF) verification step. Call the `GET /user/onboarding`, which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the `GET SoF Questions` endpoint.
+    After completing the KYC process, the next steps is to proceed to the Source of Funds (SOF) verification step. Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status), which will return the next required action to complete SOF verification along with the questions that need to be answered. Alternatively, retrieve the SOF questions directly using the [`GET /
+    source-of-funds`](/api-reference/user/get-sof-questions) endpoint.
 
     <Tabs>
       <Tab title="Sandbox">
@@ -194,7 +200,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
     </Tab>
     </Tabs>
 
-    Once all SOF questions have been reviewed and answered by user, submit the responses through the `POST /source-of-funds`endpoint to complete this step of the onboarding process.
+    Once all SOF questions have been reviewed and answered by user, submit the responses through the [`POST /source-of-funds`](/api-reference/source-of-funds/submit-sof-answers) endpoint to complete this step of the onboarding process.
 
      <Tabs>
       <Tab title="Sandbox">
@@ -221,11 +227,11 @@ Register a new user with email OTP and create a user profile. This endpoint will
 <Steps>
 
     <Step title="Check onboarding status">
-        Check the user's onboarding status using the `GET /user/onboarding`endpoint to determine if their KYC verification has been accepted. If the KYC is approved, the user status will transition to `action_create_account`. In next step, we will create GP spending safe wallet address.
+        Check the user's onboarding status using the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to determine if their KYC verification has been accepted. If the KYC is approved, the user status will transition to `action_create_account`. In next step, we will create GP spending safe wallet address.
     </Step>
 
     <Step title="Create GP Account">
-        In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call `POST /user/account` endpoint to create an account for the authenticated user.
+        In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call [`POST /user/account`](/api-reference/user/account) endpoint to create an account for the authenticated user.
 
         <Tabs>
         <Tab title="Sandbox">
@@ -255,7 +261,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
     <Step title="Verify Phone Number">
 
-        Call the `GET /user/onboarding` endpoint to check the status.
+        Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to check the status.
 
         The onboarding status will update to the following once the account is created:
         ```json
@@ -264,7 +270,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
         }
         ```
 
-        **Submit Phone Number**: Submit the phone number for verification purposes and to enable card creation.
+        **Submit Phone Number**: Submit the phone number for verification purposes and to enable card creation to [`POST /phone/otp`](/api-reference/phone/request-phone-otp-via-sms).
 
         <Tabs>
         <Tab title="Sandbox">
@@ -279,7 +285,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
         </Tab>
         </Tabs>
 
-        **Submit OTP**: After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process.
+        **Submit OTP**: After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process to [`POST /phone`](/api-reference/phone/verify-phone-otp-and-createupdate-cardholder).
 
         <Tabs>
         <Tab title="Sandbox">
@@ -295,7 +301,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
         </Tab>
         </Tabs>
 
-        Once the OTP is successfully verified, call `GET /user/onboarding`. At this stage, the user can create virtual cards and the user onboarding is fully completed.
+        Once the OTP is successfully verified, call [`GET /user/onboarding`](/api-reference/user/get-onboarding-status). At this stage, the user can create virtual cards and the user onboarding is fully completed.
         ```json
         {
             "status": "completed"
@@ -304,7 +310,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
     </Step>
 
     <Step title="Retrieve Authenticated User">
-        Call the `GET /user` endpoint to retrieve the full user profile, including their GP spending wallet address.
+        Call the [`GET /user`](/api-reference/user/get-current-user) endpoint to retrieve the full user profile, including their GP spending wallet address.
         <Tabs>
         <Tab title="Sandbox">
         ```bash cURL

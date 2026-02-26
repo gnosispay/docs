@@ -1,0 +1,79 @@
+---
+title: "GP Account"
+description: "Understanding Gnosis Pay V2 account architecture and modules"
+---
+
+Gnosis Pay's on-chain infrastructure is built on top of the Safe protocol, providing a secure and programmable foundation for digital payments. Each user receives a unique Safe account that acts as their on-chain wallet, with additional modules that enable spending limits, time delays, and delegated spending capabilities.
+
+## Architecture Overview
+
+The Gnosis Pay Safe consists of a core Safe account with three main modules:
+
+- **Core Safe Account**: The base Safe wallet that holds funds and processes transactions
+- **Delay Module**: Controls transaction timing and provides security delays
+- **Roles Module**: Manages spending permissions and allowance limits
+- **Bouncer Module**: Handles account access validation and security
+
+## V2 Architecture Changes
+
+Gnosis Pay V2 maintains the same Safe wallet structure with delay and roles modules, but implements key behavioral improvements:
+
+### Instant Withdrawals
+Withdrawals from the Gnosis Pay Safe don't go through the delay module. The system reduces the spendable balance immediately to avoid double spending and then syncs with the on-chain balance, eliminating the 3-minute delay and removing the need for the card to be blocked during the withdrawal process.
+
+### Multi-Currency Support
+The Roles module now supports multi-token configurations so that users can spend different currencies via their spending safe.
+
+## Module Configurations:
+
+### Delay Module Settings
+- **Transaction delay**: 25 hours (increased from 3 minutes)
+- **Transaction expiration**: 31 hours (increased from 30 minutes)
+
+<Warning>
+These extended timeouts are designed to discourage direct delay module interaction. Failed transactions require the full expiration period before they can be skipped.
+</Warning>
+
+### Daily Spending Limits
+The Roles module implements a hardcoded daily limit of **$20K per token**. This limit is set at 2x the current card limit to accommodate future increases without requiring user transactions.
+
+<Warning>
+    Any interaction with the delay module will block the card and require customer support intervention to resolve the issue.
+</Warning>
+
+
+## Account details for authenticated user
+To get authenticated user account details, call [`GET /user/account`](/api-reference/user/get-account)
+
+<Tabs>
+    <Tab>
+        ```bash
+        curl --request GET \
+          --url https://gp-auth-module.sandbox.gnosispay.in/user/account
+        ```
+    </Tab>
+</Tabs>
+
+This will return configuration of user account including chain name, configured currencies, safe owner address etc.
+
+## Account balances for authenticated user
+
+Gnosis Pay V2 provides detailed balance breakdowns to give users complete visibility into their fund status. The authenticated user's account displays four distinct balance types:
+
+
+| Balance Type | Description | Increases When | Decreases When |
+|--------------|-------------|----------------|----------------|
+| **Spendable** | Amount available for immediate spending via card transactions or withdrawals | • Deposits clear AML analysis<br/>• Refunds are processed<br/>• Returns of goods are credited | • Card transactions are authorized<br/>• Withdrawals are initiated |
+| **Authorized Holds** | Amount reserved for pending card transactions (Base 1 authorizations). Funds are committed but not yet settled | • Card transaction is authorized | • Transaction settles (moves to spent)<br/>• Authorization expires or reverses |
+| **Non-Spendable** | Funds that cannot be used for spending. Flagged for review or potential return | • Dependent on AML checks | • Funds are returned to source<br/>• Funds are manually released after review |
+| **Processing Deposits** | Incoming deposits currently undergoing AML analysis. Not yet available for spending | • New deposit is received | • AML analysis completes (moves to spendable or non-spendable) |
+
+To request the account balance of the user, call [`GET /user/balances`](/api-reference/user/get-account-balances)
+
+```bash
+curl --request GET \
+  --url https://gp-auth-module.sandbox.gnosispay.in/user/balances
+```
+<Note>
+Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, authorized holds, non-spendable, and processing deposits amounts.
+</Note>
