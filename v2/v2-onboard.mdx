@@ -33,7 +33,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 </Step>
 
 <Step title="Register user">
-Register a new user with email OTP and create a user profile. This endpoint will return a new JWT access token with userID that will be used as bearer token for all the API requests. Optionally provide a shareToken for Sumsub reusable KYC.
+Register a new user with email OTP and create a user profile. This endpoint will return a new access token with userID that will be used as bearer token for all the subsequent API requests. Optionally provide a shareToken for Sumsub reusable KYC.
 
 <Note>
    If the access token lacks a `userID`, it indicates that user registration failed because the email was never properly submitted.

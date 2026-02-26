@@ -20,6 +20,11 @@
                 "group": "Getting Started",
                 "icon": "play",
                 "pages": ["v2/v2-overview", "v2/v2-siwe-auth", "v2/v2-onboard"]
+              },
+              {
+                "group": "GP Onchain",
+                "icon": "cube",
+                "pages": ["v2/v2-deposits-withdrawals"]
               }
             ]
           },
