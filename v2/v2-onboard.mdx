@@ -8,7 +8,7 @@ This documentation provides a step-by-step guide on how to test the user onboard
 <Steps>
 <Step title="Get access token">
 
-To get access token, please go through the authentication guide here.
+To get access token, please go through the [authentication guide here](/v2/v2-siwe-auth#authentication-flow-2).
 
 </Step>
 </Steps>
@@ -187,7 +187,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
     <Tabs>
       <Tab title="Sandbox">
-      ```cURL
+      ```bash cURL
       curl --request GET \
         --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds
       ```
@@ -198,7 +198,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
      <Tabs>
       <Tab title="Sandbox">
-      ```cURL
+      ```bash cURL
       curl --request POST \
         --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds \
         --header 'Content-Type: application/json' \
@@ -229,7 +229,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
         <Tabs>
         <Tab title="Sandbox">
-        ```cURL
+        ```bash cURL
         curl --request POST \
           --url https://gp-auth-module.sandbox.gnosispay.in/user/account \
           --header 'Content-Type: application/json' \
@@ -268,7 +268,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
         <Tabs>
         <Tab title="Sandbox">
-        ```cURL
+        ```bash cURL
         curl --request POST \
           --url https://gp-auth-module.sandbox.gnosispay.in/phone/otp \
           --header 'Content-Type: application/json' \
@@ -283,7 +283,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
 
         <Tabs>
         <Tab title="Sandbox">
-        ```cURL
+        ```bash cURL
         curl --request POST \
           --url https://gp-auth-module.sandbox.gnosispay.in/phone \
           --header 'Content-Type: application/json' \
@@ -307,7 +307,7 @@ Register a new user with email OTP and create a user profile. This endpoint will
         Call the `GET /user` endpoint to retrieve the full user profile, including their GP spending wallet address.
         <Tabs>
         <Tab title="Sandbox">
-        ```cURL
+        ```bash cURL
         curl --request GET \
           --url https://gp-auth-module.sandbox.gnosispay.in/user \
           --header 'Content-Type: application/json'
