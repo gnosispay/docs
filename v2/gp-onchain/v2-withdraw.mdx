@@ -1,6 +1,6 @@
 ---
-title: Withdraw onchain
-description: Withdrawal requests of funds onchain
+title: On-chain Withdrawals
+description: Create request to withdraw funds onchain to wallet address
 ---
 # Create Withdrawal Request
 
@@ -10,7 +10,7 @@ The withdrawal happens to the GP Safe's Owner wallet address.
 <Warning>
 **Withdrawal Restrictions:**
 - Only specific tokens are currently supported for withdrawals
-- You can only withdraw to the safe's owner address (the account that called the safe deployment endpoint)
+- Withdrawals are restricted to the Safe owner address — the wallet address that initiated the Safe deployment via the [POST /user/account](/api-reference/user/create-account) endpoint.
 </Warning>
 
 <Note>
