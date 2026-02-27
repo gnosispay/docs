@@ -12,9 +12,9 @@ When you send a transaction request:
 1. The simulator authenticates the request
 2. It checks available balance
 3. It applies lifecycle logic:
-   - **authorization** creates a hold
-   - **reversal** releases a hold
-   - **replacement** adjusts an existing hold
+   - **Authorization** creates a hold
+   - **Reversal** releases a hold
+   - **Replacement** adjusts an existing hold
 4. It returns an approval or denial response with production-like fields
 
 **Important:** No traffic is sent to the live card network. All validation and balance logic is handled internally by the simulator.
@@ -22,11 +22,6 @@ When you send a transaction request:
 ```
 https://core.sandbox.gnosispay.in/docs/simulator-api
 ```
-
-You can simulate card transactions using either of the following:
-
-- **Card ID**
-- **PAN (Primary Account Number)**
 
 ## How to Simulate a Card Transaction
 
