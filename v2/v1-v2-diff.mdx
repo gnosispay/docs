@@ -5,7 +5,7 @@ description: "Overview of the differences between GP V1 and V2 infra"
 
 | Feature | V1 | V2 |
 |---------|----|----|
-| **SIWE Authentication** | Long-lived access token (24h) | Access + refresh token model with rotation support |
+| **SIWE Authentication** | Long-lived access token (24h) | Access token (15 min validity) and refresh token model (7 days validity) with rotation support |
 | **KYC Verification** | Dependent on Gnosis Pay to complete KYC and gnosis pay shares KYC to partners | KYC can performed by Partners and shared with Gnosis Pay |
 | **Safe Deployment** | Dedicated Safe deployment endpoint | Single `/account` endpoint handling provisioning + creation |
 | **Token Management** | Limited support for single token currency| Multi-currency support with different balance states |
