@@ -1,0 +1,23 @@
+---
+title: Account Statements
+description: Retrieve account statements for users
+---
+
+# Retrieve Account Statement
+
+Account statement is a chronological record of all financial activity associated with a user's account. It provides a transparent view of money moving in and out of the account over a selected period of time, giving users complete visibility into their account activity.
+
+To retrieve the account statement, use the [`GET /user/statement`](/api-reference/user/get-account-statement) endpoint.
+
+```bash
+curl --request GET \
+   --url "https://gp-auth-module.sandbox.gnosispay.in/user/statement?limit=&cursor=&startDate=&endDate="
+}'
+```
+
+## Types of Account Statement
+| Transaction Type | Possible Statuses |
+|------------------|-------------------|
+| **Card Transactions** | `pending`, `settled`, `cancelled`, `declined` |
+| **Deposits** | `pending`, `approved`, `rejected` |
+| **Withdrawals** | `pending`, `processing`, `completed`, `failed` |

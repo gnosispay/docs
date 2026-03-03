@@ -1,0 +1,57 @@
+---
+title: KYC sharing for GP Partners
+description: This guide explains how to share existing Gnosis Pay KYC data with GP Partners using Sumsub's reusable token system.
+---
+## KYC Sharing Partners
+
+KYC Sharing allows users who have already completed verification with Gnosis Pay to re-use their KYC data with partner platforms, eliminating the need for duplicate verification processes. KYC sharing is currently only available through **Sumsub** and requires a formal contract between three parties: Gnosis Pay, Sumsub, and partner platform.
+
+<Warning>
+**Important Limitations**
+
+- **One-Way Sharing**: We only support **Gnosis Pay → Partner Platform** sharing. KYC data cannot be shared from partner platforms back to Gnosis Pay.
+- **Approval Not Guaranteed**: Since every company has different KYC requirements and risk policies, some Gnosis Pay approved KYCs may be rejected at the destination platform.
+</Warning>
+
+## How to get reusable token for KYC Sharing Partners
+
+The following partners currently support KYC data sharing:
+
+| Partner | Sumsub Client ID |
+|---------|------------------|
+| Noah | `noah.com_112876` |
+| BRLA | `brla.digital_101963` |
+
+<Steps titleSize="h3">
+    <Step title="Get Partner's Sumsub Client ID">
+        For existing partners available for KYC sharing, use one of the Client IDs from the table above. For partners not listed in the table, contact the Partner team to obtain their SumSub Client ID.
+    </Step>
+
+<Step title="Share KYC Data">
+    <p>
+      Once the Sumsub Client ID has been obtained, generate a reusable token using the Gnosis Pay API.
+    </p>
+
+      ```bash cURL
+      curl --request POST \
+        --url https://api.gnosispay.com/api/v1/kyc/import-partner-applicant \
+        --header 'Authorization: Bearer <token>' \
+        --header 'Content-Type: application/json' \
+        --data '{
+        "forClientId": "noah.com_112876",
+        "ttlInSecs": 600
+      }'
+      ```
+</Step>
+
+<Step title="Get applicant data from Sumsub">
+    <p>
+    Share this token to Sumsub's API to re-use the KYC and get data for users. To learn more about how to use Sumsub's API, visit their documentation [here](https://docs.sumsub.com/docs/reusable-kyc).
+    </p>
+
+      ```bash cURL
+      curl --request POST \
+           --url https://api.sumsub.com/resources/api/reusableIdentity/reuse
+      ```
+</Step>
+</Steps>

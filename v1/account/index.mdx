@@ -1,0 +1,108 @@
+---
+title: "Accounts on Gnosis Pay"
+description: "How the Gnosis Pay Safe works"
+---
+
+When a user signs up for Gnosis Pay, a new **Gnosis Pay Safe** a smart contract wallet is created on-chain.  
+This Safe holds the user’s funds and is controlled only by its **owners**.  
+
+A Gnosis Pay Safe owner can be either:  
+- an **EOA (Externally Owned Account)**, or  
+- another **smart wallet** (e.g. a Safe) whose owners may use passkeys, EOAs, or other signers.  
+
+Funds in a Gnosis Pay Safe are never held by Gnosis Pay or any third party; ownership and control remain entirely with the Safe owners.
+
+<Frame>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_-FoBiwBJTA?si=-6VlRlqqdYuJhW4j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</Frame>
+
+---
+
+## Authenticating sessions with wallets
+
+To access the Gnosis Pay dashboard or APIs, a wallet must authenticate using [Sign-In With Ethereum (SIWE)](https://docs.login.xyz/).  
+After SIWE, a JWT token is issued and used to authorize API calls (e.g. ordering cards, fetching user info, or linking additional authenticated wallets).  
+
+Authenticated wallets are used **only for login and API sessions**. They do not perform on-chain actions and may or may not overlap with the Safe owners.
+
+<Tip>
+The first wallet connected during setup is automatically registered as both an **authenticated wallet** and the **initial Safe owner** (via the Delay Module).
+</Tip>
+
+Follow the guide on [adding an authenticated wallet](account/update-authenticated-account) for step-by-step instructions.
+
+---
+
+## Safe Smart Account
+
+Each Gnosis Pay user is assigned a **Safe Smart Account**, a self-custodied smart contract wallet deployed on Gnosis Chain (L1).  
+Currently, a new Safe is deployed for every user. Support for connecting an existing Safe multisig is planned.
+
+### What is a smart contract wallet?
+
+Smart contract wallets are contracts that manage assets on-chain with programmable rules.  
+They enable advanced security and automation beyond EOAs.  
+
+[Safe](https://safe.global/) is the leading smart contract wallet, securing over $70B in assets.
+
+### Exploring the Safe setup
+
+Users can view their Safe configuration in the [Safe web app](https://app.safe.global/) via the Zodiac app:
+
+1. Open the Gnosis Pay Dashboard.  
+2. Click **“View all transactions here”** to open the Safe web app.  
+3. In the sidebar, select **Applications**.  
+4. Search for **Zodiac**.  
+
+The **Roles Module** and **Delay Module** are open-source contracts licensed under LGPL 3.0.
+
+---
+
+## Modules
+
+Modules extend Safe functionality with custom logic.  
+In Gnosis Pay, modules enforce spending rules and transaction flows while keeping user funds in self-custody.  
+
+These modules follow the [Zodiac standard](https://gnosisguild.org/zodiac/) developed by Gnosis Guild.
+
+---
+
+## Roles Module
+
+The Roles Module enforces which actions Gnosis Pay can perform on behalf of the user. It defines:
+
+1. **Token used** → which token Gnosis Pay can spend.  
+2. **Daily limit** → maximum amount spendable per day.  
+3. **Recipient address** → destination for allowed transfers (e.g. the issuer’s settlement Safe).  
+4. **Role delegation** → assigns these permissions to Gnosis Pay.  
+
+Only Safe owners can update these rules.  
+For example, a user may adjust the daily spending limit at any time.
+
+---
+
+## Delay Module
+
+The Delay Module enforces a **3-minute delay** for all non-card transactions (e.g. transfers, deposits).  
+This ensures funds remain available for card payments and prevents race conditions.
+
+<Warning>
+During the 3-minute delay, the card is paused if any non-card transactions are pending.
+</Warning>
+
+The Delay Module also ensures the user’s EOA retains ultimate control.  
+During activation, the EOA becomes an indirect Safe owner via the Delay Module.  
+
+⚠️ Reconfiguring or removing the Delay Module may prevent Gnosis Pay from functioning properly.
+
+---
+
+## What happens if I lose access to my EOA Wallet?
+
+If you’ve forgotten the password to your EOA Wallet, you can regain access using its seed phrase.
+
+<Warning>
+However, if you’ve lost access to the seed phrase and cannot regain access to the EOA, you will also lose access to the Safe if it’s the only owner.
+</Warning>
+
+**To mitigate this risk, consider using a [Safe](https://safe.global/) with multiple owners instead of an EOA.**

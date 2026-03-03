@@ -1,0 +1,45 @@
+---
+title: "Adding a new wallet for authentication"
+description: "Link an additional wallet address to a Gnosis Pay user"
+---
+
+A Gnosis Pay user can have multiple authenticated wallets attached to their account.  
+Authenticated wallets are used to sign in via SIWE and to start new API sessions.
+
+<Steps>
+  <Step title="Get a JWT token for the session">
+    Follow the [authentication flow](https://docs.gnosispay.com/auth) to obtain a JWT token for the Gnosis Pay user.
+  </Step>
+
+  <Step title="Add a new wallet address">
+    Make a POST call to [this endpoint](https://docs.gnosispay.com/api-reference/account-management/create-a-new-eoa-account-for-the-current-user) with the address to add.
+
+    ```bash
+    curl --request POST \
+      --url https://api.gnosispay.com/api/v1/eoa-accounts \
+      --header "Authorization: Bearer <token>" \
+      --header "Content-Type: application/json" \
+      --data '{
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+      }'
+    ```
+  </Step>
+
+  <Step title="Verify that the wallet was added">
+    Call the [list accounts endpoint](https://docs.gnosispay.com/api-reference/account-management/retrieve-the-eoa-accounts-for-the-current-user).  
+    The new address should appear in the response.
+
+    ```bash
+    curl --request GET \
+      --url https://api.gnosispay.com/api/v1/eoa-accounts \
+      --header "Authorization: Bearer <token>"
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+- Adding an **authenticated wallet** only links it to a Gnosis Pay user for login and API sessions.  
+- An authenticated wallet is **not automatically a Safe owner**.  
+- Only Safe owners (EOAs or smart wallets added to the Safe) can interact with the Delay Module or execute on-chain actions.  
+- Authenticated wallets can use the API (e.g. place card orders, fetch user info) but **cannot control funds** unless also added as Safe owners.
+</Warning>

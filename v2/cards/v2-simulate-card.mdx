@@ -1,0 +1,240 @@
+---
+title: Simulate Card Transactions
+description: Simulate card transactions for testing purposes as part of sandbox environment.
+---
+
+### Card Transaction Simulator
+
+The Card Transaction Simulator allows you to test full card transaction lifecycles in the sandbox environment — without sending traffic to the live card network.
+
+When you send a transaction request:
+
+1. The simulator authenticates the request
+2. It checks available balance
+3. It applies lifecycle logic:
+   - **Authorization** creates a hold
+   - **Reversal** releases a hold
+   - **Replacement** adjusts an existing hold
+4. It returns an approval or denial response with production-like fields
+
+**Important:** No traffic is sent to the live card network. All validation and balance logic is handled internally by the simulator.
+
+```
+https://core.sandbox.gnosispay.in/docs/simulator-api
+```
+
+## How to Simulate a Card Transaction
+
+<Steps>
+<Step title="Authenticate with the Simulator API">
+Use HTTP Basic Auth:
+- **Username:** `simulator`
+- **Password:** Provided during onboarding
+
+All simulator endpoints require authentication.
+</Step>
+
+<Step title="Choose the Card Identifier">
+You can simulate transactions using:
+- `card_id` → `POST /transactions/simulate`
+- `pan` → `POST /transactions/simulate-by-pan`
+
+Both endpoints behave identically.
+</Step>
+
+<Step title="Understand Request Fields">
+All simulation requests use these fields:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `transaction_type` | string | Yes | `authorization`, `reversal`, or `replacement` |
+| `card_id` | uuid | Yes* | Card UUID (use `pan` instead on the by-PAN endpoint) |
+| `pan` | string | Yes* | Card PAN (only on the by-PAN endpoint) |
+| `amount` | string | Yes | Amount in major units (e.g., `"100.50"`) |
+| `currency` | string | Yes | `USD`, `EUR`, or `GBP` |
+| `authorization_code` | string | Conditional | Required for `reversal` and `replacement` |
+| `replacement_amount` | string | Conditional | Required for `replacement` |
+| `merchant_name` | string | No | Defaults to `"TEST MERCHANT"` |
+| `merchant_code` | string | No | MCC code. Defaults to `"5541"` |
+</Step>
+
+</Steps>
+
+
+## Simulate an Authorization
+
+Authorization creates a hold on the card balance.
+
+<Steps>
+<Step title="Send Authorization Request">
+```json
+{
+  "transaction_type": "authorization",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD"
+}
+```
+
+**Required:**
+- `transaction_type`: "authorization"
+- `amount`
+- `currency`
+- `card_id` or `pan`
+</Step>
+
+<Step title="Simulator Validation">
+The simulator will:
+- Confirm the card exists
+- Verify the card is active
+- Check sufficient available balance
+- Place a hold for the requested amount
+</Step>
+
+<Step title="Store Authorization Code">
+If approved, the response includes:
+- `authorization_code`
+- `authorization_id`
+
+**Save the `authorization_code`** — it is required for reversals and replacements.
+</Step>
+</Steps>
+
+## Simulate a Reversal
+
+Reversal cancels a previous authorization and releases the held amount.
+
+<Steps>
+<Step title="Provide Authorization Code">
+You must use the `authorization_code` returned from the original authorization.
+</Step>
+
+<Step title="Send Reversal Request">
+```json
+{
+  "transaction_type": "reversal",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
+```
+</Step>
+
+<Step title="Simulator Behavior">
+The simulator will:
+- Validate the original authorization exists
+- Confirm the amount matches
+- Release the full held balance
+</Step>
+</Steps>
+
+## Simulate a Replacement
+
+Replacement modifies the amount of an existing authorization.
+
+<Steps>
+<Step title="Provide Authorization Code">
+Use the `authorization_code` from the original authorization.
+</Step>
+
+<Step title="Send Replacement Request">
+```json
+{
+  "transaction_type": "replacement",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123",
+  "replacement_amount": "75.00"
+}
+```
+
+**Required:**
+- `authorization_code`
+- `replacement_amount`
+</Step>
+
+<Step title="Simulator Behavior">
+The simulator will:
+- Validate the original authorization
+- Reduce or increase the held amount
+- Update the balance accordingly
+</Step>
+</Steps>
+
+## Simulation response handling
+
+### Approved
+An approved response includes:
+- `status`: "approved"
+- `authorization_code`
+- `authorization_id`
+- `settlement_amount`
+- Transaction metadata (mode type, domestic flag, timestamp)
+
+```json
+{
+  "status": "approved",
+  "authorization_code": "ABC123",
+  "authorization_id": 98765432,
+  "authorization_date_time": "2025-06-15T14:30:00Z",
+  "settlement_amount": "100.50",
+  "mode_type": "DEBIT",
+  "card_mode": "CHIP",
+  "is_domestic_transaction": true
+}
+```
+
+### Denied
+If denied, the response includes:
+- `status`: "denied"
+- `denial_code`
+- `denial_reason`
+
+```json
+{
+  "status": "denied",
+  "authorization_code": "",
+  "authorization_id": 98765432,
+  "authorization_date_time": "2025-06-15T14:30:00Z",
+  "settlement_amount": "0.00",
+  "mode_type": "DEBIT",
+  "card_mode": "CHIP",
+  "is_domestic_transaction": true,
+  "denial_code": "810",
+  "denial_reason": "Insufficient balance"
+}
+```
+
+## Common Denial Codes
+
+| Code | Reason |
+|---|---|
+| `810` | Insufficient balance |
+| `UBT` | Card is blocked |
+| `BNP` | Card reported lost |
+| `BNR` | Card reported stolen |
+| `FRB` | Card not activated |
+| `BND` | Card is cancelled |
+| `PFT` | Denied by anti-fraud |
+| `FR7` | Card not present in database |
+| `VNM` | Card expired |
+| `CNC` | Account cancelled |
+| `CND` | Account blocked |
+
+## Error Handling
+
+The simulator also returns structured errors:
+
+```json
+{
+  "code": 400,
+  "message": "authorization_code is required for reversal and replacement transactions"
+}
+```
+
+**Possible HTTP status codes:**
+- `401` → Invalid credentials
+- `400` → Validation error
+- `404` → Card or account not found
