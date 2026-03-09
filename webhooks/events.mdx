@@ -10230,10 +10230,22 @@ Triggered when a physical card is activated.
 {
   eventType: "physical.card.activated";
   data: {
-    /** User ID */
-    userId: string;
+    /** Card ID */
+    id: string;
     /** Unique card token identifier */
     cardToken: string;
+    /** User ID */
+    userId: string;
+    /** Last four digits of the card */
+    lastFourDigits: string;
+    /** When the card was activated (ISO 8601) */
+    activatedAt: string | null;
+    /** True for virtual cards, false for physical */
+    virtual: boolean;
+    /** Card status code from payment processor (e.g. 1000 = Active) */
+    statusCode: number;
+    /** Human-readable card status (e.g. Active, Frozen, Void) */
+    statusName: string;
   };
 }
 ```
@@ -10259,23 +10271,61 @@ Triggered when a physical card is activated.
           "data": {
             "type": "object",
             "properties": {
-              "userId": {
+              "id": {
                 "type": "string",
-                "description": "User ID"
+                "description": "Card ID"
               },
               "cardToken": {
                 "type": "string",
                 "description": "Unique card token identifier"
+              },
+              "userId": {
+                "type": "string",
+                "description": "User ID"
+              },
+              "lastFourDigits": {
+                "type": "string",
+                "description": "Last four digits of the card"
+              },
+              "activatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the card was activated (ISO 8601)"
+              },
+              "virtual": {
+                "type": "boolean",
+                "description": "True for virtual cards, false for physical"
+              },
+              "statusCode": {
+                "type": "number",
+                "description": "Card status code from payment processor (e.g. 1000 = Active)"
+              },
+              "statusName": {
+                "type": "string",
+                "description": "Human-readable card status (e.g. Active, Frozen, Void)"
               }
             },
             "required": [
+              "id",
+              "cardToken",
               "userId",
-              "cardToken"
+              "lastFourDigits",
+              "activatedAt",
+              "virtual",
+              "statusCode",
+              "statusName"
             ],
-            "description": "Card token data",
+            "description": "Card data payload for card-related webhook events.",
             "example": {
+              "id": "card_abc123",
               "userId": "user_123",
-              "cardToken": "card_123456789"
+              "cardToken": "card_123456789",
+              "lastFourDigits": "4242",
+              "activatedAt": "2024-01-15T10:30:00Z",
+              "virtual": false,
+              "statusCode": 1000,
+              "statusName": "Active"
             }
           }
         },
@@ -10287,8 +10337,14 @@ Triggered when a physical card is activated.
         "example": {
           "eventType": "physical.card.activated",
           "data": {
+            "id": "card_abc123",
             "userId": "user_123",
-            "cardToken": "card_123456789"
+            "cardToken": "card_123456789",
+            "lastFourDigits": "4242",
+            "activatedAt": "2024-01-15T10:30:00Z",
+            "virtual": false,
+            "statusCode": 1000,
+            "statusName": "Active"
           }
         }
       }
@@ -10304,8 +10360,14 @@ Triggered when a physical card is activated.
 {
   "eventType": "physical.card.activated",
   "data": {
+    "id": "card_abc123",
     "userId": "user_123",
-    "cardToken": "card_123456789"
+    "cardToken": "card_123456789",
+    "lastFourDigits": "4242",
+    "activatedAt": "2024-01-15T10:30:00Z",
+    "virtual": false,
+    "statusCode": 1000,
+    "statusName": "Active"
   }
 }
 ```
