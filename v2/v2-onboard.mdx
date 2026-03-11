@@ -273,7 +273,14 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         }
         ```
 
-        **Submit Phone Number**: Submit the phone number for verification purposes and to enable card creation to [`POST /phone/otp`](/api-reference/phone/request-phone-otp-via-sms).
+        ## Phone Verification Methods
+
+        <Tabs>
+        <Tab title="Phone Number Verification (OTP)">
+
+        **Submit Phone Number** :
+
+        Submit the phone number for verification purposes and to enable card creation to [`POST /phone/otp`](/api-reference/phone/request-phone-otp-via-sms).
 
         <Tabs>
         <Tab title="Sandbox">
@@ -288,7 +295,9 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         </Tab>
         </Tabs>
 
-        **Submit OTP**: After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process to [`POST /phone`](/api-reference/phone/verify-phone-otp-and-createupdate-cardholder).
+        **Submit and Verify OTP**:
+
+        After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process to [`POST /phone`](/api-reference/phone/verify-phone-otp-and-createupdate-cardholder).
 
         <Tabs>
         <Tab title="Sandbox">
@@ -304,12 +313,40 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         </Tab>
         </Tabs>
 
+        </Tab>
+
+        <Tab title="Verify via Wallet Ownership">
+
+        ### Verify Phone via Wallet Ownership
+        Users can also be verified using wallet ownership without requiring SMS OTP via [`POST /phone/wallet-verify`](/api-reference/phone/verify-phone-via-wallet-ownership) This method creates or updates the cardholder by linking the user's wallet address with their phone number on the Celo chain.
+
+        <Note>
+        This verification method requires the user's wallet address to be linked with their phone number on the Celo chain. If no link exists, verification will fail.
+        </Note>
+
+        <Tabs>
+        <Tab title="Sandbox">
+        ```bash
+        curl --request POST \
+          --url https://gp-auth-module.sandbox.gnosispay.in/phone/wallet-verify \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "phone": "<string>"
+          }'
+        ```
+        </Tab>
+        </Tabs>
+
+        </Tab>
+        </Tabs>
+
         Once the OTP is successfully verified, call [`GET /user/onboarding`](/api-reference/user/get-onboarding-status). At this stage, the user can create virtual cards and the user onboarding is fully completed.
         ```json
         {
             "status": "completed"
         }
         ```
+
     </Step>
 
     <Step title="Retrieve Authenticated User">
