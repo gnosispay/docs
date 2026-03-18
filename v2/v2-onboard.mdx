@@ -71,7 +71,6 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     | `action_complete_sof` | Source of Funds questionnaire required - KYC approved, SOF answers needed | Answer Source of Funds questionnaire |
     | `action_create_account` | Ready for account creation - KYC approved and SOF completed | Proceed with account creation |
     | `waiting_account_setup` | Account provisioning in progress - account is being set up in the system | Wait for account setup completion |
-    | `action_verify_phone` | Phone verification required - account is active but missing cardholder ID | Submit and verify phone number |
     | `completed` | Onboarding complete - account is active with cardholder ID | Start using the platform |
     | `rejected` | Onboarding rejected - account is blocked, closed, or KYC verification failed | Contact support or retry if applicable |
 
@@ -225,100 +224,13 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 
 </Step>
 
-    <Step title="Verify Phone Number">
-
-        Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to check the status.
-
-        The onboarding status will update to the following once the account is created:
-        ```json
-        {
-            "status": "action_verify_phone"
-        }
-        ```
-
-        #### Phone Verification Methods
-
-        <Tabs>
-        <Tab title="Phone Number Verification (OTP)">
-
-        **Submit Phone Number** :
-
-        Submit the phone number for verification purposes and to enable card creation to [`POST /phone/otp`](/api-reference/phone/request-phone-otp-via-sms).
-
-        <Tabs>
-        <Tab title="Sandbox">
-        ```bash cURL
-        curl --request POST \
-          --url https://gp-auth-module.sandbox.gnosispay.in/phone/otp \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "phone": "<string>"
-        }'
-        ```
-        </Tab>
-        </Tabs>
-
-        **Submit and Verify OTP**:
-
-        After submitting the phone number, a One-Time Password (OTP) will be received via SMS. Submit this OTP to complete the phone verification process to [`POST /phone`](/api-reference/phone/verify-phone-otp-and-createupdate-cardholder).
-
-        <Tabs>
-        <Tab title="Sandbox">
-        ```bash cURL
-        curl --request POST \
-          --url https://gp-auth-module.sandbox.gnosispay.in/phone \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "phone": "<string>",
-          "code": "<string>"
-        }'
-        ```
-        </Tab>
-        </Tabs>
-
-        </Tab>
-
-        <Tab title="Verify via Wallet Ownership">
-
-        ### Verify Phone via Wallet Ownership
-        Users can also be verified using wallet ownership without requiring SMS OTP via [`POST /phone/wallet-verify`](/api-reference/phone/verify-phone-via-wallet-ownership) This method creates or updates the cardholder by linking the user's wallet address with their phone number on the Celo chain.
-
-        <Note>
-        This verification method requires the user's wallet address to be linked with their phone number on the Celo chain. If no link exists, verification will fail.
-        </Note>
-
-        <Tabs>
-        <Tab title="Sandbox">
-        ```bash
-        curl --request POST \
-          --url https://gp-auth-module.sandbox.gnosispay.in/phone/wallet-verify \
-          --header 'Content-Type: application/json' \
-          --data '{
-            "phone": "<string>"
-          }'
-        ```
-        </Tab>
-        </Tabs>
-
-        </Tab>
-        </Tabs>
-
-        Once the OTP is successfully verified, call [`GET /user/onboarding`](/api-reference/user/get-onboarding-status). At this stage, the user can create virtual cards and the user onboarding is fully completed.
-        ```json
-        {
-            "status": "completed"
-        }
-        ```
-
-    </Step>
-
 </Steps>
 
 ## 4. Account Setup
 <Steps>
 
     <Step title="Check onboarding status">
-        Check the user's onboarding status using the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to determine if their KYC verification has been accepted. If the KYC is approved and phone number is verified, the user status will transition to the following:
+        Check the user's onboarding status using the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to determine if their KYC verification has been accepted. If the KYC is approved, the user status will transition to the following:
         ```json
         {
             "status": "action_create_account"
