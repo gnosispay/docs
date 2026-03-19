@@ -59,6 +59,7 @@ Extract the `Type` and `data` fields from the webhook payload. The `Type` identi
   "data": {
     "accountId": "550e8400-e29b-41d4-a716-446655440000",
     "balances": [
+    ]
     ....
   }
 }
@@ -72,7 +73,7 @@ Process events idempotently to handle potential duplicates, and implement proper
 
 <Info>
 **Retry Policy**:
-- **Max attempts**: 5 retries with River's built-in exponential backoff
+- **Max attempts**: 5 retries
 - **Timeout**: 30 seconds per request
 - **4xx responses**: Treated as permanent failures (no retry) - endpoint misconfiguration
 - **5xx/connection errors**: Retried up to maximum attempts
