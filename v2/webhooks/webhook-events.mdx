@@ -1,0 +1,638 @@
+---
+title: "Webhook Events"
+description: "Complete list of webhook events triggered in V2"
+---
+
+## Account Events
+
+### 1. Account.balance.changed
+Triggered when the account balance changes.
+
+#### Event Trigger Points
+
+| Flow | Reason Value |
+|------|--------------|
+| Deposit approved | `deposit.approved` |
+| Deposit rejected | `deposit.rejected` |
+| Withdrawal completed | `withdrawal.completed` |
+| Instant withdrawal reconciled | `withdrawal.completed` |
+| Card authorization | `card.authorization.{category}` |
+
+
+<CodeGroup>
+```typescript account.balance.changed
+{
+  "id": "evt_a1b2c3d4e5f6...",
+  "type": "account.balance.changed",
+  "createdAt": "2026-03-04T12:00:00.000Z",
+  "data": {
+    "accountId": "550e8400-e29b-41d4-a716-446655440000",
+    "balances": [
+      {
+        "currency": "EUR",
+        "decimals": 18,
+        "total": "1000000000000000000",
+        "spendable": "950000000000000000",
+        "deductions": {
+          "authorizedHolds": "50000000000000000",
+          "nonSpendable": "0",
+          "processingDeposits": "0"
+        },
+        "tokens": [
+          {
+            "token": "EURe",
+            "decimals": 18,
+            "spendable": "950000000000000000",
+            "nonSpendable": "0",
+            "processingDeposits": "0"
+          }
+        ]
+      },
+      {
+        "currency": "GBP",
+        "decimals": 18,
+        "total": "0",
+        "spendable": "0",
+        "deductions": {
+          "authorizedHolds": "0",
+          "nonSpendable": "0",
+          "processingDeposits": "0"
+        },
+        "tokens": []
+      },
+      {
+        "currency": "USD",
+        "decimals": 6,
+        "total": "0",
+        "spendable": "0",
+        "deductions": {
+          "authorizedHolds": "0",
+          "nonSpendable": "0",
+          "processingDeposits": "0"
+        },
+        "tokens": []
+      }
+    ],
+    "reason": "deposit.approved",
+    "referenceId": "550e8400-e29b-41d4-a716-446655440001"
+  }
+}
+```
+</CodeGroup>
+
+### 2. Account.created
+Triggered when a new account is created and provisioning begins.
+
+<CodeGroup>
+```typescript account.created
+{
+  "id": "evt_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
+  "type": "account.created",
+  "createdAt": "2026-03-11T14:30:00.123456789Z",
+  "data": {
+    "id": "019505a1-b2c3-7d4e-a5f6-a1b2c3d4e5f6",
+    "kycProfileId": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "safeOwnerAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "safeAddress": null,
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "reference": null,
+    "nativeCurrency": "EUR",
+    "additionalCurrencies": ["GBP"],
+    "createdAt": "2026-03-11T14:30:00.123456789Z",
+    "updatedAt": "2026-03-11T14:30:00.123456789Z",
+    "closedAt": null,
+    "status": "provisioning",
+    "provisionedAt": null
+  }
+}
+```
+</CodeGroup>
+
+### 3. Account.activated
+Triggered when account provisioning is complete and account becomes active.
+
+<CodeGroup>
+```typescript account.activated
+{
+  "id": "evt_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+  "type": "account.activated",
+  "createdAt": "2026-03-11T15:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-b2c3-7d4e-a5f6-a1b2c3d4e5f6",
+    "kycProfileId": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "safeOwnerAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "safeAddress": "0xabcdef1234567890abcdef1234567890abcdef12",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "reference": "partner-ref-123",
+    "nativeCurrency": "EUR",
+    "additionalCurrencies": ["GBP"],
+    "createdAt": "2026-03-11T14:30:00.123456789Z",
+    "updatedAt": "2026-03-11T15:00:00.123456789Z",
+    "closedAt": null,
+    "status": "active",
+    "provisionedAt": "2026-03-11T14:45:00.123456789Z"
+  }
+}
+```
+</CodeGroup>
+
+### 4. Account.blocked
+Triggered when an account is blocked due to security or compliance reasons.
+
+<CodeGroup>
+```typescript account.blocked
+{
+  "id": "evt_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+  "type": "account.blocked",
+  "createdAt": "2026-03-11T16:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-b2c3-7d4e-a5f6-a1b2c3d4e5f6",
+    "kycProfileId": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "safeOwnerAddress": "0x1234567890abcdef1234567890abcdef12345678",
+    "safeAddress": "0xabcdef1234567890abcdef1234567890abcdef12",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "reference": "partner-ref-123",
+    "nativeCurrency": "EUR",
+    "additionalCurrencies": ["GBP"],
+    "createdAt": "2026-03-11T14:30:00.123456789Z",
+    "updatedAt": "2026-03-11T16:00:00.123456789Z",
+    "closedAt": null,
+    "status": "blocked",
+    "provisionedAt": "2026-03-11T14:45:00.123456789Z"
+  }
+}
+```
+</CodeGroup>
+
+## KYC Events
+
+### 5. KYC.profile.approved
+Triggered when a KYC profile verification is approved.
+
+<CodeGroup>
+```typescript kyc.profile.approved
+{
+  "id": "evt_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+  "type": "kyc.profile.approved",
+  "createdAt": "2026-03-11T14:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "reference": "applicant-abc123",
+    "email": "user@example.com",
+    "status": "approved",
+    "tenantId": "tenant-xyz",
+    "details": {
+      "fullName": "John Doe",
+      "phoneNumber": "+441234567890",
+      "dateOfBirth": "1990-01-15T00:00:00Z",
+      "nationality": "GB",
+      "countryOfResidence": "GB",
+      "countryOfBirth": "GB",
+      "documentNumber": "AB123456C",
+      "gender": "male",
+      "addresses": [
+        {
+          "id": "019505a1-e5f6-7a7b-c8d9-e0f1a2b3c4d5",
+          "country": "GB",
+          "postalCode": "SW1A 1AA",
+          "city": "London",
+          "state": "England",
+          "address1": "10 Downing Street",
+          "address2": null
+        }
+      ]
+    }
+  }
+}
+```
+</CodeGroup>
+
+### 6. KYC.profile.rejected
+Triggered when a KYC profile verification is rejected.
+
+<CodeGroup>
+```typescript kyc.profile.rejected
+{
+  "id": "evt_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+  "type": "kyc.profile.rejected",
+  "createdAt": "2026-03-11T14:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "reference": "applicant-abc123",
+    "email": "user@example.com",
+    "status": "rejected",
+    "tenantId": "tenant-xyz",
+    "details": {
+      "fullName": "John Doe",
+      "phoneNumber": "+441234567890",
+      "dateOfBirth": "1990-01-15T00:00:00Z",
+      "nationality": "GB",
+      "countryOfResidence": "GB",
+      "countryOfBirth": "GB",
+      "documentNumber": "AB123456C",
+      "gender": "male",
+      "addresses": [
+        {
+          "id": "019505a1-e5f6-7a7b-c8d9-e0f1a2b3c4d5",
+          "country": "GB",
+          "postalCode": "SW1A 1AA",
+          "city": "London",
+          "state": "England",
+          "address1": "10 Downing Street",
+          "address2": null
+        }
+      ]
+    }
+  }
+}
+```
+</CodeGroup>
+
+### 7. KYC.profile.requires_action
+Triggered when a KYC profile requires additional action from the user.
+
+<CodeGroup>
+```typescript kyc.profile.requires_action
+{
+  "id": "evt_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+  "type": "kyc.profile.requires_action",
+  "createdAt": "2026-03-11T14:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "reference": "applicant-abc123",
+    "email": "user@example.com",
+    "status": "requires_action",
+    "tenantId": "tenant-xyz",
+    "details": null
+  }
+}
+```
+</CodeGroup>
+
+### 8. KYC.profile.resubmission_requested
+Triggered when KYC profile requires document resubmission.
+
+<CodeGroup>
+```typescript kyc.profile.resubmission_requested
+{
+  "id": "evt_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+  "type": "kyc.profile.resubmission_requested",
+  "createdAt": "2026-03-11T14:00:00.123456789Z",
+  "data": {
+    "id": "019505a1-c3d4-7e5f-b6a7-b2c3d4e5f6a7",
+    "reference": "applicant-abc123",
+    "email": "user@example.com",
+    "status": "resubmission_requested",
+    "tenantId": "tenant-xyz",
+    "details": null
+  }
+}
+```
+</CodeGroup>
+
+### 9. KYC.terms.approved
+Triggered when all required terms are accepted.
+
+<CodeGroup>
+```typescript kyc.terms.approved
+{
+  "id": "evt_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+  "type": "kyc.terms.approved",
+  "createdAt": "2026-03-17T10:30:00.000000000Z",
+  "data": {
+    "profileId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "checkType": "terms",
+    "status": "approved",
+    "reference": "partner-user-ref-123"
+  }
+}
+```
+</CodeGroup>
+
+### 10. KYC.source_of_funds.approved
+Triggered when source of funds questionnaire is submitted and approved.
+
+<CodeGroup>
+```typescript kyc.source_of_funds.approved
+{
+  "id": "evt_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
+  "type": "kyc.source_of_funds.approved",
+  "createdAt": "2026-03-17T10:35:00.000000000Z",
+  "data": {
+    "profileId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "checkType": "source_of_funds",
+    "status": "approved",
+    "reference": "partner-user-ref-123"
+  }
+}
+```
+</CodeGroup>
+
+## Deposit Events
+
+### 11. Deposit.pending
+Triggered when an on-chain deposit is detected and awaiting KYT processing.
+
+<CodeGroup>
+```typescript deposit.pending
+{
+  "id": "evt_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+  "type": "deposit.pending",
+  "createdAt": "2026-03-17T11:00:00.000000000Z",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "status": "pending",
+    "amount": "1000000",
+    "currency": "USDCe",
+    "decimals": 6,
+    "transactionHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "createdAt": "2026-03-17T10:59:30.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 12. Deposit.approved
+Triggered when a deposit is confirmed after KYT and funds become available.
+
+<CodeGroup>
+```typescript deposit.approved
+{
+  "id": "evt_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
+  "type": "deposit.approved",
+  "createdAt": "2026-03-17T11:00:00.000000000Z",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "status": "approved",
+    "amount": "1000000",
+    "currency": "USDCe",
+    "decimals": 6,
+    "transactionHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "createdAt": "2026-03-17T10:59:30.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 13. Deposit.rejected
+Triggered when a deposit is rejected by KYT.
+
+<CodeGroup>
+```typescript deposit.rejected
+{
+  "id": "evt_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+  "type": "deposit.rejected",
+  "createdAt": "2026-03-17T11:00:00.000000000Z",
+  "data": {
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "status": "rejected",
+    "amount": "1000000",
+    "currency": "USDCe",
+    "decimals": 6,
+    "transactionHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "createdAt": "2026-03-17T10:59:30.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+## Withdrawal Events
+
+### 14. Withdrawal.completed
+Triggered when a withdrawal is successfully processed on-chain.
+
+<CodeGroup>
+```typescript withdrawal.completed
+{
+  "id": "evt_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+  "type": "withdrawal.completed",
+  "createdAt": "2026-03-17T12:15:00.000000000Z",
+  "data": {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "status": "completed",
+    "amount": "500000",
+    "currency": "USDCe",
+    "decimals": 6,
+    "transactionHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "createdAt": "2026-03-17T12:10:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 15. Withdrawal.failed
+Triggered when a withdrawal fails at any stage.
+
+<CodeGroup>
+```typescript withdrawal.failed
+{
+  "id": "evt_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
+  "type": "withdrawal.failed",
+  "createdAt": "2026-03-17T12:15:00.000000000Z",
+  "data": {
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "status": "failed",
+    "amount": "500000",
+    "currency": "USDCe",
+    "decimals": 6,
+    "transactionHash": "",
+    "chain": {
+      "name": "gnosis",
+      "id": "100"
+    },
+    "createdAt": "2026-03-17T12:10:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+## Card Events
+
+### 16. Card.created
+Triggered when a virtual card is provisioned or physical card reaches pending activation.
+
+<CodeGroup>
+```typescript card.created
+{
+  "id": "evt_b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3",
+  "type": "card.created",
+  "createdAt": "2026-03-17T14:00:00.000000000Z",
+  "data": {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "type": "virtual",
+    "status": "created",
+    "last4": "4321",
+    "createdAt": "2026-03-17T14:00:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 17. Card.activated
+Triggered when a physical card is activated.
+
+<CodeGroup>
+```typescript card.activated
+{
+  "id": "evt_c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
+  "type": "card.activated",
+  "createdAt": "2026-03-17T15:00:00.000000000Z",
+  "data": {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "type": "plastic",
+    "status": "activated",
+    "last4": "4321",
+    "createdAt": "2026-03-17T14:00:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 18. Card.blocked
+Triggered when a card is temporarily blocked.
+
+<CodeGroup>
+```typescript card.blocked
+{
+  "id": "evt_d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5",
+  "type": "card.blocked",
+  "createdAt": "2026-03-17T15:30:00.000000000Z",
+  "data": {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "type": "virtual",
+    "status": "blocked",
+    "last4": "4321",
+    "createdAt": "2026-03-17T14:00:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 19. Card.unblocked
+Triggered when a card is unblocked and restored to active status.
+
+<CodeGroup>
+```typescript card.unblocked
+{
+  "id": "evt_e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6",
+  "type": "card.unblocked",
+  "createdAt": "2026-03-17T16:00:00.000000000Z",
+  "data": {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "type": "virtual",
+    "status": "unblocked",
+    "last4": "4321",
+    "createdAt": "2026-03-17T14:00:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+### 20. Card.canceled
+Triggered when a card is permanently canceled.
+
+<CodeGroup>
+```typescript card.canceled
+{
+  "id": "evt_f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7",
+  "type": "card.canceled",
+  "createdAt": "2026-03-17T16:30:00.000000000Z",
+  "data": {
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "accountId": "d4e5f6a7-b8c9-0123-4567-890abcdef012",
+    "type": "virtual",
+    "status": "canceled",
+    "last4": "4321",
+    "createdAt": "2026-03-17T14:00:00.000000000Z"
+  }
+}
+```
+</CodeGroup>
+
+## Card Transaction Events
+
+The following table shows all card transaction event types and when they are triggered:
+
+| Event Type | When It Fires | Pismo Category |
+|------------|---------------|----------------|
+| `card.transaction.created` | New debit authorization (purchase, withdrawal, etc.) | AUTHORIZATION (debit processing codes) |
+| `card.transaction.refund` | Credit voucher authorization (refund to cardholder) | AUTHORIZATION (credit processing codes: 20, 203100, PSM007) |
+| `card.transaction.declined` | Authorization denied by Pismo | DECLINED |
+| `card.transaction.cleared` | Transaction settled/cleared (B2 confirmation) | CONFIRMATION, AIRPORT_TAX, INSTALLMENT |
+| `card.transaction.reversed` | Full cancellation of an authorization | CANCELLATION |
+| `card.transaction.replacement` | Amount adjustment on a pending authorization | REPLACEMENT |
+| `card.transaction.incremental` | Additional authorization amount added | INCREMENTAL |
+| `card.transaction.partial_cancellation` | Partial reversal of an authorization | PARTIAL_CANCELLATION |
+| `card.transaction.cancellation_reversal` | Undo of a previous cancellation | CANCELLATION_REVERSAL |
+| `card.transaction.reversal_partial_cancellation` | Undo of a previous partial cancellation | REVERSAL_PARTIAL_CANCELLATION |
+
+### 21. Card.transaction.created
+Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
+
+<CodeGroup>
+```typescript card.transaction.created
+{
+  "id": "evt_a1b2c3d4e5f6...",
+  "type": "card.transaction.created",
+  "createdAt": "2026-03-10T12:00:00.000000000Z",
+  "data": {
+    "id": "uuid",
+    "accountId": "account-uuid",
+    "cardId": "card-uuid",
+    "status": "pending",
+    "amount": "500000000000000000000",
+    "currency": "EUR",
+    "decimals": 18,
+    "originalAmount": "495000000",
+    "originalCurrency": "USD",
+    "isCredit": false,
+    "createdAt": "2026-03-10T12:00:00.000000000Z",
+    "updatedAt": "2026-03-10T12:00:00.000000000Z",
+    "description": "Coffee Shop",
+    "authorizationId": 12345,
+    "authorizationCode": "ABC123",
+    "merchant": {
+      "name": "Coffee Shop",
+      "city": "London",
+      "country": "GB",
+      "categoryCode": "5812"
+    },
+    "entryMode": "051"
+  }
+}
+```
+</CodeGroup>

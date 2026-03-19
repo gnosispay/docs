@@ -43,6 +43,11 @@
                   "v2/cards/v2-card-details",
                   "v2/cards/v2-simulate-card"
                 ]
+              },
+              {
+                "group": "Webhooks",
+                "icon": "webhook",
+                "pages": ["v2/webhooks/webhook", "v2/webhooks/webhook-events"]
               }
             ]
           },

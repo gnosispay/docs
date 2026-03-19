@@ -1,0 +1,89 @@
+---
+title: "Introduction to Webhooks"
+description: "Step-by-step guide to set up and implement webhooks in your application with Partner Dashboard"
+---
+
+Webhooks provide real-time notifications when events happen in the Gnosis Pay system. Rather than constantly polling our APIs for updates, you can configure webhook endpoints to receive instant notifications about card transactions, account status and balances, kyc statuses, and more.
+
+
+## Enable Webhooks
+
+To implement webhooks in your application, follow these essential steps:
+
+<Steps titleSize="h3">
+<Step title="Configure Your Endpoint">
+Create a publicly accessible HTTP endpoint in your application that can receive POST requests. This endpoint must be available over HTTPS and return a 2xx status code to acknowledge receipt of webhook events.
+
+<Warning>
+Your webhook endpoint must be publicly accessible. For local development, use tools like [ngrok](https://ngrok.com/) to expose your local server.
+</Warning>
+</Step>
+
+<Step title="Configure Webhooks in Partner Dashboard">
+Configure your webhook endpoint URL directly through the **Partners Dashboard**. Provide the complete HTTPS URL where you want to receive webhook notifications.
+![Partner Dashboard](/v2/webhooks/partner-webhook.png)
+<Tabs>
+    <Tab title="Sandbox">
+        ```
+        https://partner-dashboard.sandbox.gnosispay.com/
+        ```
+    </Tab>
+</Tabs>
+
+</Step>
+
+<Step title="Receive and Verify Events">
+When events happen in the Gnosis Pay system, we'll send HTTP POST requests to your webhook endpoint with event data and cryptographic signatures.
+
+All webhooks include cryptographic signatures using **Ed25519 asymmetric cryptography**:
+
+- **`X-Webhook-Timestamp`**: Unix timestamp when the webhook was sent
+- **`X-Webhook-Signature`**: Base64-encoded Ed25519 signature
+
+<Warning>
+  **Always verify webhook signatures** before processing events. This ensures
+  the webhook originated from Gnosis Pay and hasn't been tampered with.
+</Warning>
+
+
+</Step>
+
+<Step title="Parse and Process Event Data">
+Extract the `Type` and `data` fields from the webhook payload. The `Type` identifies what happened (e.g., `user.created`, `kyc.status.changed`), while `data` contains the complete entity information.
+
+```json
+{
+  "id": "evt_a1b2c3d4e5f6...",
+  "type": "account.balance.changed",
+  "createdAt": "2026-03-04T12:00:00.000Z",
+  "data": {
+    "accountId": "550e8400-e29b-41d4-a716-446655440000",
+    "balances": [
+    ....
+  }
+}
+```
+
+Handle each event type appropriately in your application. Since we send complete entity data, you typically won't need additional API calls to get the full context.
+
+<Info>
+Process events idempotently to handle potential duplicates, and implement proper error handling and logging for monitoring.
+</Info>
+
+<Info>
+**Retry Policy**:
+- **Max attempts**: 5 retries with River's built-in exponential backoff
+- **Timeout**: 30 seconds per request
+- **4xx responses**: Treated as permanent failures (no retry) - endpoint misconfiguration
+- **5xx/connection errors**: Retried up to maximum attempts
+- **Config changes**: Jobs cancelled if webhook config is paused/deleted during delivery
+
+If your webhook endpoint returns a non-2xx status code, we'll retry delivery according to these rules.
+</Info>
+
+<Warning>
+  **Timeout**: Your webhook endpoint must respond within 30 seconds. Requests that exceed this timeout are considered failed and will trigger our retry mechanism.
+</Warning>
+
+</Step>
+</Steps>
