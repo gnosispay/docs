@@ -15,6 +15,8 @@ When you send a transaction request:
    - **Authorization** creates a hold
    - **Reversal** releases a hold
    - **Replacement** adjusts an existing hold
+   - **Clearing** confirms/settles a transaction
+   - **Clearing Cancellation** cancels via clearing
 4. It returns an approval or denial response with production-like fields
 
 **Important:** No traffic is sent to the live card network. All validation and balance logic is handled internally by the simulator.
@@ -60,10 +62,13 @@ All simulation requests use these fields:
 
 </Steps>
 
+## Transaction Types
+
+The simulator supports five transaction types that form a complete lifecycle:
 
 ## Simulate an Authorization
 
-Authorization creates a hold on the card balance.
+Authorization creates an initial hold on the card balance.
 
 <Steps>
 <Step title="Send Authorization Request">
@@ -96,13 +101,13 @@ If approved, the response includes:
 - `authorization_code`
 - `authorization_id`
 
-**Save the `authorization_code`** — it is required for reversals and replacements.
+**Save the `authorization_code`** — it is required for reversals, replacements, and clearing operations.
 </Step>
 </Steps>
 
 ## Simulate a Reversal
 
-Reversal cancels a previous authorization and releases the held amount.
+Reversal cancels a previous authorization entirely and releases the held amount.
 
 <Steps>
 <Step title="Provide Authorization Code">
@@ -131,7 +136,7 @@ The simulator will:
 
 ## Simulate a Replacement
 
-Replacement modifies the amount of an existing authorization.
+Replacement adjusts a previous authorization to a different amount.
 
 <Steps>
 <Step title="Provide Authorization Code">
@@ -163,15 +168,76 @@ The simulator will:
 </Step>
 </Steps>
 
-## Simulation response handling
+## Simulate a Clearing
 
-### Approved
-An approved response includes:
-- `status`: "approved"
-- `authorization_code`
-- `authorization_id`
-- `settlement_amount`
-- Transaction metadata (mode type, domestic flag, timestamp)
+Clearing confirms a previous authorization (settlement/base II) and finalizes the transaction.
+
+<Steps>
+<Step title="Provide Authorization Code">
+Use the `authorization_code` from the original authorization.
+</Step>
+
+<Step title="Send Clearing Request">
+```json
+{
+  "transaction_type": "clearing",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
+```
+</Step>
+
+<Step title="Simulator Behavior">
+The simulator will:
+- Validate the original authorization
+- Process the settlement
+- Finalize the transaction
+
+<Warning>
+The simulator requires a minimum 2-minute gap between clearing messages for the same authorization. Sending a second clearing before this window elapses will result in an error.
+</Warning>
+</Step>
+</Steps>
+
+## Simulate a Clearing Cancellation
+
+Clearing cancellation cancels a transaction via clearing. For partial cancellation, send an amount lower than the original authorization.
+
+<Steps>
+<Step title="Provide Authorization Code">
+Use the `authorization_code` from the original authorization.
+</Step>
+
+<Step title="Send Clearing Cancellation Request">
+```json
+{
+  "transaction_type": "clearing_cancellation",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
+```
+</Step>
+
+<Step title="Simulator Behavior">
+The simulator will:
+- Validate the original authorization
+- Process the cancellation
+- Adjust balances accordingly
+
+<Note>
+For partial cancellations, use an amount lower than the original authorization amount.
+</Note>
+</Step>
+</Steps>
+
+## Response Handling
+
+### Approved (Authorization)
+An approved authorization response includes full transaction details:
 
 ```json
 {
@@ -186,11 +252,24 @@ An approved response includes:
 }
 ```
 
+### Approved (Clearing/Clearing Cancellation)
+Clearing responses are sparse — most fields will be empty or zero-valued:
+
+```json
+{
+  "status": "approved",
+  "authorization_code": "",
+  "authorization_id": 0,
+  "authorization_date_time": "0001-01-01T00:00:00Z",
+  "settlement_amount": "",
+  "mode_type": "",
+  "card_mode": "",
+  "is_domestic_transaction": false
+}
+```
+
 ### Denied
-If denied, the response includes:
-- `status`: "denied"
-- `denial_code`
-- `denial_reason`
+If denied, the response includes detailed denial information:
 
 ```json
 {
@@ -225,16 +304,20 @@ If denied, the response includes:
 
 ## Error Handling
 
-The simulator also returns structured errors:
+Validation and authentication errors return structured error objects:
 
 ```json
 {
   "code": 400,
-  "message": "authorization_code is required for reversal and replacement transactions"
+  "message": "authorization_code is required for reversal, replacement, and clearing transactions"
 }
 ```
 
 **Possible HTTP status codes:**
-- `401` → Invalid credentials
-- `400` → Validation error
-- `404` → Card or account not found
+
+| Status | Cause |
+|--------|-------|
+| `401` | Invalid credentials |
+| `400` | Validation error (missing fields, invalid amount/currency) |
+| `404` | Card or account not found |
+| `409` | Clearing collision — a clearing message is already being processed for this authorization. Wait at least 2 minutes between clearing messages |
