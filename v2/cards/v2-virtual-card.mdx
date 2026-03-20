@@ -8,6 +8,7 @@ Virtual cards are activated immediately after creation and can be used for onlin
 ## Card Activation
 
 To create a card for a user, call [`POST /cards/virtual`](/api-reference/cards/create-virtual-card) with a `cardName`. Once successful, you will get a `cardId`.
+The card's `status` will first be `provisioning` until our card provider has fully created the card. This is an asynchronous task. We recommend showing this `status` to your users, and polling the `/cards` endpoint regularly until it becomes `active`. The provisionning process should not last most than 10s.
 
 The request accepts an optional `phone` field (E.164 format). The behaviour depends on whether the user already has a `cardholderId`:
 
