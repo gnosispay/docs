@@ -55,8 +55,9 @@
             "tab": "API Reference",
             "groups": [
               {
-                "group": "GP V2 API",
-                "openapi": "https://gp-auth-module.sandbox.gnosispay.in/openapi.json"
+                "group": "V2 Production API",
+                "openapi": "https://gp-auth-module.prod.gnosispay.com/openapi.json",
+                "collapsed": true
               }
             ]
           }

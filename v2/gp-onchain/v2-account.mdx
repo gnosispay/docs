@@ -45,10 +45,16 @@ The Roles module implements a hardcoded daily limit of **$20K per token**. This 
 To get authenticated user account details, call [`GET /user/account`](/api-reference/user/get-account)
 
 <Tabs>
-    <Tab>
+    <Tab title="Sandbox">
         ```bash
         curl --request GET \
           --url https://gp-auth-module.sandbox.gnosispay.in/user/account
+        ```
+    </Tab>
+    <Tab title="Production">
+        ```bash
+        curl --request GET \
+          --url https://gp-auth-module.prod.gnosispay.com/user/account
         ```
     </Tab>
 </Tabs>
@@ -69,10 +75,20 @@ Gnosis Pay V2 provides detailed balance breakdowns to give users complete visibi
 
 To request the account balance of the user, call [`GET /user/balances`](/api-reference/user/get-account-balances)
 
+<Tabs>
+    <Tab title="Sandbox">
 ```bash
 curl --request GET \
   --url https://gp-auth-module.sandbox.gnosispay.in/user/balances
 ```
+    </Tab>
+    <Tab title="Production">
+```bash
+curl --request GET \
+  --url https://gp-auth-module.prod.gnosispay.com/user/balances
+```
+    </Tab>
+</Tabs>
 <Note>
 Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, authorized holds, non-spendable, and processing deposits amounts.
 </Note>

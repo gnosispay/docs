@@ -18,6 +18,8 @@ The request accepts an optional `phone` field (E.164 format). The behaviour depe
 | No `cardholderId`, no `phone` provided | `422 PHONE_REQUIRED` |
 | No `cardholderId`, valid `phone` provided | Cardholder created via Core API, then card created |
 
+<Tabs>
+    <Tab title="Sandbox">
 ```bash
 curl --request POST \
   --url https://gp-auth-module.sandbox.gnosispay.in/cards/virtual \
@@ -27,3 +29,16 @@ curl --request POST \
   "phone": "<string>"
 }'
 ```
+    </Tab>
+    <Tab title="Production">
+```bash
+curl --request POST \
+  --url https://gp-auth-module.prod.gnosispay.com/cards/virtual \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "cardName": "<string>",
+  "phone": "<string>"
+}'
+```
+    </Tab>
+</Tabs>

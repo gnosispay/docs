@@ -61,6 +61,12 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
           --url https://gp-auth-module.sandbox.gnosispay.in/auth/siwe/{address}?domain=&uri=&appName=
         ```
         </Tab>
+        <Tab title="Production">
+        ```bash
+        curl --request GET \
+          --url https://gp-auth-module.prod.gnosispay.com/auth/siwe/{address}?domain=&uri=&appName=
+        ```
+        </Tab>
         </Tabs>
     </Step>
 
@@ -74,6 +80,18 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
         ```bash
         curl --request POST \
           --url https://gp-auth-module.sandbox.gnosispay.in/auth/siwe \
+          --header 'Content-Type: application/json' \
+          --data '{
+              "address": "<string>",
+              "signature": "<string>",
+              "message": "<string>"
+          }'
+        ```
+        </Tab>
+        <Tab title="Production">
+        ```bash
+        curl --request POST \
+          --url https://gp-auth-module.prod.gnosispay.com/auth/siwe \
           --header 'Content-Type: application/json' \
           --data '{
               "address": "<string>",
@@ -105,6 +123,16 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
           }'
         ```
         </Tab>
+        <Tab title="Production">
+        ```bash
+        curl --request POST \
+          --url https://gp-auth-module.prod.gnosispay.com/auth/refresh \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "refreshToken": "your_refresh_token_here"
+          }'
+        ```
+        </Tab>
         </Tabs>
         <Info>
           **Token Rotation**: Each refresh request invalidates the previous refresh token and issues a new one. Always store the new refresh token from the response for subsequent refresh requests.
@@ -130,6 +158,16 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
     ```bash
     curl --request POST \
       --url https://gp-auth-module.sandbox.gnosispay.in/auth/logout \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "refreshToken": "your_refresh_token_here"
+      }'
+    ```
+    </Tab>
+    <Tab title="Production">
+    ```bash
+    curl --request POST \
+      --url https://gp-auth-module.prod.gnosispay.com/auth/logout \
       --header 'Content-Type: application/json' \
       --data '{
         "refreshToken": "your_refresh_token_here"

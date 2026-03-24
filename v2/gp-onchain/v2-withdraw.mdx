@@ -32,4 +32,16 @@ curl --request POST \
 }'
 ```
 </Tab>
+    <Tab title="Production">
+
+```bash
+curl --request POST \
+  --url https://gp-auth-module.prod.gnosispay.com/user/withdrawal \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "tokenAddress": "<string>",
+  "amount": "<string>"
+}'
+```
+</Tab>
 </Tabs>

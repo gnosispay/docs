@@ -29,6 +29,16 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
           }'
           ```
       </Tab>
+      <Tab title="Production">
+          ```bash cURL
+          curl --request POST \
+            --url https://gp-auth-module.prod.gnosispay.com/email-verification \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "email": "jsmith@example.com"
+          }'
+          ```
+      </Tab>
     </Tabs>
 </Step>
 
@@ -45,6 +55,18 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
           ```bash cURL
           curl --request POST \
             --url https://gp-auth-module.sandbox.gnosispay.in/user \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "email": "jsmith@example.com",
+            "otp": "<string>",
+            "shareToken": "<string>"
+          }'
+          ```
+      </Tab>
+      <Tab title="Production">
+          ```bash cURL
+          curl --request POST \
+            --url https://gp-auth-module.prod.gnosispay.com/user \
             --header 'Content-Type: application/json' \
             --data '{
             "email": "jsmith@example.com",
@@ -84,6 +106,12 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
             --url https://gp-auth-module.sandbox.gnosispay.in/user/onboarding
           ```
       </Tab>
+      <Tab title="Production">
+          ```bash cURL
+          curl --request GET \
+            --url https://gp-auth-module.prod.gnosispay.com/user/onboarding
+          ```
+      </Tab>
     </Tabs>
 
 </Step>
@@ -119,6 +147,12 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       --url https://gp-auth-module.sandbox.gnosispay.in/terms
     ```
     </Tab>
+      <Tab title="Production">
+    ```bash cURL
+    curl --request GET \
+      --url https://gp-auth-module.prod.gnosispay.com/terms
+    ```
+    </Tab>
     </Tabs>
 
     Submit the accepted Terms of Service via the [`POST /user/terms`](/api-reference/terms/accept-terms) endpoint.
@@ -140,6 +174,22 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     }'
     ```
     </Tab>
+      <Tab title="Production">
+
+    ```bash cURL
+    curl --request POST \
+      --url https://gp-auth-module.prod.gnosispay.com/user/terms \
+      --header 'Content-Type: application/json' \
+      --data '{
+      "terms": [
+        {
+          "type": "<string>",
+          "version": "<string>"
+        }
+      ]
+    }'
+    ```
+    </Tab>
     </Tabs>
 
     You can check the status of the user's acceptance of the Terms of Service via the [`GET /user/terms`](api-reference/terms/get-user-terms-status) endpoint.
@@ -149,6 +199,13 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     ```bash cURL
     curl --request GET \
       --url https://gp-auth-module.sandbox.gnosispay.in/user/terms
+
+    ```
+    </Tab>
+    <Tab title="Production">
+    ```bash cURL
+    curl --request GET \
+      --url https://gp-auth-module.prod.gnosispay.com/user/terms
 
     ```
     </Tab>
@@ -184,6 +241,14 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
           To complete the verification process:
           1. Open an iframe with the provided `webSdkUrl`
           2. Use the [verification document templates](https://docs.sumsub.com/docs/verification-document-templates) for Proof of Identity (POI) and Proof of Address (POA)
+          3. Complete the liveness check as prompted
+ </Tab>
+ <Tab title="Production">
+          Access the Sumsub URL provided in the response to begin the KYC verification process.
+
+          To complete the verification process:
+          1. Open an iframe with the provided `webSdkUrl`
+          2. Upload valid Proof of Identity (POI) and Proof of Address (POA) documents
           3. Complete the liveness check as prompted
  </Tab>
  </Tabs>
@@ -232,6 +297,12 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds
       ```
     </Tab>
+      <Tab title="Production">
+      ```bash cURL
+      curl --request GET \
+        --url https://gp-auth-module.prod.gnosispay.com/source-of-funds
+      ```
+    </Tab>
     </Tabs>
 
     Once all SOF questions have been reviewed and answered by user, submit the responses through the [`POST /source-of-funds`](/api-reference/source-of-funds/submit-sof-answers) endpoint to complete this step of the onboarding process.
@@ -241,6 +312,21 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       ```bash cURL
       curl --request POST \
         --url https://gp-auth-module.sandbox.gnosispay.in/source-of-funds \
+        --header 'Content-Type: application/json' \
+        --data '{
+        "answers": [
+          {
+            "question": "<string>",
+            "answer": "<string>"
+          }
+        ]
+      }'
+      ```
+    </Tab>
+      <Tab title="Production">
+      ```bash cURL
+      curl --request POST \
+        --url https://gp-auth-module.prod.gnosispay.com/source-of-funds \
         --header 'Content-Type: application/json' \
         --data '{
         "answers": [
@@ -290,6 +376,21 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         }'
         ```
         </Tab>
+        <Tab title="Production">
+        ```bash cURL
+        curl --request POST \
+          --url https://gp-auth-module.prod.gnosispay.com/user/account \
+          --header 'Content-Type: application/json' \
+          --data '{
+          "celoConfig": {
+            "dailyLimits": {
+              "usdt": 1,
+              "usdc": 1
+            }
+          }
+        }'
+        ```
+        </Tab>
         </Tabs>
 
         Once the account provisioning begins, the onboarding status will be updated to `waiting_account_setup` state, indicating that the account is being set up in the system.
@@ -308,6 +409,13 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         ```bash cURL
         curl --request GET \
           --url https://gp-auth-module.sandbox.gnosispay.in/user \
+          --header 'Content-Type: application/json'
+        ```
+        </Tab>
+        <Tab title="Production">
+        ```bash cURL
+        curl --request GET \
+          --url https://gp-auth-module.prod.gnosispay.com/user \
           --header 'Content-Type: application/json'
         ```
         </Tab>
