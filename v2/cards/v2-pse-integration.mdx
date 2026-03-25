@@ -1,0 +1,319 @@
+---
+title: Partner Secure Elements (PSE) Integration
+description: Display sensitive card information securely in your client application using PSE SDK v2.
+---
+
+## Overview
+
+If you want to display sensitive information, such as card numbers, in your front-end, you'll need to interact with our **Partner Secure Elements (PSE)** service. The easiest way to do this is by using the [PSE SDK](https://www.npmjs.com/package/@gnosispay/pse-sdk) from Gnosis Pay.
+
+To initialize the SDK, you'll need:
+- An `App ID` provided to you upon registration with Gnosis Pay
+- An **ephemeral-token** retrieved from the PSE private API using mTLS authentication
+- An **auth module token** obtained through the [SIWE authentication flow](/v2/v2-siwe-auth)
+
+<Info>
+  **V2 Changes**: The PSE SDK v2 replaces the long-lived `gnosisPayApiAuthToken` with a short-lived `authModuleToken` from the auth module, and uses `cardId` (UUID) instead of `cardToken`. You must pass `pseVersion: 2` when initializing the SDK.
+
+  | | V1 | V2 |
+  |--|----|----|
+  | Auth token | `gnosisPayApiAuthToken` | `authModuleToken` |
+  | Card identifier | `cardToken` | `cardId` (UUID) |
+  | Constructor flag | none | `pseVersion: 2` |
+  | Token lifetime | 24h JWT | 15min access + refresh |
+</Info>
+
+<Warning>
+  **Backend Required**: mTLS authentication can only be performed from a
+  back-end. You need a back-end responsible for retrieving the
+  ephemeral-token and sending it to your front-end upon request. We'll go
+  through each step in this guide.
+</Warning>
+
+Once your front-end has the ephemeral-token and auth module token, it can initialize the PSE SDK and use it to display secure elements.
+
+Here's a diagram showing each step:
+
+```mermaid
+    sequenceDiagram
+        participant FE as Your Frontend
+        participant BE as Your Backend
+        participant Auth as Auth Module
+        participant PSE as PSE API
+
+        FE->>Auth: SIWE Login
+        Auth-->>FE: authModuleToken (15min access token)
+
+        FE->>BE: Request ephemeral-token
+        BE->>PSE: POST /api/v1/ephemeral-token (mTLS)
+        PSE-->>BE: ephemeral-token
+        BE-->>FE: ephemeral-token
+
+        Note over FE: Initialize PSE SDK with<br/>ephemeralToken, authModuleToken,<br/>appId, pseVersion: 2
+
+        FE->>PSE: SDK requests card data
+        PSE-->>FE: Renders card data in secure iframe
+```
+
+---
+
+## Secure Connection Using mTLS Authentication
+
+**Mutual TLS (mTLS)** is a type of authentication in which two parties in a connection authenticate each other using the TLS protocol. Your back-end will establish an mTLS authentication with the Gnosis Pay private PSE API to receive an ephemeral-token.
+
+### How to Generate mTLS Certificates
+
+After signing up through the [Partners Dashboard](https://partners.gnosispay.com/), you will receive an `App ID` instantly, which will be used in the certificate generation below. You must first create a private key and then generate a Certificate Signing Request (CSR) using the `App ID` as follows:
+
+```graphql
+# APP_ID is a string starting with `gp_` that you have received from Gnosis Pay
+export APP_ID="gp_woop_123"
+
+# Create a private key (NEVER share with anyone)
+openssl ecparam -name prime256v1 -genkey -noout -out "${APP_ID}.key.pem"
+
+# Create the CSR (OK to share)
+openssl req -new -sha256 -key "${APP_ID}.key.pem" -out "${APP_ID}.csr.pem" -subj "/CN=${APP_ID}"
+```
+
+You can now share the `${APP_ID}.csr.pem` file with the Gnosis Pay team. **DO NOT EVER** share the `.key.pem` file with **ANYONE**.
+
+Once we receive your Certificate Signing Request, we will sign it and send you back the signed certificates. These signed certificates, along with your private key, are used to establish the connection with the PSE API.
+
+### How to Establish an mTLS Authentication (in Node.js)
+
+You should securely store the certificates in your environment along with your private key.
+
+Your environment should expose the certificates and private key, for example:
+
+```rust
+SIGNED_CERTIFICATES="-----BEGIN CERTIFICATE-----
+ABCQz ....
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+DEFC7 ....
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+GHICc ....
+-----END CERTIFICATE-----"
+
+PRIVATE_KEY="-----BEGIN EC PRIVATE KEY-----
+ABCD....
+-----END EC PRIVATE KEY-----"
+```
+
+Here's a Node.js implementation to request the ephemeral-token in two different ways:
+
+<CodeGroup>
+
+```js Using Axios
+const httpsAgent = new https.Agent({
+  cert: process.env.SIGNED_CERTIFICATES,
+  key: process.env.PRIVATE_KEY,
+  rejectUnauthorized: true, // Ensure SSL verification
+});
+
+const ephemeralTokenRequest = await axios({
+  httpsAgent: httpsAgent,
+  method: "POST",
+  url: `https://api-pse.gnosispay.com/api/v1/ephemeral-token`,
+  headers: { "Content-Type": "application/json" },
+  // Axios adds the user-agent automatically
+});
+```
+
+```js Using https.request
+import https from "https";
+
+const httpsAgent = new https.Agent({
+  cert: CERT,
+  key: KEY,
+  rejectUnauthorized: true,
+});
+
+const req = https.request(
+  {
+    hostname: "api-pse.gnosispay.com",
+    path: "/api/v1/ephemeral-token",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "User-Client/1.0.0",
+    },
+    agent: httpsAgent,
+  },
+  (res) => {
+    let data = "";
+    res.on("data", (chunk) => {
+      data += chunk;
+    });
+
+    res.on("end", () => {
+      console.log("Status:", res.statusCode);
+
+      try {
+        const parsedData = JSON.parse(data);
+        console.log("Response:", parsedData);
+      } catch {
+        console.log("Raw response:", data);
+      }
+    });
+  }
+);
+
+req.on("error", (error) => {
+  console.error("Request error:", error);
+});
+req.end();
+```
+
+</CodeGroup>
+
+<Note>
+  The ephemeral-token, as its name suggests, is valid for a very short time
+  frame. It is advised to generate a new one for every usage of the SDK.
+</Note>
+
+---
+
+## How to Use the PSE SDK
+
+### Installation
+
+```bash
+npm install @gnosispay/pse-sdk
+```
+
+### Backend: Ephemeral Token Relay
+
+Your backend needs an endpoint that proxies ephemeral token requests to the PSE private API using mTLS. Here's an example using Express:
+
+```js
+import express from "express";
+import axios from "axios";
+import https from "node:https";
+
+const app = express();
+
+app.get("/api/ephemeral-token", async (_req, res) => {
+  try {
+    const cert = Buffer.from(process.env.CLIENT_CERT, "base64").toString("ascii");
+    const key = Buffer.from(process.env.CLIENT_KEY, "base64").toString("ascii");
+    const httpsAgent = new https.Agent({ cert, key, rejectUnauthorized: true });
+
+    const response = await axios({
+      method: "POST",
+      url: "https://api-pse.gnosispay.com/api/v1/ephemeral-token",
+      headers: { "Content-Type": "application/json" },
+      httpsAgent,
+    });
+
+    res.json({ data: response.data.data });
+  } catch (error) {
+    res.status(502).json({ error: "Failed to reach PSE private API" });
+  }
+});
+```
+
+In this example, `CLIENT_CERT` and `CLIENT_KEY` are the base64-encoded signed certificate and private key stored in your environment variables.
+
+### Frontend: Initialize the SDK
+
+```typescript
+import GPSDK, { ElementType } from "@gnosispay/pse-sdk";
+
+// 1. Get the auth module access token from your SIWE auth flow
+const authModuleToken = getAccessToken(); // your auth implementation
+
+// 2. Fetch ephemeral token from your backend
+const response = await fetch("/api/ephemeral-token");
+const { data } = await response.json();
+
+// 3. Initialize the SDK with v2 configuration
+const gpSdk = new GPSDK({
+  pseVersion: 2,                          // Required for v2
+  appId: "gp_your_app_id",               // Your Partner App ID
+  ephemeralToken: data.ephemeralToken,
+  authModuleToken: authModuleToken,       // Auth module access token
+  onActionSuccess: (action) => {
+    console.log("Action completed:", action);
+  },
+  onInvalidToken: (message) => {
+    console.error("Token invalid:", message);
+    // Refresh the ephemeral token and reinitialize
+  },
+  onError: (message, details) => {
+    console.error("PSE error:", message, details);
+  },
+});
+```
+
+<Warning>
+  The `authModuleToken` expires every 15 minutes. Handle the `onInvalidToken`
+  callback to refresh your access token via the [token refresh flow](/v2/v2-siwe-auth)
+  and re-initialize the SDK.
+</Warning>
+
+### Display Card Data
+
+Use `ElementType.CardData` to display the full card number, expiration date, and security code:
+
+```typescript
+// cardId is a UUID obtained from GET /cards
+const { destroy } = gpSdk.init(ElementType.CardData, "#card-data-container", {
+  cardId: "019c9578-a8ce-7445-9961-51b945605f70",
+});
+
+// Call destroy() when unmounting or cleaning up
+destroy();
+```
+
+### Refresh Ephemeral Token
+
+If you need to refresh the ephemeral token without re-creating the SDK instance:
+
+```typescript
+const newToken = await fetchNewEphemeralToken();
+gpSdk.refreshToken(newToken);
+```
+
+### Callbacks
+
+The SDK provides three callbacks to handle events from the iframe:
+
+| Callback | Trigger |
+|----------|---------|
+| `onActionSuccess(action)` | A user action completes (e.g., `CardNumberCopied`, `SetPin`, `DoneSettingPin`) |
+| `onInvalidToken(message)` | The ephemeral token has expired or is invalid |
+| `onError(message, details)` | An error occurred inside the iframe |
+
+---
+
+## How to Customize the Style of Secure Elements in the iframe
+
+For security reasons, the only way to apply custom styling to iframe elements is to prepare and share a **CSS file** with the Gnosis Pay team. This file, named `<partner_name>.css`, will be incorporated into the iframe.
+
+Standard styling is applied to the iframe elements by default. You can override the style of these classes and IDs as needed. Here are some of them:
+
+#### Card Data
+
+- `.pse-container` - A shared class for all iframe containers.
+- `#pse-card-data-container` - The main container for displaying card data.
+- `.pse-card-field` - The container for each card data field (card number, expiry date, security code).
+- `.pse-card-label` - Labels for each field.
+- `.pse-card-value` - The container for the actual card data values.
+
+
+---
+
+### Styling Guide
+
+Here is a suggested workflow to customize the styling:
+
+1.  In your front-end, load the element you wish to customize (e.g., the card data).
+1.  Locate the custom CSS file with your name in either the "**Style Editor**" in Firefox or the "**Sources**" panel on Chrome/Brave. In the example below, the file is `gnosis_pay_ui.css`.
+1.  Apply your desired styling. The changes will be reflected in your interface immediately.
+1.  Save the file and send it to Gnosis Pay for application in production.
+
+Here is an example of overriding the `.pse-card-field` class in Firefox:
+![custom css](./assets/css-styling.png)
