@@ -631,7 +631,30 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
       "country": "GB",
       "categoryCode": "5812"
     },
-    "entryMode": "051"
+    "entryMode": "051",
+    "country": {
+      "alpha2": "GB",
+      "alpha3": "GBR",
+      "name": "United Kingdom"
+    },
+    "billing": {
+      "amount": "500000000000000000000",
+      "currency": "EUR",
+      "decimals": 18,
+      "conversionRate": "1.0101"
+    },
+    "transactionCurrency": {
+      "amount": "495000000",
+      "currency": "USD",
+      "decimals": 6,
+      "conversionRate": "0.9900"
+    },
+    "cardToken": "tok_a1b2c3d4e5f6",
+    "clearedAt": null,
+    "isPending": true,
+    "kind": "purchase",
+    "transactionType": "authorization",
+    "transactions": []
   }
 }
 ```
