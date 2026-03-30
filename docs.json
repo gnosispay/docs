@@ -40,7 +40,6 @@
                 "icon": "credit-card",
                 "pages": [
                   "v2/cards/v2-virtual-card",
-                  "v2/cards/v2-card-details",
                   "v2/cards/v2-simulate-card",
                   "v2/cards/v2-pse-integration"
                 ]
