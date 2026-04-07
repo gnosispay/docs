@@ -1,26 +1,22 @@
 ---
 title: Partner Secure Elements (PSE) Integration
-description: Display sensitive card information securely in your client application using PSE SDK v2.
+description: Display sensitive card information and manage PINs securely in your client application using PSE SDK (PSE version 3 with EIP-712 two-factor authentication).
 ---
 
 ## Overview
 
-If you want to display sensitive information, such as card numbers, in your front-end, you'll need to interact with our **Partner Secure Elements (PSE)** service. The easiest way to do this is by using the [PSE SDK](https://www.npmjs.com/package/@gnosispay/pse-sdk) from Gnosis Pay.
+If you want to display sensitive information (such as card numbers or PINs) in your front-end, you'll need to interact with our **Partner Secure Elements (PSE)** service. The easiest way to do this is by using the [PSE SDK](https://www.npmjs.com/package/@gnosispay/pse-sdk) from Gnosis Pay.
 
 To initialize the SDK, you'll need:
 - An `App ID` provided to you upon registration with Gnosis Pay
 - An **ephemeral-token** retrieved from the PSE private API using mTLS authentication
 - An **auth module token** obtained through the [SIWE authentication flow](/v2/v2-siwe-auth)
+- An **EIP-712 signature** and **nonce** obtained from the challenge flow described below
 
 <Info>
-  **V2 Changes**: The PSE SDK v2 replaces the long-lived `gnosisPayApiAuthToken` with a short-lived `authModuleToken` from the auth module, and uses `cardId` (UUID) instead of `cardToken`. You must pass `pseVersion: 2` when initializing the SDK.
+  **PSE version 3** adds an EIP-712 wallet signature as a second factor for every sensitive operation. Pass `pseVersion: 3` when constructing the SDK and include `eip712Signature` and `eip712Nonce` obtained from the challenge flow described below.
 
-  | | V1 | V2 |
-  |--|----|----|
-  | Auth token | `gnosisPayApiAuthToken` | `authModuleToken` |
-  | Card identifier | `cardToken` | `cardId` (UUID) |
-  | Constructor flag | none | `pseVersion: 2` |
-  | Token lifetime | 24h JWT | 15min access + refresh |
+  Note: `pseVersion` refers to the PSE SDK protocol version and is unrelated to the Gnosis Pay API path (which remains `/v2`).
 </Info>
 
 <Warning>
@@ -49,9 +45,15 @@ Here's a diagram showing each step:
         PSE-->>BE: ephemeral-token
         BE-->>FE: ephemeral-token
 
-        Note over FE: Initialize PSE SDK with<br/>ephemeralToken, authModuleToken,<br/>appId, pseVersion: 2
+        FE->>Auth: GET /pci/cards/{cardId}/challenge?action=...
+        Auth-->>FE: EIP-712 typed data (domain, types, message, nonce)
+        Note over FE: User signs typed data in wallet
+
+        Note over FE: Initialize PSE SDK (PSE version 3) with<br/>ephemeralToken, authModuleToken, appId,<br/>eip712Signature, eip712Nonce
 
         FE->>PSE: SDK requests card data
+        PSE->>Auth: Verifies EIP-712 signature + nonce
+        Auth-->>PSE: Signature valid
         PSE-->>FE: Renders card data in secure iframe
 ```
 
@@ -176,6 +178,139 @@ req.end();
 
 ---
 
+## EIP-712 Two-Factor Authentication
+
+PSE version 3 requires a wallet signature before each sensitive operation. This acts as a second factor: even if an `authModuleToken` is compromised, an attacker cannot view card data or change a PIN without also controlling the user's wallet.
+
+### How It Works
+
+Before initializing the SDK, your front-end must:
+
+1. Request a one-time **challenge** from the auth module.
+2. Ask the user's wallet to **sign** the returned EIP-712 typed data.
+3. Pass the resulting **signature** and **nonce** to the SDK constructor.
+
+The PSE service forwards both values to the auth module, which verifies the signature and marks the nonce as consumed. Each challenge is **single-use** and **expires after 5 minutes**.
+
+### The Challenge Endpoint
+
+```
+GET /pci/cards/{cardId}/challenge?action={action}
+Authorization: Bearer {authModuleToken}
+```
+
+The `action` parameter determines which operation is being authorized:
+
+| `action` | Operation |
+|----------|-----------|
+| `view-details` | Display card number, expiry, and security code |
+| `view-pin` | Display the current PIN |
+| `change-pin` | Set or change the PIN |
+
+The response is a complete EIP-712 typed data object, ready to pass directly to `signTypedData`:
+
+```json
+{
+  "domain": {
+    "name": "Display VISA Card Details",
+    "version": "1",
+    "chainId": 42220
+  },
+  "primaryType": "Message",
+  "types": {
+    "Message": [
+      { "name": "authorization", "type": "string" },
+      { "name": "nonce", "type": "uint256" }
+    ]
+  },
+  "message": {
+    "authorization": "Display VISA Card Details",
+    "nonce": "123456789012345678901234567890"
+  }
+}
+```
+
+<Note>
+  `message.nonce` is returned as a decimal string representing a `uint256`.
+  Convert it to `BigInt` before passing it to `signTypedData`.
+</Note>
+
+### Signing the Challenge
+
+<CodeGroup>
+
+```typescript Using wagmi
+import { useSignTypedData } from "wagmi";
+
+const { signTypedDataAsync } = useSignTypedData();
+
+// 1. Fetch the challenge (authModuleToken is sent automatically via client config)
+const { data, error } = await getPciCardsByCardIdChallenge({
+  path: { cardId },
+  query: { action: "view-details" },
+});
+
+if (error || !data) throw new Error("Failed to get EIP-712 challenge");
+
+// 2. Sign — convert nonce to BigInt for the uint256 type
+const signature = await signTypedDataAsync({
+  domain: data.domain,
+  types: data.types,
+  primaryType: data.primaryType,
+  message: {
+    authorization: data.message.authorization,
+    nonce: BigInt(data.message.nonce),
+  },
+});
+
+// 3. Pass to SDK constructor
+const eip712Signature = signature;
+const eip712Nonce = data.message.nonce; // keep as decimal string
+```
+
+```typescript Using viem directly
+import { createWalletClient, custom } from "viem";
+import { celo } from "viem/chains";
+
+const walletClient = createWalletClient({
+  chain: celo,
+  transport: custom(window.ethereum),
+});
+
+// 1. Fetch the challenge
+const response = await fetch(
+  `/pci/cards/${cardId}/challenge?action=view-details`,
+  { headers: { Authorization: `Bearer ${authModuleToken}` } }
+);
+const data = await response.json();
+
+// 2. Sign
+const [account] = await walletClient.getAddresses();
+const signature = await walletClient.signTypedData({
+  account,
+  domain: data.domain,
+  types: data.types,
+  primaryType: data.primaryType,
+  message: {
+    authorization: data.message.authorization,
+    nonce: BigInt(data.message.nonce),
+  },
+});
+
+const eip712Signature = signature;
+const eip712Nonce = data.message.nonce;
+```
+
+</CodeGroup>
+
+<Warning>
+  The challenge must be fetched **immediately before** each SDK initialization.
+  Do not reuse a nonce across different operations or SDK instances — it will be
+  rejected after the first use.
+</Warning>
+
+---
+
 ## How to Use the PSE SDK
 
 ### Installation
@@ -219,6 +354,8 @@ In this example, `CLIENT_CERT` and `CLIENT_KEY` are the base64-encoded signed ce
 
 ### Frontend: Initialize the SDK
 
+After completing the EIP-712 challenge/sign step above, initialize the SDK with `pseVersion: 3`:
+
 ```typescript
 import GPSDK, { ElementType } from "@gnosispay/pse-sdk";
 
@@ -229,12 +366,19 @@ const authModuleToken = getAccessToken(); // your auth implementation
 const response = await fetch("/api/ephemeral-token");
 const { data } = await response.json();
 
-// 3. Initialize the SDK with v2 configuration
+// 3. Fetch and sign an EIP-712 challenge (see section above)
+//    Use the action matching the operation you are about to perform:
+//    "view-details" | "view-pin" | "change-pin"
+const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "view-details");
+
+// 4. Initialize the SDK with PSE version 3
 const gpSdk = new GPSDK({
-  pseVersion: 2,                          // Required for v2
+  pseVersion: 3,                          // PSE version 3 — required for EIP-712 2FA
   appId: "gp_your_app_id",               // Your Partner App ID
   ephemeralToken: data.ephemeralToken,
   authModuleToken: authModuleToken,       // Auth module access token
+  eip712Signature: eip712Signature,       // Hex signature from wallet
+  eip712Nonce: eip712Nonce,               // Decimal nonce string from challenge
   onActionSuccess: (action) => {
     console.log("Action completed:", action);
   },
@@ -254,9 +398,13 @@ const gpSdk = new GPSDK({
   and re-initialize the SDK.
 </Warning>
 
-### Display Card Data
+### Display Card Details
 
-Use `ElementType.CardData` to display the full card number, expiration date, and security code:
+Use `ElementType.CardData` to display the full card number, expiration date, and security code.
+
+<Note>
+  Use `action: "view-details"` when fetching the EIP-712 challenge for this element.
+</Note>
 
 ```typescript
 // cardId is a UUID obtained from GET /cards
@@ -266,6 +414,68 @@ const { destroy } = gpSdk.init(ElementType.CardData, "#card-data-container", {
 
 // Call destroy() when unmounting or cleaning up
 destroy();
+```
+
+### View Card PIN
+
+Use `ElementType.CardPin` to display the card's current PIN inside the secure iframe.
+
+<Note>
+  Use `action: "view-pin"` when fetching the EIP-712 challenge for this element.
+</Note>
+
+```typescript
+// Fetch and sign the challenge with action "view-pin" before constructing the SDK
+const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "view-pin");
+
+const gpSdk = new GPSDK({
+  pseVersion: 3,
+  appId: "gp_your_app_id",
+  ephemeralToken: data.ephemeralToken,
+  authModuleToken: authModuleToken,
+  eip712Signature,
+  eip712Nonce,
+  onActionSuccess: (action) => { /* ... */ },
+  onInvalidToken: (message) => { /* ... */ },
+  onError: (message, details) => { /* ... */ },
+});
+
+const { destroy } = gpSdk.init(ElementType.CardPin, "#pin-container", {
+  cardId: "019c9578-a8ce-7445-9961-51b945605f70",
+});
+```
+
+### Set / Change Card PIN
+
+Use `ElementType.SetCardPin` to render a PIN entry form that lets the cardholder set or change their PIN.
+
+<Note>
+  Use `action: "change-pin"` when fetching the EIP-712 challenge for this element.
+</Note>
+
+```typescript
+// Fetch and sign the challenge with action "change-pin" before constructing the SDK
+const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "change-pin");
+
+const gpSdk = new GPSDK({
+  pseVersion: 3,
+  appId: "gp_your_app_id",
+  ephemeralToken: data.ephemeralToken,
+  authModuleToken: authModuleToken,
+  eip712Signature,
+  eip712Nonce,
+  onActionSuccess: (action) => {
+    // Fired with Action.SetPin when the user submits the new PIN,
+    // and Action.DoneSettingPin when the operation is confirmed.
+    console.log("PIN operation completed:", action);
+  },
+  onInvalidToken: (message) => { /* ... */ },
+  onError: (message, details) => { /* ... */ },
+});
+
+const { destroy } = gpSdk.init(ElementType.SetCardPin, "#set-pin-container", {
+  cardId: "019c9578-a8ce-7445-9961-51b945605f70",
+});
 ```
 
 ### Refresh Ephemeral Token
