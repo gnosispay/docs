@@ -65,30 +65,34 @@ This will return configuration of user account including chain name, configured 
 
 Gnosis Pay V2 provides detailed balance breakdowns to give users complete visibility into their fund status. The authenticated user's account displays four distinct balance types:
 
-
 | Balance Type | Description | Increases When | Decreases When |
 |--------------|-------------|----------------|----------------|
 | **Spendable** | Amount available for immediate spending via card transactions or withdrawals | • Deposits clear AML analysis<br/>• Refunds are processed<br/>• Returns of goods are credited | • Card transactions are authorized<br/>• Withdrawals are initiated |
-| **Authorized Holds** | Amount reserved for pending card transactions (Base 1 authorizations). Funds are committed but not yet settled | • Card transaction is authorized | • Transaction settles (moves to spent)<br/>• Authorization expires or reverses |
 | **Non-Spendable** | Funds that cannot be used for spending. Flagged for review or potential return | • Dependent on AML checks | • Funds are returned to source<br/>• Funds are manually released after review |
 | **Processing Deposits** | Incoming deposits currently undergoing AML analysis. Not yet available for spending | • New deposit is received | • AML analysis completes (moves to spendable or non-spendable) |
+| **Processing Withdrawals** | Outgoing withdrawals currently being processed. Deducted from spendable but not yet settled on-chain | • Withdrawal is initiated | • Withdrawal settles on-chain |
 
-To request the account balance of the user, call [`GET /user/balances`](/api-reference/user/get-account-balances)
+### Get Account Balances
+
+
+To request the account balance of the user, call [`GET /user/balances/v2`](/api-reference/user/get-account-balances-v2)
 
 <Tabs>
     <Tab title="Sandbox">
 ```bash
 curl --request GET \
-  --url https://gp-auth-module.sandbox.gnosispay.in/user/balances
+  --url https://gp-auth-module.sandbox.gnosispay.in/user/balances/v2
 ```
     </Tab>
     <Tab title="Production">
 ```bash
 curl --request GET \
-  --url https://gp-auth-module.prod.gnosispay.com/user/balances
+  --url https://gp-auth-module.prod.gnosispay.com/user/balances/v2
 ```
     </Tab>
 </Tabs>
+
+
 <Note>
-Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, authorized holds, non-spendable, and processing deposits amounts.
+Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, non-spendable, processing deposits, and processing withdrawals amounts.
 </Note>
