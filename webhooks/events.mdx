@@ -2677,6 +2677,22 @@ Triggered when a new card transaction is cleared.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -2864,6 +2880,22 @@ Triggered when a new card transaction is cleared.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -3602,11 +3634,44 @@ Triggered when a new card transaction is cleared.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -3619,6 +3684,19 @@ Triggered when a new card transaction is cleared.
           "eventType": "card.transaction.cleared",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -3686,6 +3764,19 @@ Triggered when a new card transaction is cleared.
   "eventType": "card.transaction.cleared",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -3756,6 +3847,22 @@ Triggered when a new card transaction is created.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -3943,6 +4050,22 @@ Triggered when a new card transaction is created.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -4681,11 +4804,44 @@ Triggered when a new card transaction is created.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -4698,6 +4854,19 @@ Triggered when a new card transaction is created.
           "eventType": "card.transaction.created",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -4765,6 +4934,19 @@ Triggered when a new card transaction is created.
   "eventType": "card.transaction.created",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -4836,6 +5018,22 @@ Triggered when a blockchain transaction is confirmed.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -5023,6 +5221,22 @@ Triggered when a blockchain transaction is confirmed.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -5761,11 +5975,44 @@ Triggered when a blockchain transaction is confirmed.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -5778,6 +6025,19 @@ Triggered when a blockchain transaction is confirmed.
           "eventType": "card.transaction.confirmed",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -5845,6 +6105,19 @@ Triggered when a blockchain transaction is confirmed.
   "eventType": "card.transaction.confirmed",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -5915,6 +6188,22 @@ Triggered when a blockchain transaction fails.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -6102,6 +6391,22 @@ Triggered when a blockchain transaction fails.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -6840,11 +7145,44 @@ Triggered when a blockchain transaction fails.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -6857,6 +7195,19 @@ Triggered when a blockchain transaction fails.
           "eventType": "card.transaction.failed",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -6924,6 +7275,19 @@ Triggered when a blockchain transaction fails.
   "eventType": "card.transaction.failed",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -6994,6 +7358,22 @@ Triggered when a reversal event is detected during clearing.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -7181,6 +7561,22 @@ Triggered when a reversal event is detected during clearing.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -7919,11 +8315,44 @@ Triggered when a reversal event is detected during clearing.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -7936,6 +8365,19 @@ Triggered when a reversal event is detected during clearing.
           "eventType": "card.transaction.reversed",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -8003,6 +8445,19 @@ Triggered when a reversal event is detected during clearing.
   "eventType": "card.transaction.reversed",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -8073,6 +8528,22 @@ Triggered when a refund event is detected during clearing.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -8260,6 +8731,22 @@ Triggered when a refund event is detected during clearing.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -8998,11 +9485,44 @@ Triggered when a refund event is detected during clearing.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -9015,6 +9535,19 @@ Triggered when a refund event is detected during clearing.
           "eventType": "card.transaction.refunded",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -9082,6 +9615,19 @@ Triggered when a refund event is detected during clearing.
   "eventType": "card.transaction.refunded",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
@@ -9152,6 +9698,22 @@ Triggered when an authorization record is created with a declined response.
   data: {
     /** User ID */
     userId: string;
+    /** User's sign-in wallet addresses */
+    signInWallets: {
+      /** Sign-in wallet address */
+      address: string;
+    }[];
+    /** User's Safe wallet addresses */
+    safeWallets: {
+      /** Safe wallet address */
+      address: string;
+      /** Blockchain chain ID */
+      chainId: string | null;
+      /** Token symbol */
+      tokenSymbol: string | null;
+      /** Creation timestamp */
+      createdAt: string;
+    }[];
     /** Card transaction event */
     event: {
       threadId: string;
@@ -9339,6 +9901,22 @@ Triggered when an authorization record is created with a declined response.
                 "type": "string",
                 "description": "User ID"
               },
+              "signInWallets": {
+                "type": "array",
+                "description": "User's sign-in wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Sign-in wallet address"
+                    }
+                  },
+                  "required": [
+                    "address"
+                  ]
+                }
+              },
               "event": {
                 "anyOf": [
                   {
@@ -10077,11 +10655,44 @@ Triggered when an authorization record is created with a declined response.
                   }
                 },
                 "description": "Card transaction event"
+              },
+              "safeWallets": {
+                "type": "array",
+                "description": "User's Safe wallet addresses",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "Safe wallet address"
+                    },
+                    "chainId": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Blockchain chain ID"
+                    },
+                    "tokenSymbol": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Token symbol"
+                    },
+                    "createdAt": {
+                      "type": "string",
+                      "description": "Creation timestamp"
+                    }
+                  },
+                  "required": [
+                    "address",
+                    "createdAt"
+                  ]
+                }
               }
             },
             "required": [
               "userId",
-              "event"
+              "signInWallets",
+              "event",
+              "safeWallets"
             ]
           }
         },
@@ -10094,6 +10705,19 @@ Triggered when an authorization record is created with a declined response.
           "eventType": "card.transaction.declined",
           "data": {
             "userId": "user_123",
+            "signInWallets": [
+              {
+                "address": "0x1234567890123456789012345678901234567890"
+              }
+            ],
+            "safeWallets": [
+              {
+                "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+                "chainId": "100",
+                "tokenSymbol": "EURe",
+                "createdAt": "2024-01-15T10:00:00.000Z"
+              }
+            ],
             "event": {
               "kind": "Payment",
               "threadId": "thread_123456789",
@@ -10161,6 +10785,19 @@ Triggered when an authorization record is created with a declined response.
   "eventType": "card.transaction.declined",
   "data": {
     "userId": "user_123",
+    "signInWallets": [
+      {
+        "address": "0x1234567890123456789012345678901234567890"
+      }
+    ],
+    "safeWallets": [
+      {
+        "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+        "chainId": "100",
+        "tokenSymbol": "EURe",
+        "createdAt": "2024-01-15T10:00:00.000Z"
+      }
+    ],
     "event": {
       "kind": "Payment",
       "threadId": "thread_123456789",
