@@ -18,7 +18,7 @@ The Gnosis Pay Safe consists of a core Safe account with three main modules:
 Gnosis Pay V2 maintains the same Safe wallet structure with delay and roles modules, but implements key behavioral improvements:
 
 ### Instant Withdrawals
-Withdrawals from the Gnosis Pay Safe don't go through the delay module. The system reduces the spendable balance immediately to avoid double spending and then syncs with the on-chain balance, eliminating the 3-minute delay and removing the need for the card to be blocked during the withdrawal process.
+Withdrawals from the Gnosis Pay Safe reduce the spendable balance immediately to avoid double spending and then sync with the on-chain balance. During this process, the card is not blocked from operations.
 
 ### Multi-Currency Support
 The Roles module now supports multi-token configurations so that users can spend different currencies via their spending safe.
@@ -26,15 +26,15 @@ The Roles module now supports multi-token configurations so that users can spend
 ## Module Configurations:
 
 ### Delay Module Settings
-- **Transaction delay**: 25 hours (increased from 3 minutes)
-- **Transaction expiration**: 31 hours (increased from 30 minutes)
+- **Transaction delay**: 25 hours
+- **Transaction expiration**: 31 hours
 
 <Warning>
 These extended timeouts are designed to discourage direct delay module interaction. Failed transactions require the full expiration period before they can be skipped.
 </Warning>
 
 ### Daily Spending Limits
-The Roles module implements a hardcoded daily limit of **$20K per token**. This limit is set at 2x the current card limit to accommodate future increases without requiring user transactions.
+The maximum daily card spend limit is **$10K per token**. The Roles module enforces a hardcoded on-chain limit of **$20K per token**, twice the card limit. This buffer exists because card clearing and settlement can take 1–4 days after a transaction, and the higher onchain limit ensures uninterrupted card operations over that window without requiring any additional user signatures.
 
 <Warning>
     Any interaction with the delay module will block the card and require customer support intervention to resolve the issue.

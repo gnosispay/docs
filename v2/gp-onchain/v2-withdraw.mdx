@@ -7,6 +7,10 @@ description: Create request to withdraw funds onchain to wallet address
 The [`POST /user/withdrawals`](/api-reference/user/create-withdrawal) endpoint allows you to create a withdrawal request for a user.
 The withdrawal happens to the GP Safe's Owner wallet address.
 
+<Info>
+**Withdrawals are per token.** Each withdrawal request targets a single token via `tokenAddress`.
+</Info>
+
 <Warning>
 **Withdrawal Restrictions:**
 - Only specific tokens are currently supported for withdrawals
@@ -14,7 +18,7 @@ The withdrawal happens to the GP Safe's Owner wallet address.
 </Warning>
 
 <Note>
-    Token addresses supported for withdrawals on Celo :
+    Token addresses supported for withdrawals on Celo:
     - CeloUSDT = "0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e"
     - CeloUSDC = "0xceba9300f2b948710d2653dd7b07f33a8b32118c"
 </Note>
