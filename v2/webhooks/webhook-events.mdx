@@ -6,18 +6,18 @@ description: "Complete list of webhook events triggered in V2"
 ## Account Events
 
 ### 1. Account.balance.changed
+
 Triggered when the account balance changes.
 
 #### Event Trigger Points
 
-| Flow | Reason Value |
-|------|--------------|
-| Deposit approved | `deposit.approved` |
-| Deposit rejected | `deposit.rejected` |
-| Withdrawal completed | `withdrawal.completed` |
-| Instant withdrawal reconciled | `withdrawal.completed` |
-| Card authorization | `card.authorization.{category}` |
-
+| Flow                          | Reason Value                    |
+| ----------------------------- | ------------------------------- |
+| Deposit approved              | `deposit.approved`              |
+| Deposit rejected              | `deposit.rejected`              |
+| Withdrawal completed          | `withdrawal.completed`          |
+| Instant withdrawal reconciled | `withdrawal.completed`          |
+| Card authorization            | `card.authorization.{category}` |
 
 <CodeGroup>
 ```typescript account.balance.changed
@@ -61,6 +61,7 @@ Triggered when the account balance changes.
 </CodeGroup>
 
 ### 2. Account.created
+
 Triggered when a new account is created and provisioning begins.
 
 <CodeGroup>
@@ -92,6 +93,7 @@ Triggered when a new account is created and provisioning begins.
 </CodeGroup>
 
 ### 3. Account.activated
+
 Triggered when account provisioning is complete and account becomes active.
 
 <CodeGroup>
@@ -123,6 +125,7 @@ Triggered when account provisioning is complete and account becomes active.
 </CodeGroup>
 
 ### 4. Account.blocked
+
 Triggered when an account is blocked due to security or compliance reasons.
 
 <CodeGroup>
@@ -156,6 +159,7 @@ Triggered when an account is blocked due to security or compliance reasons.
 ## KYC Events
 
 ### 5. KYC.profile.approved
+
 Triggered when a KYC profile verification is approved.
 
 <CodeGroup>
@@ -197,6 +201,7 @@ Triggered when a KYC profile verification is approved.
 </CodeGroup>
 
 ### 6. KYC.profile.rejected
+
 Triggered when a KYC profile verification is rejected.
 
 <CodeGroup>
@@ -238,6 +243,7 @@ Triggered when a KYC profile verification is rejected.
 </CodeGroup>
 
 ### 7. KYC.profile.requires_action
+
 Triggered when a KYC profile requires additional action from the user.
 
 <CodeGroup>
@@ -259,6 +265,7 @@ Triggered when a KYC profile requires additional action from the user.
 </CodeGroup>
 
 ### 8. KYC.profile.resubmission_requested
+
 Triggered when KYC profile requires document resubmission.
 
 <CodeGroup>
@@ -280,6 +287,7 @@ Triggered when KYC profile requires document resubmission.
 </CodeGroup>
 
 ### 9. KYC.terms.approved
+
 Triggered when all required terms are accepted.
 
 <CodeGroup>
@@ -299,6 +307,7 @@ Triggered when all required terms are accepted.
 </CodeGroup>
 
 ### 10. KYC.source_of_funds.approved
+
 Triggered when source of funds questionnaire is submitted and approved.
 
 <CodeGroup>
@@ -320,6 +329,7 @@ Triggered when source of funds questionnaire is submitted and approved.
 ## Deposit Events
 
 ### 11. Deposit.pending
+
 Triggered when an on-chain deposit is detected and awaiting KYT processing.
 
 <CodeGroup>
@@ -347,6 +357,7 @@ Triggered when an on-chain deposit is detected and awaiting KYT processing.
 </CodeGroup>
 
 ### 12. Deposit.approved
+
 Triggered when a deposit is confirmed after KYT and funds become available.
 
 <CodeGroup>
@@ -374,6 +385,7 @@ Triggered when a deposit is confirmed after KYT and funds become available.
 </CodeGroup>
 
 ### 13. Deposit.rejected
+
 Triggered when a deposit is rejected by KYT.
 
 <CodeGroup>
@@ -403,6 +415,7 @@ Triggered when a deposit is rejected by KYT.
 ## Withdrawal Events
 
 ### 14. Withdrawal.completed
+
 Triggered when a withdrawal is successfully processed on-chain.
 
 <CodeGroup>
@@ -430,6 +443,7 @@ Triggered when a withdrawal is successfully processed on-chain.
 </CodeGroup>
 
 ### 15. Withdrawal.failed
+
 Triggered when a withdrawal fails at any stage.
 
 <CodeGroup>
@@ -459,6 +473,7 @@ Triggered when a withdrawal fails at any stage.
 ## Card Events
 
 ### 16. Card.created
+
 Triggered when a virtual card is provisioned or physical card reaches pending activation.
 
 <CodeGroup>
@@ -480,6 +495,7 @@ Triggered when a virtual card is provisioned or physical card reaches pending ac
 </CodeGroup>
 
 ### 17. Card.activated
+
 Triggered when a physical card is activated.
 
 <CodeGroup>
@@ -501,6 +517,7 @@ Triggered when a physical card is activated.
 </CodeGroup>
 
 ### 18. Card.blocked
+
 Triggered when a card is temporarily blocked.
 
 <CodeGroup>
@@ -522,6 +539,7 @@ Triggered when a card is temporarily blocked.
 </CodeGroup>
 
 ### 19. Card.unblocked
+
 Triggered when a card is unblocked and restored to active status.
 
 <CodeGroup>
@@ -543,6 +561,7 @@ Triggered when a card is unblocked and restored to active status.
 </CodeGroup>
 
 ### 20. Card.canceled
+
 Triggered when a card is permanently canceled.
 
 <CodeGroup>
@@ -567,74 +586,86 @@ Triggered when a card is permanently canceled.
 
 The following table shows all card transaction event types and when they are triggered:
 
-| Event Type | When It Fires | Pismo Category |
-|------------|---------------|----------------|
-| `card.transaction.created` | New debit authorization (purchase, withdrawal, etc.) | AUTHORIZATION (debit processing codes) |
-| `card.transaction.refund` | Credit voucher authorization (refund to cardholder) | AUTHORIZATION (credit processing codes: 20, 203100, PSM007) |
-| `card.transaction.declined` | Authorization denied by Pismo | DECLINED |
-| `card.transaction.cleared` | Transaction settled/cleared (B2 confirmation) | CONFIRMATION, AIRPORT_TAX, INSTALLMENT |
-| `card.transaction.reversed` | Full cancellation of an authorization | CANCELLATION |
-| `card.transaction.replacement` | Amount adjustment on a pending authorization | REPLACEMENT |
-| `card.transaction.incremental` | Additional authorization amount added | INCREMENTAL |
-| `card.transaction.partial_cancellation` | Partial reversal of an authorization | PARTIAL_CANCELLATION |
-| `card.transaction.cancellation_reversal` | Undo of a previous cancellation | CANCELLATION_REVERSAL |
-| `card.transaction.reversal_partial_cancellation` | Undo of a previous partial cancellation | REVERSAL_PARTIAL_CANCELLATION |
+| Event Type                                       | When It Fires                                        | Pismo Category                                              |
+| ------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------- |
+| `card.transaction.created`                       | New debit authorization (purchase, withdrawal, etc.) | AUTHORIZATION (debit processing codes)                      |
+| `card.transaction.refund`                        | Credit voucher authorization (refund to cardholder)  | AUTHORIZATION (credit processing codes: 20, 203100, PSM007) |
+| `card.transaction.declined`                      | Authorization denied by Pismo                        | DECLINED                                                    |
+| `card.transaction.cleared`                       | Transaction settled/cleared (B2 confirmation)        | CONFIRMATION, AIRPORT_TAX, INSTALLMENT                      |
+| `card.transaction.reversed`                      | Full cancellation of an authorization                | CANCELLATION                                                |
+| `card.transaction.replacement`                   | Amount adjustment on a pending authorization         | REPLACEMENT                                                 |
+| `card.transaction.incremental`                   | Additional authorization amount added                | INCREMENTAL                                                 |
+| `card.transaction.partial_cancellation`          | Partial reversal of an authorization                 | PARTIAL_CANCELLATION                                        |
+| `card.transaction.cancellation_reversal`         | Undo of a previous cancellation                      | CANCELLATION_REVERSAL                                       |
+| `card.transaction.reversal_partial_cancellation` | Undo of a previous partial cancellation              | REVERSAL_PARTIAL_CANCELLATION                               |
 
 ### 21. Card.transaction.created
+
 Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
 
 <CodeGroup>
 ```typescript card.transaction.created
 {
-  "id": "evt_a1b2c3d4e5f6...",
-  "type": "card.transaction.created",
-  "createdAt": "2026-03-10T12:00:00.000000000Z",
+  "id": "evt_8a3c1d4f2b6e9870c2a5b4d6e8f0a1c3",
+  "type": "card.transaction.declined",
+  "createdAt": "2026-04-24T11:17:44.082000000Z",
   "data": {
-    "id": "uuid",
-    "accountId": "account-uuid",
-    "cardId": "card-uuid",
-    "status": "pending",
-    "amount": "500000000000000000000",
+    "id": "f1c84a96-3d05-4b6b-9f1a-b2e7c5d8a012",
+    "accountId": "12c4a7e2-7a91-4f4f-9e76-1c9e1c2a2b18",
+    "cardId": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
+    "status": "declined",
+    "amount": "20",
     "currency": "EUR",
-    "decimals": 18,
-    "originalAmount": "495000000",
+    "decimals": 2,
+    "originalAmount": "20",
     "originalCurrency": "USD",
+    "originalDecimals": 2,
     "isCredit": false,
-    "createdAt": "2026-03-10T12:00:00.000000000Z",
-    "updatedAt": "2026-03-10T12:00:00.000000000Z",
-    "description": "Coffee Shop",
-    "authorizationId": 12345,
-    "authorizationCode": "ABC123",
+    "createdAt": "2026-04-24T11:17:43.000000000Z",
+    "updatedAt": "2026-04-24T11:17:43.000000000Z",
+    "description": "Kindle Svcs  888-802-3080 US",
+    "authorizationId": 717,
+    "authorizationCode": "XZ0COI",
     "merchant": {
-      "name": "Coffee Shop",
-      "city": "London",
-      "country": "GB",
-      "categoryCode": "5812"
+      "name": "Kindle Svcs",
+      "city": "888-802-3080",
+      "country": "US",
+      "categoryCode": "5818"
     },
-    "entryMode": "051",
-    "country": {
-      "alpha2": "GB",
-      "alpha3": "GBR",
-      "name": "United Kingdom"
-    },
+    "entryMode": "0100",
+    "country": null,
     "billing": {
-      "amount": "500000000000000000000",
-      "currency": "EUR",
-      "decimals": 18,
-      "conversionRate": "1.0101"
+      "billingAmount": "20",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      }
     },
     "transactionCurrency": {
-      "amount": "495000000",
-      "currency": "USD",
-      "decimals": 6,
-      "conversionRate": "0.9900"
+      "symbol": "$",
+      "code": "USD",
+      "decimals": 2,
+      "name": "US Dollar"
     },
-    "cardToken": "tok_a1b2c3d4e5f6",
+    "cardToken": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
+    "wallet": {
+          "provider": "apple_pay",
+          "deviceName": "aVBhZCAoMyk.",
+          "deviceType": "TABLET",
+          "deviceBrand": null,
+          "deviceModel": null
+        },
     "clearedAt": null,
-    "isPending": true,
-    "kind": "purchase",
-    "transactionType": "authorization",
-    "transactions": []
+    "isPending": false,
+    "kind": "payment",
+    "transactionType": "0100",
+    "transactions": [],
+    "declineReason": {
+        "code": "810",
+        "message": "Insufficient balance"
+      }
   }
 }
 ```

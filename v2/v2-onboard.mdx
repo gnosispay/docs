@@ -90,7 +90,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     | `action_accept_tos` | Terms of Service acceptance required - user registered but hasn't accepted required terms | Review and accept Terms of Service |
     | `waiting_kyc_setup` | KYC initialization in progress - all terms accepted, KYC process being set up | Wait for KYC setup completion |
     | `action_complete_kyc` | KYC verification pending - KYC check created but pending user completion | Complete KYC verification via Sumsub `webSdkUrl` |
-    | `action_kyc_contact_support` | KYC provider flagged the check as requiring manual review — this is a non-recoverable state from the user's side | Contact support |
+    | `kyc_manual_review` | KYC provider flagged the check as requiring manual review | This is a non-recoverable state from the user's side, requires internal review for updating application status |
     | `action_kyc_resubmission_requested` | KYC provider has requested the user resubmit their KYC documents — a new Sumsub session URL is provided | Re-complete KYC verification via Sumsub using the provided `webSdkUrl` |
     | `action_complete_sof` | Source of Funds questionnaire required - KYC approved, SOF answers needed | Answer Source of Funds questionnaire |
     | `action_create_account` | Ready for account creation - KYC approved and SOF completed | Proceed with account creation |
@@ -272,11 +272,11 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 
 <Step title="Handle KYC manual review (contact support)">
 
-    If [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) returns `action_kyc_contact_support`, the KYC provider has flagged the check for manual review. This is a non-recoverable state from the user's side — no `webSdkUrl` is provided and the user cannot self-resolve it.
+    If [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) returns `kyc_manual_review`, the KYC provider has flagged the check for manual review. This is a non-recoverable state from the user's side — no `webSdkUrl` is provided and the user cannot self-resolve it.
 
     ```json
     {
-        "status": "action_kyc_contact_support"
+        "status": "kyc_manual_review"
     }
     ```
 
