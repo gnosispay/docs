@@ -56,7 +56,7 @@
             "groups": [
               {
                 "group": "V2 Production API",
-                "openapi": "https://gp-auth-module.prod.gnosispay.com/openapi.json",
+                "openapi": "https://core.prod.gnosispay.com/user-api/openapi.json",
                 "collapsed": true
               }
             ]

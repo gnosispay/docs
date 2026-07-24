@@ -32,7 +32,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
           ```bash cURL
           curl --request POST \
-            --url https://gp-auth-module.prod.gnosispay.com/email-verification \
+            --url https://core.prod.gnosispay.com/user-api/email-verification \
             --header 'Content-Type: application/json' \
             --data '{
             "email": "jsmith@example.com"
@@ -66,7 +66,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
           ```bash cURL
           curl --request POST \
-            --url https://gp-auth-module.prod.gnosispay.com/user \
+            --url https://core.prod.gnosispay.com/user-api/user \
             --header 'Content-Type: application/json' \
             --data '{
             "email": "jsmith@example.com",
@@ -109,7 +109,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
           ```bash cURL
           curl --request GET \
-            --url https://gp-auth-module.prod.gnosispay.com/user/onboarding
+            --url https://core.prod.gnosispay.com/user-api/user/onboarding
           ```
       </Tab>
     </Tabs>
@@ -150,7 +150,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
     ```bash cURL
     curl --request GET \
-      --url https://gp-auth-module.prod.gnosispay.com/terms
+      --url https://core.prod.gnosispay.com/user-api/terms
     ```
     </Tab>
     </Tabs>
@@ -178,7 +178,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
 
     ```bash cURL
     curl --request POST \
-      --url https://gp-auth-module.prod.gnosispay.com/user/terms \
+      --url https://core.prod.gnosispay.com/user-api/user/terms \
       --header 'Content-Type: application/json' \
       --data '{
       "terms": [
@@ -205,7 +205,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
     <Tab title="Production">
     ```bash cURL
     curl --request GET \
-      --url https://gp-auth-module.prod.gnosispay.com/user/terms
+      --url https://core.prod.gnosispay.com/user-api/user/terms
 
     ```
     </Tab>
@@ -300,7 +300,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
       ```bash cURL
       curl --request GET \
-        --url https://gp-auth-module.prod.gnosispay.com/source-of-funds
+        --url https://core.prod.gnosispay.com/user-api/source-of-funds
       ```
     </Tab>
     </Tabs>
@@ -326,7 +326,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
       <Tab title="Production">
       ```bash cURL
       curl --request POST \
-        --url https://gp-auth-module.prod.gnosispay.com/source-of-funds \
+        --url https://core.prod.gnosispay.com/user-api/source-of-funds \
         --header 'Content-Type: application/json' \
         --data '{
         "answers": [
@@ -379,7 +379,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         <Tab title="Production">
         ```bash cURL
         curl --request POST \
-          --url https://gp-auth-module.prod.gnosispay.com/user/account \
+          --url https://core.prod.gnosispay.com/user-api/user/account \
           --header 'Content-Type: application/json' \
           --data '{
           "celoConfig": {
@@ -415,7 +415,7 @@ To get access token, please go through the [authentication guide here](/v2/v2-si
         <Tab title="Production">
         ```bash cURL
         curl --request GET \
-          --url https://gp-auth-module.prod.gnosispay.com/user \
+          --url https://core.prod.gnosispay.com/user-api/user \
           --header 'Content-Type: application/json'
         ```
         </Tab>

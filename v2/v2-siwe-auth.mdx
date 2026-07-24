@@ -64,7 +64,7 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
         <Tab title="Production">
         ```bash
         curl --request GET \
-          --url https://gp-auth-module.prod.gnosispay.com/auth/siwe/{address}?domain=&uri=&appName=
+          --url https://core.prod.gnosispay.com/user-api/auth/siwe/{address}?domain=&uri=&appName=
         ```
         </Tab>
         </Tabs>
@@ -91,7 +91,7 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
         <Tab title="Production">
         ```bash
         curl --request POST \
-          --url https://gp-auth-module.prod.gnosispay.com/auth/siwe \
+          --url https://core.prod.gnosispay.com/user-api/auth/siwe \
           --header 'Content-Type: application/json' \
           --data '{
               "address": "<string>",
@@ -126,7 +126,7 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
         <Tab title="Production">
         ```bash
         curl --request POST \
-          --url https://gp-auth-module.prod.gnosispay.com/auth/refresh \
+          --url https://core.prod.gnosispay.com/user-api/auth/refresh \
           --header 'Content-Type: application/json' \
           --data '{
             "refreshToken": "your_refresh_token_here"
@@ -167,7 +167,7 @@ Let's take a look at how you can complete SIWE validation and retrieve access to
     <Tab title="Production">
     ```bash
     curl --request POST \
-      --url https://gp-auth-module.prod.gnosispay.com/auth/logout \
+      --url https://core.prod.gnosispay.com/user-api/auth/logout \
       --header 'Content-Type: application/json' \
       --data '{
         "refreshToken": "your_refresh_token_here"
