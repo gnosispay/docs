@@ -40,10 +40,6 @@
         ]
       },
       {
-        "tab": "API Reference",
-        "openapi": "https://api.gnosispay.com/api-docs/spec.json"
-      },
-      {
         "tab": "Changelog",
         "pages": ["changelog/index"]
       }

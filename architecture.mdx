@@ -3,6 +3,65 @@ title: "Gnosis Pay Architecture"
 description: "How onboarding, spending, and settlement flow through Gnosis Pay"
 ---
 
-Gnosis Pay is the orchestration layer that connects identity, custody, processing, and settlement. The diagram below shows how each system plugs in.
+Gnosis Pay is the orchestration layer that connects KYC flows, self custody of funds through safe account, KYT/AML checks on funds transfer, payment processing, and settlement. The diagram below shows how each system plugs in.
 
 <img src="/static/img/gnosis-pay-architecture.svg" alt="Gnosis Pay architecture" />
+
+
+The diagram reads in two directions. From the top down, it shows how a **partner** integrates. From the user's journey through the middle and bottom, it shows what an **end user** experiences.
+
+## For partners
+
+You integrate with Gnosis Pay infrastructure and get assigned a TenantID (also referred as PartnerID,which is an idenitifier for you as a partner) and allows us to spin up dedicated credentials to access userbase.
+
+Partner infrastructure has three components:
+
+<CardGroup cols={2}>
+  <Card title="User Onboarding API" icon="user-plus">
+    Onboard your users end-to-end wallet sign-in with SIWE, email and TOS, and KYC. You can drive the full flow through the API or bring your own onboarding. If you have Sumsub instance, you can also perform KYC sharing
+  </Card>
+  <Card title="Webhooks" icon="bell">
+    Subscribe to real-time events to keep your systems in sync and power notifications to your users.
+  </Card>
+  <Card title="Partner Dashboard" icon="gauge">
+    Manage your program, support your users (B2C), and access analytics and user data — so you own the relationship directly.
+  </Card>
+  <Card title="PSE" icon="lock">
+      A partner-hosted secure element for displaying sensitive card details (PAN, CVV, expiry) on your own domain. Authenticated with mTLS.
+    </Card>
+</CardGroup>
+
+
+Gnosis Pay as the orchestration layer exposes three domains:
+
+- **Account** : create and manage user accounts, balances, and limits.
+- **Card**: issue and control virtual cards, card limits and control.
+- **Processing + Settlement** — authorization, transaction processing, and settlement across the payment rails. We also handle chargebacks and disputes.
+
+
+## For users
+
+From the end user's point of view, the platform moves them from sign-in to spending in a single continuous flow.
+
+<Steps>
+  <Step title="Sign in">
+    The user connects their wallet with SIWE (Sign-In with Ethereum), verifies their email, and accepts the terms of service.
+  </Step>
+  <Step title="Verify identity">
+    The user completes KYC through Sumsub. Once verified and approved, their KYC is to be linked with user account.
+  </Step>
+  <Step title="Get an account and card">
+    Gnosis Pay provisions the user's account with Pismo and deploys their **Spending Safe** — a self-custodial Safe where the user's funds are held. A card is issued against the account. During this deployment, we also set the user's spendable currency and primary token that is allowed to be spent from user's safe.
+  </Step>
+  <Step title="Fund the Safe">
+    The user deposits funds into their Spending Safe. Every deposit is screened by **KYT** (AML) before the funds become spendable.
+  </Step>
+  <Step title="Spend">
+    When the user pays with their card, the transaction is authorized in real time against the account balance and balance is moved accordingly on ledger.
+  </Step>
+  <Step title="Settlement">
+    Spending is settled through Monavate on a 12-hour batch.
+  </Step>
+</Steps>
+
+Because the Spending Safe is self-custodial, the user keeps control of their funds throughout deposits, balances, and withdrawals.
