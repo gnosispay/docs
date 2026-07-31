@@ -36,7 +36,7 @@ Gnosis Pay as the orchestration layer exposes three domains:
 
 - **Account** : create and manage user accounts, balances, and limits.
 - **Card**: issue and control virtual cards, card limits and control.
-- **Processing + Settlement** — authorization, transaction processing, and settlement across the payment rails. We also handle chargebacks and disputes.
+- **Processing + Settlement**: authorization, transaction processing, and settlement across the payment rails. We also handle chargebacks and disputes.
 
 
 ## For users
@@ -54,7 +54,7 @@ From the end user's point of view, the platform moves them from sign-in to spend
     Gnosis Pay provisions the user's account with Pismo and deploys their **Spending Safe** — a self-custodial Safe where the user's funds are held. A card is issued against the account. During this deployment, we also set the user's spendable currency and primary token that is allowed to be spent from user's safe.
   </Step>
   <Step title="Fund the Safe">
-    The user deposits funds into their Spending Safe. Every deposit is screened by **KYT** (AML) before the funds become spendable.
+    The user deposits funds into their Spending Safe. Every deposit is screened by **KYT** (AML) before the funds become spendable.Because the Spending Safe is self-custodial, the user keeps control of their funds throughout deposits, balances, and withdrawals.
   </Step>
   <Step title="Spend">
     When the user pays with their card, the transaction is authorized in real time against the account balance and balance is moved accordingly on ledger.
@@ -63,5 +63,3 @@ From the end user's point of view, the platform moves them from sign-in to spend
     Spending is settled through Monavate on a 12-hour batch.
   </Step>
 </Steps>
-
-Because the Spending Safe is self-custodial, the user keeps control of their funds throughout deposits, balances, and withdrawals.
