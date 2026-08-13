@@ -11,15 +11,16 @@ Triggered when the account balance changes.
 
 #### Event Trigger Points
 
-| Flow                          | Reason Value                    |
-| ----------------------------- | ------------------------------- |
-| Deposit approved              | `deposit.approved`              |
-| Deposit rejected              | `deposit.rejected`              |
-| Withdrawal completed          | `withdrawal.completed`          |
-| Instant withdrawal reconciled | `withdrawal.completed`          |
-| Card authorization            | `card.authorization.{category}` |
+| Flow | Reason Value |
+| --- | --- |
+| Deposit approved | `deposit.approved` |
+| Deposit rejected | `deposit.rejected` |
+| Withdrawal completed | `withdrawal.completed` |
+| Instant withdrawal reconciled | `withdrawal.completed` |
+| Card authorization | `card.authorization.{category}` |
 
 <CodeGroup>
+
 ```typescript account.balance.changed
 {
    "id": "evt_abc123def456...",
@@ -58,6 +59,7 @@ Triggered when the account balance changes.
    }
  }
 ```
+
 </CodeGroup>
 
 ### 2. Account.created
@@ -65,6 +67,7 @@ Triggered when the account balance changes.
 Triggered when a new account is created and provisioning begins.
 
 <CodeGroup>
+
 ```typescript account.created
 {
   "id": "evt_a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4",
@@ -90,6 +93,7 @@ Triggered when a new account is created and provisioning begins.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 3. Account.activated
@@ -97,6 +101,7 @@ Triggered when a new account is created and provisioning begins.
 Triggered when account provisioning is complete and account becomes active.
 
 <CodeGroup>
+
 ```typescript account.activated
 {
   "id": "evt_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
@@ -122,6 +127,7 @@ Triggered when account provisioning is complete and account becomes active.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 4. Account.blocked
@@ -129,6 +135,7 @@ Triggered when account provisioning is complete and account becomes active.
 Triggered when an account is blocked due to security or compliance reasons.
 
 <CodeGroup>
+
 ```typescript account.blocked
 {
   "id": "evt_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
@@ -154,6 +161,7 @@ Triggered when an account is blocked due to security or compliance reasons.
   }
 }
 ```
+
 </CodeGroup>
 
 ## KYC Events
@@ -163,6 +171,7 @@ Triggered when an account is blocked due to security or compliance reasons.
 Triggered when a KYC profile verification is approved.
 
 <CodeGroup>
+
 ```typescript kyc.profile.approved
 {
   "id": "evt_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
@@ -198,6 +207,7 @@ Triggered when a KYC profile verification is approved.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 6. KYC.profile.rejected
@@ -205,6 +215,7 @@ Triggered when a KYC profile verification is approved.
 Triggered when a KYC profile verification is rejected.
 
 <CodeGroup>
+
 ```typescript kyc.profile.rejected
 {
   "id": "evt_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
@@ -240,13 +251,15 @@ Triggered when a KYC profile verification is rejected.
   }
 }
 ```
+
 </CodeGroup>
 
-### 7. KYC.profile.requires_action
+### 7. KYC.profile.requires\_action
 
 Triggered when a KYC profile requires additional action from the user.
 
 <CodeGroup>
+
 ```typescript kyc.profile.requires_action
 {
   "id": "evt_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
@@ -262,13 +275,15 @@ Triggered when a KYC profile requires additional action from the user.
   }
 }
 ```
+
 </CodeGroup>
 
-### 8. KYC.profile.resubmission_requested
+### 8. KYC.profile.resubmission\_requested
 
 Triggered when KYC profile requires document resubmission.
 
 <CodeGroup>
+
 ```typescript kyc.profile.resubmission_requested
 {
   "id": "evt_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
@@ -284,6 +299,7 @@ Triggered when KYC profile requires document resubmission.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 9. KYC.terms.approved
@@ -291,6 +307,7 @@ Triggered when KYC profile requires document resubmission.
 Triggered when all required terms are accepted.
 
 <CodeGroup>
+
 ```typescript kyc.terms.approved
 {
   "id": "evt_a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
@@ -304,13 +321,15 @@ Triggered when all required terms are accepted.
   }
 }
 ```
+
 </CodeGroup>
 
-### 10. KYC.source_of_funds.approved
+### 10. KYC.source\_of\_funds.approved
 
 Triggered when source of funds questionnaire is submitted and approved.
 
 <CodeGroup>
+
 ```typescript kyc.source_of_funds.approved
 {
   "id": "evt_b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7",
@@ -324,6 +343,7 @@ Triggered when source of funds questionnaire is submitted and approved.
   }
 }
 ```
+
 </CodeGroup>
 
 ## Deposit Events
@@ -333,6 +353,7 @@ Triggered when source of funds questionnaire is submitted and approved.
 Triggered when an on-chain deposit is detected and awaiting KYT processing.
 
 <CodeGroup>
+
 ```typescript deposit.pending
 {
   "id": "evt_c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
@@ -354,6 +375,7 @@ Triggered when an on-chain deposit is detected and awaiting KYT processing.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 12. Deposit.approved
@@ -361,6 +383,7 @@ Triggered when an on-chain deposit is detected and awaiting KYT processing.
 Triggered when a deposit is confirmed after KYT and funds become available.
 
 <CodeGroup>
+
 ```typescript deposit.approved
 {
   "id": "evt_d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9",
@@ -382,6 +405,7 @@ Triggered when a deposit is confirmed after KYT and funds become available.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 13. Deposit.rejected
@@ -389,6 +413,7 @@ Triggered when a deposit is confirmed after KYT and funds become available.
 Triggered when a deposit is rejected by KYT.
 
 <CodeGroup>
+
 ```typescript deposit.rejected
 {
   "id": "evt_e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
@@ -410,6 +435,7 @@ Triggered when a deposit is rejected by KYT.
   }
 }
 ```
+
 </CodeGroup>
 
 ## Withdrawal Events
@@ -419,6 +445,7 @@ Triggered when a deposit is rejected by KYT.
 Triggered when a withdrawal is successfully processed on-chain.
 
 <CodeGroup>
+
 ```typescript withdrawal.completed
 {
   "id": "evt_f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
@@ -440,6 +467,7 @@ Triggered when a withdrawal is successfully processed on-chain.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 15. Withdrawal.failed
@@ -447,6 +475,7 @@ Triggered when a withdrawal is successfully processed on-chain.
 Triggered when a withdrawal fails at any stage.
 
 <CodeGroup>
+
 ```typescript withdrawal.failed
 {
   "id": "evt_a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2",
@@ -468,6 +497,7 @@ Triggered when a withdrawal fails at any stage.
   }
 }
 ```
+
 </CodeGroup>
 
 ## Card Events
@@ -477,6 +507,7 @@ Triggered when a withdrawal fails at any stage.
 Triggered when a virtual card is provisioned or physical card reaches pending activation.
 
 <CodeGroup>
+
 ```typescript card.created
 {
   "id": "evt_b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3",
@@ -492,6 +523,7 @@ Triggered when a virtual card is provisioned or physical card reaches pending ac
   }
 }
 ```
+
 </CodeGroup>
 
 ### 17. Card.activated
@@ -499,6 +531,7 @@ Triggered when a virtual card is provisioned or physical card reaches pending ac
 Triggered when a physical card is activated.
 
 <CodeGroup>
+
 ```typescript card.activated
 {
   "id": "evt_c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4",
@@ -514,6 +547,7 @@ Triggered when a physical card is activated.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 18. Card.blocked
@@ -521,6 +555,7 @@ Triggered when a physical card is activated.
 Triggered when a card is temporarily blocked.
 
 <CodeGroup>
+
 ```typescript card.blocked
 {
   "id": "evt_d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5",
@@ -536,6 +571,7 @@ Triggered when a card is temporarily blocked.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 19. Card.unblocked
@@ -543,6 +579,7 @@ Triggered when a card is temporarily blocked.
 Triggered when a card is unblocked and restored to active status.
 
 <CodeGroup>
+
 ```typescript card.unblocked
 {
   "id": "evt_e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6",
@@ -558,6 +595,7 @@ Triggered when a card is unblocked and restored to active status.
   }
 }
 ```
+
 </CodeGroup>
 
 ### 20. Card.canceled
@@ -565,6 +603,7 @@ Triggered when a card is unblocked and restored to active status.
 Triggered when a card is permanently canceled.
 
 <CodeGroup>
+
 ```typescript card.canceled
 {
   "id": "evt_f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7",
@@ -580,30 +619,32 @@ Triggered when a card is permanently canceled.
   }
 }
 ```
+
 </CodeGroup>
 
 ## Card Transaction Events
 
 The following table shows all card transaction event types and when they are triggered:
 
-| Event Type                                       | When It Fires                                        | Pismo Category                                              |
-| ------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------- |
-| `card.transaction.created`                       | New debit authorization (purchase, withdrawal, etc.) | AUTHORIZATION (debit processing codes)                      |
-| `card.transaction.refund`                        | Credit voucher authorization (refund to cardholder)  | AUTHORIZATION (credit processing codes: 20, 203100, PSM007) |
-| `card.transaction.declined`                      | Authorization denied by Pismo                        | DECLINED                                                    |
-| `card.transaction.cleared`                       | Transaction settled/cleared (B2 confirmation)        | CONFIRMATION, AIRPORT_TAX, INSTALLMENT                      |
-| `card.transaction.reversed`                      | Full cancellation of an authorization                | CANCELLATION                                                |
-| `card.transaction.replacement`                   | Amount adjustment on a pending authorization         | REPLACEMENT                                                 |
-| `card.transaction.incremental`                   | Additional authorization amount added                | INCREMENTAL                                                 |
-| `card.transaction.partial_cancellation`          | Partial reversal of an authorization                 | PARTIAL_CANCELLATION                                        |
-| `card.transaction.cancellation_reversal`         | Undo of a previous cancellation                      | CANCELLATION_REVERSAL                                       |
-| `card.transaction.reversal_partial_cancellation` | Undo of a previous partial cancellation              | REVERSAL_PARTIAL_CANCELLATION                               |
+| Event Type | When It Fires | Pismo Category |
+| --- | --- | --- |
+| `card.transaction.created` | New debit authorization (purchase, withdrawal, etc.) | AUTHORIZATION (debit processing codes) |
+| `card.transaction.refund` | Credit voucher authorization (refund to cardholder) | AUTHORIZATION (credit processing codes: 20, 203100, PSM007) |
+| `card.transaction.declined` | Authorization denied by Pismo | DECLINED |
+| `card.transaction.cleared` | Transaction settled/cleared (B2 confirmation) | CONFIRMATION, AIRPORT\_TAX, INSTALLMENT |
+| `card.transaction.reversed` | Full cancellation of an authorization | CANCELLATION |
+| `card.transaction.replacement` | Amount adjustment on a pending authorization | REPLACEMENT |
+| `card.transaction.incremental` | Additional authorization amount added | INCREMENTAL |
+| `card.transaction.partial_cancellation` | Partial reversal of an authorization | PARTIAL\_CANCELLATION |
+| `card.transaction.cancellation_reversal` | Undo of a previous cancellation | CANCELLATION\_REVERSAL |
+| `card.transaction.reversal_partial_cancellation` | Undo of a previous partial cancellation | REVERSAL\_PARTIAL\_CANCELLATION |
 
 ### 21. Card.transaction.created
 
 Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
 
 <CodeGroup>
+
 ```typescript card.transaction.created
 {
   "id": "evt_8a3c1d4f2b6e9870c2a5b4d6e8f0a1c3",
@@ -626,6 +667,26 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
     "description": "Kindle Svcs  888-802-3080 US",
     "authorizationId": 717,
     "authorizationCode": "XZ0COI",
+    "enrichment": {
+      "status": "matched",
+      "merchant": {
+        "id": "019ffaad-d630-7aa5-8650-99962199a834",
+        "name": "Amazon Kindle",
+        "logoUrl": "https://assets.gnosispay.com/merchants/kindle-placeholder.png"
+      },
+      "shop": {
+        "id": "019ffaad-d610-7730-9a7a-b976daf11410",
+        "url": "https://www.amazon.com/kindle-dbs",
+        "tags": ["Digital Goods", "E-Books", "Subscriptions"],
+        "type": "online",
+        "address": null,
+        "category": {
+          "name": "Books And Digital Media",
+          "logoUrl": "https://assets.gnosispay.com/categories/digital-media-placeholder.png"
+        },
+        "coordinates": null
+      }
+    },
     "merchant": {
       "name": "Kindle Svcs",
       "city": "888-802-3080",
@@ -651,22 +712,23 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
     },
     "cardToken": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
     "wallet": {
-          "provider": "apple_pay",
-          "deviceName": "aVBhZCAoMyk.",
-          "deviceType": "TABLET",
-          "deviceBrand": null,
-          "deviceModel": null
-        },
+      "provider": "apple_pay",
+      "deviceName": "aVBhZCAoMyk.",
+      "deviceType": "TABLET",
+      "deviceBrand": null,
+      "deviceModel": null
+    },
     "clearedAt": null,
     "isPending": false,
     "kind": "payment",
     "transactionType": "0100",
     "transactions": [],
     "declineReason": {
-        "code": "810",
-        "message": "Insufficient balance"
-      }
+      "code": "810",
+      "message": "Insufficient balance"
+    }
   }
 }
 ```
+
 </CodeGroup>
