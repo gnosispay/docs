@@ -1,0 +1,63 @@
+---
+title: "Manage Accounts"
+description: "Retrieve account details and balance information for the authenticated user"
+---
+
+<Note>
+  New to how accounts work on Gnosis Pay? Read [Account Overview](/concepts/accounts/account) first — it covers the concepts behind account balances, spending limits, and multi-currency support. This guide covers the API calls to retrieve that data.
+</Note>
+
+## Account details for authenticated user
+
+To get authenticated user account details, call [`GET /user/account`](/api-reference/user/get-account).
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request GET \
+      --url https://core.sandbox.gnosispay.in/user-api/user/account
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request GET \
+      --url https://core.prod.gnosispay.com/user-api/user/account
+```
+  </Tab>
+</Tabs>
+
+This will return configuration of the user's account, including chain name, configured currencies, Safe owner address, etc.
+
+## Account balances for authenticated user
+
+Account balances endpoint provides detailed balance breakdowns to give users complete visibility into their fund status. The authenticated user's account displays four distinct balance types:
+
+| Balance Type | Description | Increases When | Decreases When |
+|--------------|-------------|----------------|----------------|
+| **Spendable** | Amount available for immediate spending via card transactions or withdrawals | • Deposits clear AML analysis<br/>• Refunds are processed<br/>• Returns of goods are credited | • Card transactions are authorized<br/>• Withdrawals are initiated |
+| **Non-Spendable** | Funds that cannot be used for spending. Flagged for review or potential return | • Dependent on AML checks | • Funds are returned to source<br/>• Funds are manually released after review |
+| **Processing Deposits** | Incoming deposits currently undergoing AML analysis. Not yet available for spending | • New deposit is received | • AML analysis completes (moves to spendable or non-spendable) |
+| **Processing Withdrawals** | Outgoing withdrawals currently being processed. Deducted from spendable but not yet settled on-chain | • Withdrawal is initiated | • Withdrawal settles on-chain |
+
+### Get Account Balances
+
+To request the account balance of the user, call [`GET /user/balances/v2`](/api-reference/user/get-account-balances-v2).
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request GET \
+      --url https://core.sandbox.gnosispay.in/user-api/user/balances/v2
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request GET \
+      --url https://core.prod.gnosispay.com/user-api/user/balances/v2
+```
+  </Tab>
+</Tabs>
+
+<Note>
+  Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, non-spendable, processing deposits, and processing withdrawals amounts.
+</Note>

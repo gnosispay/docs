@@ -1,0 +1,40 @@
+---
+title: "Transaction Enrichment"
+description: "How raw card transactions get enriched with merchant name, logo, and location data"
+---
+
+When a card transaction is authorized, the data that arrives from the card network is minimal and often cryptic, a raw merchant descriptor, an MCC code, sometimes a truncated or misspelled merchant name.
+
+**Transaction enrichment** is the process of matching that raw transaction data against a merchant database to attach richer, human-readable context such as the merchant's real name, logo, category, and location so partners can build a transaction history that actually looks like something a user recognizes, rather than a raw statement line.
+
+## Why this matters for the user experience
+
+Without enrichment, a transaction might show up as something like, when a user visits the transaction history:
+
+`SQ *COFFEE SHOP LLC 4155551234 CA`
+
+
+With enrichment, the same transaction can be shown as:
+
+- A recognizable **merchant name** ("Blue Bottle Coffee")
+- The merchant's **logo**
+- A **shop category** (e.g., "Coffee Shop") instead of a raw MCC code
+- The merchant's **location** including address, or map coordinates
+
+This is what lets partners build a transaction feed similar to what users expect from neobanks, rather than exposing raw network data.
+
+## How it works, conceptually
+
+When a transaction is authorized, Gnosis Pay attempts to match the raw merchant data against the service provider used for fetching the merchant database. This match either succeeds, partially succeeds, or fails — which is why enrichment carries a **status** alongside the merchant and shop data.
+
+## What gets enriched
+
+Broadly, enrichment can surface:
+
+- **Merchant identity**: name and logo
+- **Shop details**: category, tags, and merchant type
+- **Location**: street address, city, country, and map coordinates (where available)
+
+<Note>
+  Enrichment is applied automatically; there's nothing partners need to configure to receive enriched fields on a transaction.
+</Note>

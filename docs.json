@@ -18,7 +18,7 @@
   "navbar": {
     "links": [
       {
-        "label": "Contact Support",
+        "label": "Contact Sales",
         "href": "mailto:support@example.com"
       }
     ],
@@ -31,13 +31,96 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Concepts",
         "groups": [
           {
-            "group": "Get Started",
-            "pages": ["intro", "whybuild", "architecture"]
+            "group": "Welcome to Gnosis Pay",
+            "pages": [
+              "concepts/intro",
+              "concepts/whybuild",
+              "concepts/architecture"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": ["concepts/auth/token"]
+          },
+          {
+            "group": "KYC",
+            "pages": ["concepts/kyc/kyc-overview", "concepts/kyc/kyc-statuses"]
+          },
+          {
+            "group": "Accounts",
+            "pages": [
+              "concepts/accounts/account",
+              "concepts/accounts/account-status"
+            ]
+          },
+          {
+            "group": "Safe & Modules",
+            "pages": [
+              "concepts/safe/overview",
+              "concepts/safe/tokens-and-chains-supported"
+            ]
+          },
+          {
+            "group": "Cards",
+            "pages": [
+              "concepts/card/overview",
+              "concepts/card/decline-codes",
+              "concepts/card/transaction-enrichment"
+            ]
           }
         ]
+      },
+      {
+        "tab": "Integration Guide",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": ["guides/configuring-environment"]
+          },
+          {
+            "group": "Authentication & Onboarding",
+            "pages": ["guides/auth-with-siwe", "guides/onboarding"]
+          },
+          {
+            "group": "Manage Accounts",
+            "pages": [
+              "guides/accounts/manage-accounts",
+              "guides/accounts/limits",
+              "guides/accounts/account-statement",
+              "guides/accounts/onchain-withdrawal"
+            ]
+          },
+          {
+            "group": "Manage Cards",
+            "pages": [
+              "guides/cards/create-virtual",
+              "guides/cards/card-limit",
+              "guides/cards/card-simulator"
+            ]
+          },
+          {
+            "group": "Secure Card Elements via PSE",
+            "pages": ["guides/pse/pse", "guides/pse/pse-integration"]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "guides/webhooks/webhook",
+              "guides/webhooks/webhook-events"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "https://core.prod.gnosispay.com/user-api/openapi.json"
+      },
+      {
+        "tab": "Migration",
+        "pages": ["migration/migration-overview"]
       },
       {
         "tab": "Changelog",

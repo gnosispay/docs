@@ -1,0 +1,57 @@
+---
+title: "Account Statements"
+description: "Retrieve account statements for users"
+---
+
+## Retrieve Account Statement
+
+An account statement is a chronological record of all financial activity associated with a user's account. It provides a transparent view of money moving in and out of the account over a selected period of time, giving users complete visibility into their account activity.
+
+To retrieve the account statement, use the [`GET /user/statement`](/api-reference/user/get-account-statement) endpoint.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request GET \
+      --url "https://core.sandbox.gnosispay.in/user-api/user/statement?limit=&cursor=&startDate=&endDate="
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request GET \
+      --url "https://core.prod.gnosispay.com/user-api/user/statement?limit=&cursor=&startDate=&endDate="
+```
+  </Tab>
+</Tabs>
+
+### Query Parameters
+
+<ParamField query="limit" type="integer">
+  Maximum number of statement entries to return per page.
+</ParamField>
+
+<ParamField query="cursor" type="string">
+  Pagination cursor for retrieving the next page of results.
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  ISO-8601 date to filter statement entries from (inclusive).
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  ISO-8601 date to filter statement entries up to (inclusive).
+</ParamField>
+
+## Types of Account Statement Entries
+
+Each entry in an account statement falls into one of three transaction types, each with its own set of possible statuses:
+
+| Transaction Type | Possible Statuses |
+|------------------|-------------------|
+| **Card Transactions** | `pending`, `settled`, `cancelled`, `declined` |
+| **Deposits** | `pending`, `approved`, `rejected` |
+| **Withdrawals** | `pending`, `processing`, `completed`, `failed` |
+
+<Note>
+  A declined card transaction still appears on the statement with status `declined` — see [Card Decline Reasons](/concepts/card/decline-codes) for why a transaction may be declined.
+</Note>

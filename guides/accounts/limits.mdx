@@ -1,0 +1,75 @@
+---
+title: "Account Daily Spending Limit"
+description: "Get and set the daily spending limit for the authenticated user's account"
+---
+
+<Info>
+  See [Account Overview](/concepts/accounts/account#account-spending-limits) for how user-configured and partner-configured limits interact conceptually.
+</Info>
+
+
+By default, an account's daily spending limit is `$10,000`. Users can lower this limit for their own account, but it cannot be set above $10,000 unless agreed with the partner during onboarding.
+
+<Warning>
+  This is a **cumulative daily spending limit shared across all cards on the account**, not a per-card cap. If an account has multiple cards, the combined spend across all of them together is capped at the configured limit. It is also not a per-transaction cap: an authorization that meets or exceeds the remaining limit can still be approved, after which subsequent eligible authorizations for the rest of the day are declined.
+</Warning>
+
+
+## Get Account Daily Spending Limit
+
+Returns the daily spending limit configured on the authenticated user's account.
+
+`amount` is expressed in the currency's smallest unit — for USD this means cents (e.g. `1000` = $10.00, `1000000` = $10,000.00). `syncStatus` indicates whether the most recently requested update has been fully applied.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request GET \
+      --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
+      --header 'Authorization: Bearer <token>'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request GET \
+      --url https://core.prod.gnosispay.com/user-api/user/account/limit \
+      --header 'Authorization: Bearer <token>'
+```
+  </Tab>
+</Tabs>
+
+
+## Set Account Daily Spending Limit
+
+Sets the daily spending limit for the authenticated user's account.
+
+`amount` is in the currency's smallest unit — for USD that means cents, so to set a $10.00 limit send `1000`, and the maximum allowed value `1000000` corresponds to $10,000.00. Must be in the range `(0, 1,000,000]`. **Only USD is currently accepted.**
+
+The response returns the new limit immediately with `syncStatus: "pending"`, transitioning to `"synced"` once the change has been applied downstream.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request PUT \
+      --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "amount": 500000,
+        "currency": "USD"
+      }'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request PUT \
+      --url https://core.prod.gnosispay.com/user-api/user/account/limit \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "amount": 500000,
+        "currency": "USD"
+      }'
+```
+  </Tab>
+</Tabs>

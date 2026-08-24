@@ -1,0 +1,39 @@
+---
+title: "Card Overview"
+description: "Understanding Gnosis Pay virtual cards, provisioning, and spending limits"
+---
+
+Gnosis Pay issues **virtual cards** that can be added to Apple Pay and Google Pay, letting users spend directly from their account without a physical card.
+
+## Card provisioning
+
+By default, each partner program is configured to issue **one virtual card per user**. This can be increased if a partner needs multiple cards per user — that's a configuration decided with the Gnosis Pay team during integration, not something set per-user at runtime.
+
+<Note>
+  If your program needs more than one card per user, this needs to be configured during integration. Contact our integration team to discuss.
+</Note>
+
+## Adding a card to a mobile wallet
+
+Once issued, a virtual card can be added to following with help of push provisioning:
+
+- **Apple Pay**
+- **Google Pay**
+
+This lets the user tap to pay with their phone or watch, without needing a physical card.
+
+## Card limit vs. account limit
+
+There are two distinct limits that govern how much a user can spend, and it's important not to conflate them:
+
+| | Card Limit | Account Limit |
+|---|---|---|
+| **What it governs** | Spending through a specific card | The account's total spendable balance |
+| **Default** | — | $10,000 |
+| **Who can configure it** | — | User (can set their own, stricter limit) or partner (can apply a custom limit up to the account's maximum) |
+
+The **account limit** is effectively a cap on spendable balance: by default this is set to **$10,000**, though a user can choose to set a *lower* limit on their own account and card for their own spending discipline
+
+<Info>
+  See [Account Overview](/concepts/accounts/account#account-spending-limits) for how account-level and partner-level limits interact.
+</Info>

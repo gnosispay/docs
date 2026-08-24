@@ -1,0 +1,70 @@
+---
+title: "Card Daily Spending Limit"
+description: "Get and set the daily spending limit for a specific card"
+---
+
+
+<Note>
+  **Why this matters for users:** a user with multiple cards may want to limit how much a specific card can spend. For example, capping a card shared with a family member, or a card used only for subscriptions, without changing the overall account limit that governs their other cards. This gives users finer-grained control over their own spending habits.
+</Note>
+
+<Info>
+  A card's limit only takes effect if it's set **lower** than the [account's daily spending limit](guides/accounts/limits), the account limit is always the hard ceiling, regardless of any card-level limit.
+</Info>
+
+## Set Card Daily Spending Limit
+
+Sets the daily spending limit for a card.
+
+`amount` is expressed in the currency's smallest unit, for USD this means cents (e.g. `1000` = `$10.00`, `1000000` = `$10,000.00`). The card must belong to the authenticated user.
+
+The response returns the new limit immediately with `syncStatus: "pending"`, transitioning to `"synced"` once the change has been applied downstream.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request PUT \
+      --url https://core.sandbox.gnosispay.in/user-api/cards/{cardId}/limit \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "amount": 500000,
+        "currency": "USD"
+      }'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request PUT \
+      --url https://core.prod.gnosispay.com/user-api/cards/{cardId}/limit \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "amount": 500000,
+        "currency": "USD"
+      }'
+```
+  </Tab>
+</Tabs>
+
+
+## Get Card Daily Spending Limit
+
+Returns the daily spending limit configured on a card.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request GET \
+      --url https://core.sandbox.gnosispay.in/user-api/cards/{cardId}/limit \
+      --header 'Authorization: Bearer <token>'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request GET \
+      --url https://core.prod.gnosispay.com/user-api/cards/{cardId}/limit \
+      --header 'Authorization: Bearer <token>'
+```
+  </Tab>
+</Tabs>

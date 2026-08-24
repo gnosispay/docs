@@ -1,0 +1,36 @@
+---
+title: "KYC Overview"
+description: "How identity verification works on Gnosis Pay, and what to expect during the process"
+---
+
+Before a user can be onboarded to Gnosis Pay, they must complete **Know Your Customer (KYC)** verification. This is a regulatory requirement for financial services — it confirms the user is who they say they are, checks eligibility (e.g., country of residence, age, sanctions/watchlist screening), and helps prevent fraud and financial crime on the platform.
+
+## We use Sumsub
+
+Gnosis Pay partners with **Sumsub** to handle identity verification. Sumsub collects and analyzes the user's identity documents (such as POA) and, depending on the flow, a liveness check to confirm the document belongs to the person submitting it.
+
+As a partner integrating Gnosis Pay, you don't build identity verification yourself — you embed the Sumsub iframe, and Gnosis Pay receives the verification result and status updates from Sumsub on your behalf.
+
+<Note>
+Gnosis Pay allows acceptance of sharing KYC of user from partner instance to Gnosis Pay instance and vice versa within SumsSub. To understand the flow, read [KYC Sharing (Sumsub Flow)](/integration_guides/kyc-sharing-sumsub-flow) guide to integrate this flow into your application.
+</Note>
+
+## KYC statuses
+
+As a user moves through verification, their KYC application passes through a series of statuses — from initial document collection, through automated and (where needed) manual review, to a final outcome.
+
+<Note>
+  See the full [KYC Statuses](/concepts/kyc/kyc-statuses) reference for what each status means, what the user experiences, and suggested user-facing messaging for each.
+</Note>
+
+## Country eligibility
+
+Not all countries of residence are eligible for registration. Eligibility depends on regulatory coverage and Gnosis Pay's supported jurisdictions.
+
+<Note>
+  See [countries of residence eligible for registration](https://kb.gnosispay.com/articles/7878909911-mandatory-info-countries-of-residence-eligible-for-registration) for the current list.
+</Note>
+
+## What's next
+
+Once KYC is approved, the user is moved to next onboarding state which is account provisioning and deploying a new safe on behalf of user.

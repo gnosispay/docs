@@ -1,0 +1,56 @@
+---
+title: "Sandbox vs Production"
+description: "Understanding the difference between the sandbox and production environments"
+---
+
+Gnosis Pay provides two separate environments for integrating with our API: **sandbox** and **production**. This page explains what each is for, who can access them, and what's available in sandbox to help you build and test your integration before going live.
+
+## Sandbox
+
+The sandbox environment is **open to all developer teams and product**, whether it is for exploring Gnosis Pay stack for the first time, building a proof of concept, or running a phased testing process ahead of a production launch.
+
+<Info>
+  All the base URLs used throughout these docs (`core.sandbox.gnosispay.in`) point to the sandbox environment, so developers start integrating testing features immediately. Partners still need to whitelist domains with us for SIWE flows.
+</Info>
+
+### Sandbox features
+
+**1. KYC testing via Sumsub sandbox**
+
+The KYC flow runs against Sumsub's sandbox environment, so developers can test the full identity verification experience using Sumsub's own test templates, without submitting any real personal data or waiting for manual approval. This includes testing different KYC outcomes (approved, resubmission requested, manual review, rejected) to make sure integration handles each status correctly. Read the **sandbox environment** guide for [testing Sumsub flow](/guides/onboarding#3-kyc-process).
+
+**2. Transaction simulator**
+
+Simulate card transactions to see how they perform in real-time across different states such as authorizations, declines, refunds, and reversals without needing a live card network connection. This lets you build and test transaction handling, webhooks, and UI states end-to-end before any real money or card is involved.
+
+
+
+<Note>
+  See [KYC Statuses](/concepts/kyc/kyc-statuses) for the full list of statuses your integration should handle.
+</Note>
+
+## Production Environment
+
+Production access is only granted when there is a partnership agreement between a partner with Gnosis Pay. As part of onboarding, Gnosis Pay team will provide you the following:
+
+- Provision **partner** access for [Partner Dashboard access](https://partners.gnosispay.com) and production APIs
+- **Whitelist product domain(s)** to allow SIWE authentication requests to be issued and verified against the application
+- Enable domain to **host secure card elements** for displaying sensitive card data (such as card numbers or CVVs) directly in application
+
+<Warning>
+  Production credentials are not self-serve. If you're ready to move from sandbox testing to production, [contact sales] to begin the partnership process.
+</Warning>
+
+## Choosing an environment
+
+| | Sandbox | Production |
+|---|---|---|
+| **Who can access it** | Anyone | Post partnership agreement|
+| **Requires an agreement** | No | Yes |
+| **Card activity** | Simulated on test network | Transaction happens in real-time on card network |
+| **KYC provider** | Sumsub sandbox (test documents) | Sumsub production (real documents) |
+| **Domain whitelisting required** | Yes | Yes |
+
+<Note>
+  Every endpoint in these docs includes both **Sandbox** and **Production** request examples, switch between them using the tabs on each code block.
+</Note>

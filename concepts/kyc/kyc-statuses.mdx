@@ -1,0 +1,17 @@
+---
+title: "KYC Statuses"
+description: "Every status a user's KYC application can be in, what it means, and how to communicate it"
+---
+
+As a user moves through identity verification, Sumsub reports a status for their KYC application. The table below summarizes each status; details, suggested messaging, and escalation guidance follow.
+
+| Status | Action Required | What it means |
+|---|---|---|
+| **Documents Requested** | Yes | Sumsub is requesting documents from the user. Appears at the start of KYC and any time additional documentation is needed (e.g. Proof of Identity, Proof of Address). KYC cannot progress until documents are submitted. |
+| **Pending** | No | The user has submitted documents and Sumsub is performing automated analysis. Normal transitional status; most users move through it quickly. |
+| **Approved** | No | KYC verification is complete and the user is eligible to proceed to the next onboarding stage. Does not mean the account is fully active. |
+| **Resubmission Requested** | Yes | The submission was reviewed and resubmission is required. Common causes: expired documents, poor image quality, name mismatches, unsupported document types. |
+| **Requires Action** | Dependent on Gnosis Pay team | The application is queued for manual review by the compliance team. Common for higher-risk scores or when additional data is needed. Typically resolves within 24 hours (up to 3–5 business days). |
+| **Rejected** | Final status | The application has been permanently rejected. Cannot be resubmitted by the user or reversed by the partner; only Gnosis Pay can manually review a possible error. |
+
+---

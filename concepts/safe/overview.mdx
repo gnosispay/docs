@@ -1,6 +1,6 @@
 ---
-title: "GP Account"
-description: "Understanding Gnosis Pay V2 account architecture and modules"
+title: "GP Safe Account"
+description: "Understanding Gnosis Pay Safe account architecture and modules"
 ---
 
 Gnosis Pay's on-chain infrastructure is built on top of the Safe protocol, providing a secure and programmable foundation for digital payments. Each user receives a unique Safe account that acts as their on-chain wallet, with additional modules that enable spending limits, time delays, and delegated spending capabilities.
@@ -13,9 +13,6 @@ The Gnosis Pay Safe consists of a core Safe account with three main modules:
 - **Delay Module**: Controls transaction timing and provides security delays
 - **Roles Module**: Manages spending permissions and allowance limits
 
-## V2 Architecture Changes
-
-Gnosis Pay V2 maintains the same Safe wallet structure with delay and roles modules, but implements key behavioral improvements:
 
 ### Instant Withdrawals
 Withdrawals from the Gnosis Pay Safe reduce the spendable balance immediately to avoid double spending and then sync with the on-chain balance. During this process, the card is not blocked from operations.
@@ -33,9 +30,9 @@ The Roles module now supports multi-token configurations so that users can spend
 These extended timeouts are designed to discourage direct delay module interaction. Failed transactions require the full expiration period before they can be skipped.
 </Warning>
 
-### Daily Spending Limits
+### Daily onchain spending limits
 
-The maximum daily card spend limit is **\$10K per token**. The Roles module enforces a hardcoded on-chain limit of **\$20K per token**, twice the card limit. This buffer exists because card clearing and settlement can take 1–4 days after a transaction, and the higher on-chain limit ensures uninterrupted card operations over that window without requiring any additional user signatures.
+The Roles module enforces a hardcoded on-chain limit of **\$20K per token***, twice the card limit. This buffer exists because card clearing and settlement can take 1–4 days after a transaction, and the higher on-chain limit ensures uninterrupted card operations over that window without requiring any additional user signatures.
 
 
 <Warning>
@@ -43,29 +40,10 @@ The maximum daily card spend limit is **\$10K per token**. The Roles module enfo
 </Warning>
 
 
-## Account details for authenticated user
-To get authenticated user account details, call [`GET /user/account`](/api-reference/user/get-account)
 
-<Tabs>
-    <Tab title="Sandbox">
-        ```bash
-        curl --request GET \
-          --url https://gp-auth-module.sandbox.gnosispay.in/user/account
-        ```
-    </Tab>
-    <Tab title="Production">
-        ```bash
-        curl --request GET \
-          --url https://gp-auth-module.prod.gnosispay.com/user/account
-        ```
-    </Tab>
-</Tabs>
+## Account balances state breakdown for authenticated user
 
-This will return configuration of user account including chain name, configured currencies, safe owner address etc.
-
-## Account balances for authenticated user
-
-Gnosis Pay V2 provides detailed balance breakdowns to give users complete visibility into their fund status. The authenticated user's account displays four distinct balance types:
+Gnosis Pay provides detailed balance breakdowns to give users complete visibility into their fund status. The authenticated user's account displays four distinct balance types:
 
 | Balance Type | Description | Increases When | Decreases When |
 |--------------|-------------|----------------|----------------|
@@ -73,28 +51,3 @@ Gnosis Pay V2 provides detailed balance breakdowns to give users complete visibi
 | **Non-Spendable** | Funds that cannot be used for spending. Flagged for review or potential return | • Dependent on AML checks | • Funds are returned to source<br/>• Funds are manually released after review |
 | **Processing Deposits** | Incoming deposits currently undergoing AML analysis. Not yet available for spending | • New deposit is received | • AML analysis completes (moves to spendable or non-spendable) |
 | **Processing Withdrawals** | Outgoing withdrawals currently being processed. Deducted from spendable but not yet settled on-chain | • Withdrawal is initiated | • Withdrawal settles on-chain |
-
-### Get Account Balances
-
-
-To request the account balance of the user, call [`GET /user/balances/v2`](/api-reference/user/get-account-balances-v2)
-
-<Tabs>
-    <Tab title="Sandbox">
-```bash
-curl --request GET \
-  --url https://gp-auth-module.sandbox.gnosispay.in/user/balances/v2
-```
-    </Tab>
-    <Tab title="Production">
-```bash
-curl --request GET \
-  --url https://gp-auth-module.prod.gnosispay.com/user/balances/v2
-```
-    </Tab>
-</Tabs>
-
-
-<Note>
-Each currency maintains its own separate balance states. For example, USDC and USDT will each have their own spendable, non-spendable, processing deposits, and processing withdrawals amounts.
-</Note>

@@ -1,0 +1,168 @@
+---
+title: "Create Virtual Card"
+description: "Create and manage virtual cards for users"
+---
+
+Virtual cards are activated immediately after creation and can be used for online purchases right away.
+
+## Card Activation
+
+To create a card for a user, call [`POST /cards/virtual`](/api-reference/cards/create-virtual-card) with a `cardName`. Once successful, you will get a `cardId`.
+
+The card's `status` will first be `provisioning` until our card provider has fully created the card. This is an asynchronous task. We recommend showing this `status` to your users, and polling the `/cards` endpoint regularly until it becomes `active`. The provisioning process should not last more than 10 seconds.
+
+The request accepts an optional `phone` field (E.164 format). The behavior depends on whether the user already has a `cardholderId`:
+
+| Scenario | Result |
+|----------|--------|
+| User already has a `cardholderId` | Card created directly; `phone` is ignored |
+| No `cardholderId`, no `phone` provided | `422 PHONE_REQUIRED` |
+| No `cardholderId`, valid `phone` provided | Cardholder created via API, then card created |
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request POST \
+      --url https://core.sandbox.gnosispay.in/user-api/cards/virtual \
+      --header 'Content-Type: application/json' \
+      --data '{
+      "cardName": "<string>",
+      "phone": "<string>"
+    }'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request POST \
+      --url https://core.prod.gnosispay.com/user-api/cards/virtual \
+      --header 'Content-Type: application/json' \
+      --data '{
+      "cardName": "<string>",
+      "phone": "<string>"
+    }'
+```
+  </Tab>
+</Tabs>
+
+
+## Card transactions and enrichment
+
+A user's card transactions are returned as `card_transaction` entries via [`GET /user/statement`](/api-reference/user/get-account-statement). Each entry includes both the raw transaction data from the card network and an `enrichment` object with matched merchant, category, and location data which lets developers build a clean, recognizable transaction feed instead of showing raw network descriptors.
+
+<Info>
+  See [Transaction Enrichment](/concepts/card/transaction-enrichment) for why this matters and how matching works conceptually.
+</Info>
+
+```json
+{
+  "data": [
+    {
+      "type": "card_transaction",
+      "id": "<string>",
+      "status": "pending",
+      "amount": "<string>",
+      "currency": "<string>",
+      "decimals": 123,
+      "originalAmount": "<string>",
+      "originalCurrency": "<string>",
+      "originalDecimals": 123,
+      "isCredit": true,
+      "createdAt": "2023-11-07T05:31:56Z",
+      "updatedAt": "2023-11-07T05:31:56Z",
+      "description": "<string>",
+      "authorizationId": 123,
+      "mcc": "<string>",
+      "authorizationCode": "<string>",
+      "merchant": {
+        "name": "<string>",
+        "city": "<string>",
+        "country": "<string>",
+        "categoryCode": "<string>"
+      },
+      "entryMode": "<string>",
+      "billing": {
+        "billingAmount": "<string>",
+        "billingCurrency": {
+          "symbol": "<string>",
+          "code": "<string>",
+          "decimals": 123,
+          "name": "<string>"
+        }
+      },
+      "transactionCurrency": {
+        "symbol": "<string>",
+        "code": "<string>",
+        "decimals": 123,
+        "name": "<string>"
+      },
+      "cardId": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
+      "cardToken": "<string>",
+      "clearedAt": "2023-11-07T05:31:56Z",
+      "isPending": true,
+      "kind": "Payment",
+      "transactions": [
+        {
+          "status": "<string>",
+          "to": "<string>",
+          "value": "<string>",
+          "data": "<string>",
+          "hash": "<string>"
+        }
+      ],
+      "declineReason": {
+        "code": "<string>",
+        "message": "<string>"
+      },
+      "wallet": {
+        "provider": "apple_pay",
+        "deviceBrand": "<string>",
+        "deviceModel": "<string>",
+        "deviceType": "<string>",
+        "deviceName": "<string>"
+      },
+      "enrichment": {
+        "status": "matched",
+        "merchant": {
+          "id": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
+          "name": "<string>",
+          "logoUrl": "<string>"
+        },
+        "shop": {
+          "id": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
+          "type": "<string>",
+          "category": {
+            "name": "<string>",
+            "logoUrl": "<string>"
+          },
+          "tags": ["<string>"],
+          "address": {
+            "street": "<string>",
+            "city": "<string>",
+            "zip": "<string>",
+            "country": "<string>",
+            "areas": [
+              {
+                "name": "<string>",
+                "value": "<string>"
+              }
+            ]
+          },
+          "coordinates": {
+            "latitude": 123,
+            "longitude": 123,
+            "accuracy": "<string>",
+            "zoom": 123
+          },
+          "url": "<string>",
+          "googlePlaceId": "<string>",
+          "phoneNumber": "<string>"
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "nextCursor": "<string>",
+    "hasNext": true
+  }
+}
+```

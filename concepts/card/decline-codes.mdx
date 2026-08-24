@@ -1,0 +1,283 @@
+---
+title: "Card Decline Reasons"
+description: "Every card decline code, the customer-facing message shown, and its technical cause"
+---
+
+When a card transaction is declined, Gnosis Pay returns a decline code and a customer-facing message via the Partner API, webhooks, and on the Partner Dashboard. The 90+ underlying technical codes from Pismo are grouped into customer-facing categories, so cardholders see clear, actionable language rather than a raw processor code.
+
+This page lists every code by category, the message shown to the user, and the technical reason behind it — useful when investigating a specific decline with your support team.
+
+<Note>
+  A code not listed here falls back to a generic message: *"Transaction denied (code: `{code}`)"*.
+</Note>
+
+## 1. Temporary issue
+
+**Message shown to user:** *"Temporary issue. Please try again."*
+
+Transient, infrastructure-level failures. Retrying the transaction typically resolves them.
+
+| Code | Technical Reason |
+|---|---|
+| `91` | Authorization system or issuer system inoperative |
+| `998` | Card hash not present in database |
+| `ACE` | Network transactions API communication error |
+| `ACT` | Account timeout |
+| `AEE` | Anti-fraud external generic error |
+| `AET` | Anti-fraud external API timeout |
+| `AFE` | Anti-fraud internal API generic error |
+| `AGE` | Account generic error |
+| `AIT` | Anti-fraud internal API timeout |
+| `ANF` | Acceptance not found |
+| `AUD` | Authorization disabled |
+| `BCE` | Balance config generic error |
+| `BCT` | Balance config timeout |
+| `BII` | Balance inquiry internal error |
+| `CET` | Card timeout |
+| `CGE` | Card generic error |
+| `CLF` | Credit limit impact not found |
+| `CMD` | Card mode disabled |
+| `CNU` | Account status unknown |
+| `CTT` | Card token timeout |
+| `CV3` | CVC3 not configured |
+| `DCE` | Distributor API communication error |
+| `ETR` | Exceed time to reversal |
+| `FR3` | IAV validation failed |
+| `FR7` | Card not present in database |
+| `HCE` | HSM communication error |
+| `IMA` | Invalid message authentication code |
+| `IMF` | Invalid message format |
+| `IZA` | Zero amount not allowed |
+| `LAE` | Unexpected error fetching account information |
+| `LCT` | Ledger account timeout |
+| `LNF` | Account not found |
+| `LUD` | Limit update duplicated ID error |
+| `LUE` | Error updating ledger |
+| `LUT` | Ledger timeout |
+| `OOT` | Orgs operation timeout |
+| `OP1` | Generic error or system failure |
+| `PAE` | Unexpected error fetching parameters |
+| `PAT` | Timeout fetching parameters |
+| `PCT` | Timeout in processing code definition |
+| `PGE` | Program config generic error |
+| `PRE` | Unexpected error fetching program |
+| `PRT` | Timeout fetching program |
+| `RAD` | Rates API denial |
+| `RAE` | Error on authorization amount calculation |
+| `STD` | Denied by second authorizer |
+| `TGE` | Card token generic error |
+| `ZBA` | Zero balance API unauthorized |
+| `ZBE` | Zero balance API general error |
+| `ZBF` | Zero balance client webhook forbidden |
+| `ZBP` | Partial authorization response invalid in zero balance purchases |
+| `ZBT` | Zero balance API timeout |
+| `ZBU` | Zero balance client webhook unavailable |
+
+## 2. Card could not be read
+
+**Message shown to user:** *"Card could not be read. Please try again."*
+
+| Code | Technical Reason |
+|---|---|
+| `FAT` | ATC validation failed |
+| `FRE` | Cryptogram data validation failed |
+| `FRH` | POS entry mode validation failed |
+| `FRN` | Chip field validation failed |
+| `FRO` | Chip signature validation failed |
+
+## 3. Card status invalid
+
+**Message shown to user:** *"Card status invalid. Contact support."*
+
+| Code | Technical Reason |
+|---|---|
+| `BNI` | Card is inoperative |
+| `BNW` | Card has warning status |
+| `CSU` | Card status unknown |
+
+## 4. Card transaction limit reached
+
+**Message shown to user:** *"Card transaction limit reached."*
+
+| Code | Technical Reason |
+|---|---|
+| `CTE` | Transaction counter exceeded |
+
+## 5. Mismatched key value for DCC
+
+**Message shown to user:** *"Mismatched key value for DCC"*
+
+| Code | Technical Reason |
+|---|---|
+| `DIC` | Invalid country for DCC definition |
+| `DIY` | Invalid currency for DCC definition |
+
+## 6. Card not activated
+
+**Message shown to user:** *"Card not activated. Please activate."*
+
+| Code | Technical Reason |
+|---|---|
+| `FRB` | Card is in created status (not activated) |
+
+## 7. Card no longer valid
+
+**Message shown to user:** *"Card no longer valid."*
+
+| Code | Technical Reason |
+|---|---|
+| `VED` | Card is deleted |
+
+##8. Mismatched key value for refund
+
+**Message shown to user:** *"Mismatched key value for Refund."*
+
+| Code | Technical Reason |
+|---|---|
+| `DCM` | Original authorization not found at refund |
+
+## 9. Currency conversion not permitted
+
+**Message shown to user:** *"Currency conversion not permitted. Select local currency."*
+
+| Code | Technical Reason |
+|---|---|
+| `DCC` | DCC transaction not allowed for program |
+
+## 10. Security check failed
+
+**Message shown to user:** *"Security check failed. Please try again."*
+
+| Code | Technical Reason |
+|---|---|
+| `CAV` | CAVV 3DS validation failed |
+
+## 11. Payment declined, contact support
+
+**Message shown to user:** *"Payment declined. Contact support."*
+
+| Code | Technical Reason |
+|---|---|
+| `MPC` | Program config not found |
+| `PRN` | Program not found |
+| `ZBD` | Zero balance client declined |
+
+## 12. Wallet payment failed, re-add card
+
+**Message shown to user:** *"Wallet payment failed. Re-add card and try again."*
+
+| Code | Technical Reason |
+|---|---|
+| `TNP` | Token not provided |
+| `Z26` | Card token not found |
+| `Z29` | Card token failed |
+| `Z30` | Token does not match card |
+
+## 13. Payment failed, check token status
+
+**Message shown to user:** *"Payment failed. Please check your token status."*
+
+| Code | Technical Reason |
+|---|---|
+| `Z22` | *(pending confirmation)* |
+
+## 14. Use PIN to complete transaction
+
+**Message shown to user:** *"Use PIN to complete transaction"*
+
+| Code | Technical Reason |
+|---|---|
+| `PNP` | *(pending confirmation)* |
+
+## 15. Invalid currency
+
+**Message shown to user:** *"Invalid currency. Contact support."*
+
+| Code | Technical Reason |
+|---|---|
+| `PIC` | *(pending confirmation)* |
+
+## 16. Transaction type not supported
+
+**Message shown to user:** *"Transaction type not supported. Please try again."*
+
+| Code | Technical Reason |
+|---|---|
+| `OON` | *(pending confirmation)* |
+
+## 17. Verification not completed
+
+**Message shown to user:** *"Verification not completed. Please try again."*
+
+| Code | Technical Reason |
+|---|---|
+| `NCV` | Entry mode not allowed with no-CVM |
+
+## 18. DCC not allowed
+
+**Message shown to user:** *"DCC not allowed"*
+
+| Code | Technical Reason |
+|---|---|
+| `MDC` | Multi-currency not allowed for DCC authorization |
+
+## 19. Installment not allowed
+
+**Message shown to user:** *"Installment not allowed"*
+
+| Code | Technical Reason |
+|---|---|
+| `ISE` | Insufficient statements |
+
+## 20. Mismatched account type
+
+**Message shown to user:** *"Mismatched Account type for this transaction"*
+
+| Code | Technical Reason |
+|---|---|
+| `IAT` | Invalid account type |
+
+## 21. Card type not supported
+
+**Message shown to user:** *"Card type not supported"*
+
+| Code | Technical Reason |
+|---|---|
+| `GCD` | Gift card denial |
+
+## 22. Payment method not accepted here
+
+**Message shown to user:** *"Payment method not accepted here."*
+
+| Code | Technical Reason |
+|---|---|
+| `FR5` | Magnetic stripe not allowed in this country |
+
+## 23. Other decline codes
+
+These codes fall outside the standard grouping (business, fraud, or card-status declines) and are shown with their own descriptive message directly.
+
+| Code | Message |
+|---|---|
+| `810` | Insufficient balance |
+| `CED` | Incorrect Exp Date, please check and retry |
+| `CNC` | Account cancelled |
+| `CND` | Account blocked |
+| `FL6` | Card blocked by anti-fraud |
+| `FR1` | CVV1 or CVC1 validation failed |
+| `FR2` | Incorrect CVV/CVC, please check and retry |
+| `FR6` | Password validation failed |
+| `PFT` | Do not honor |
+| `RED` | Operation not allowed. Contact support |
+| `TSM` | Password tries exceeded |
+| `UBN` | NFC disabled |
+| `VEV` | Expired virtual card |
+| `VNM` | Card expired |
+| `BND` | Card is cancelled |
+| `BNF` | Card flagged for fraud |
+| `BNM` | Card is damaged |
+| `BNP` | Card reported lost |
+| `BNR` | Card reported stolen |
+| `BNU` | Card is unreceived |
+| `CPE` | Card is in pending status |
+| `UBT` | Card is blocked |

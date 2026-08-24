@@ -1,0 +1,22 @@
+---
+title: "Migrating to new Gnosis Pay APIs"
+description: "Overview of the differences between Gnosis Pay's old and new infrastructure, only applicable to old Partners integrating new APIs"
+---
+
+This page compares Gnosis Pay's old API infrastructure against the current architecture, to help partners understand what changed and why, particularly around authentication, ownership, and other flows.
+
+## Feature Comparison
+
+| Feature | Old API | New API |
+|---|---|---|
+| **SIWE Authentication** | Long-lived access token (24h) | Access token (15 min validity) and refresh token model (7 days validity) with rotation support |
+| **Reversals** | Processed after 1 business day | Instantly processed right after the clearing message |
+| **KYC Verification** | Dependent on Gnosis Pay to complete KYC; Gnosis Pay shares KYC results with partners | KYC can be performed by partners and shared with Gnosis Pay |
+| **Safe Deployment** | Dedicated Safe deployment endpoint | Single `/account` endpoint handling provisioning + creation |
+| **Token Management** | Limited support for single token/currency | Multi-currency support with different balance states |
+| **Account Balances** | Spendable, non-spendable, and total balance | Detailed breakdown: spendable, authorized holds, non-spendable, processing deposits |
+| **Withdrawals** | Subject to delay module | Instant, bypassing the delay module |
+| **Daily Onchain Spending Limits** | Set by user, requires an onchain signature | Hardcoded at $20,000 daily limit (2x card limit buffer), no signature required |
+| **Delay Module Configuration** | 3-minute delay, 30-minute expiration | 25-hour delay, 31-hour expiration (discourages usage) |
+| **Transactions** | Separated by card transaction and onchain transaction; onchain transactions only available via RPC | Unified account-statement endpoint showing deposits, withdrawals, and card transactions |
+| **Owner Address** | Multiple SIWE-authenticated addresses could be added alongside the Safe owner | A single owner address, set at account creation, cannot be changed, and no other SIWE addresses can be added |
