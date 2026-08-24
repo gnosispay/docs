@@ -18,14 +18,14 @@
   "navbar": {
     "links": [
       {
-        "label": "Contact Sales",
-        "href": "mailto:support@example.com"
+        "label": "Contact Sales team",
+        "href": "https://form.typeform.com/to/naN3irHW?typeform-source=gnosispay.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Sign up as Partner",
-      "href": "https://dashboard.example.com/signup"
+      "href": "https://partner-dashboard.sandbox.gnosispay.com/auth/signin"
     }
   },
   "navigation": {
