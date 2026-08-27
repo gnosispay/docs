@@ -9,19 +9,19 @@ description: "Retrieve account details and balance information for the authentic
 
 ## Account details for authenticated user
 
-To get authenticated user account details, call [`GET /user/account`](/api-reference/user/get-account).
+To get authenticated user account details, call [`GET /user/account`](/api-reference/user-account/get-account).
 
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request GET \
-      --url https://core.sandbox.gnosispay.in/user-api/user/account
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user/account
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request GET \
-      --url https://core.prod.gnosispay.com/user-api/user/account
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user/account
 ```
   </Tab>
 </Tabs>
@@ -41,19 +41,19 @@ Account balances endpoint provides detailed balance breakdowns to give users com
 
 ### Get Account Balances
 
-To request the account balance of the user, call [`GET /user/balances/v2`](/api-reference/user/get-account-balances-v2).
+To request the account balance of the user, call [`GET /user/balances/v2`](/api-reference/user-movements/get-account-balances-v2).
 
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request GET \
-      --url https://core.sandbox.gnosispay.in/user-api/user/balances/v2
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user/balances/v2
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request GET \
-      --url https://core.prod.gnosispay.com/user-api/user/balances/v2
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user/balances/v2
 ```
   </Tab>
 </Tabs>

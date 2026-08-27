@@ -22,22 +22,22 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/email-verification \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "email": "jsmith@example.com"
-        }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/email-verification \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "email": "jsmith@example.com"
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/email-verification \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "email": "jsmith@example.com"
-        }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/email-verification \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "email": "jsmith@example.com"
+  }'
 ```
       </Tab>
     </Tabs>
@@ -55,26 +55,26 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/user \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "email": "jsmith@example.com",
-          "otp": "<string>",
-          "shareToken": "<string>"
-        }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/user \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "email": "jsmith@example.com",
+    "otp": "<string>",
+    "shareToken": "<string>"
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/user \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "email": "jsmith@example.com",
-          "otp": "<string>",
-          "shareToken": "<string>"
-        }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/user \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "email": "jsmith@example.com",
+    "otp": "<string>",
+    "shareToken": "<string>"
+  }'
 ```
       </Tab>
     </Tabs>
@@ -104,14 +104,14 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/user/onboarding
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user/onboarding
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/user/onboarding
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user/onboarding
 ```
       </Tab>
     </Tabs>
@@ -121,20 +121,20 @@ This documentation provides a step-by-step guide on how to test the user onboard
     At this point, the user is registered in the Gnosis Pay system and has an associated `userID`. Call the endpoint [`GET /user/onboarding`](/api-reference/user/get-onboarding-status). The response JSON will be returned with status of `action_accept_tos`.
 
 ```json
+{
+  "status": "action_accept_tos",
+  "terms": [
     {
-      "status": "action_accept_tos",
-      "terms": [
-        {
-          "type": "string",
-          "currentVersion": "string",
-          "name": "string",
-          "url": null,
-          "accepted": true,
-          "acceptedVersion": null,
-          "acceptedAt": null
-        }
-      ]
+      "type": "string",
+      "currentVersion": "string",
+      "name": "string",
+      "url": null,
+      "accepted": true,
+      "acceptedVersion": null,
+      "acceptedAt": null
     }
+  ]
+}
 ```
 
     <Note>
@@ -148,14 +148,14 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/terms
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/terms
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/terms
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/terms
 ```
       </Tab>
     </Tabs>
@@ -165,32 +165,32 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/user/terms \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "terms": [
-            {
-              "type": "<string>",
-              "version": "<string>"
-            }
-          ]
-        }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/user/terms \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "terms": [
+      {
+        "type": "<string>",
+        "version": "<string>"
+      }
+    ]
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/user/terms \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "terms": [
-            {
-              "type": "<string>",
-              "version": "<string>"
-            }
-          ]
-        }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/user/terms \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "terms": [
+      {
+        "type": "<string>",
+        "version": "<string>"
+      }
+    ]
+  }'
 ```
       </Tab>
     </Tabs>
@@ -200,14 +200,14 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/user/terms
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user/terms
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/user/terms
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user/terms
 ```
       </Tab>
     </Tabs>
@@ -221,10 +221,10 @@ This documentation provides a step-by-step guide on how to test the user onboard
     Call the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) API to retrieve the current status of the user's onboarding process. If the status is `action_complete_kyc`, you can proceed with the KYC process. The response will include the status and a `webSdkURL` for completing KYC verification.
 
 ```json
-    {
-        "status": "action_complete_kyc",
-        "webSdkUrl": "https://in.sumsub.com/websdk/p/sbx_yeuhsxyuhkio"
-    }
+{
+    "status": "action_complete_kyc",
+    "webSdkUrl": "https://in.sumsub.com/websdk/p/sbx_yeuhsxyuhkio"
+}
 ```
   </Step>
 
@@ -257,10 +257,10 @@ This documentation provides a step-by-step guide on how to test the user onboard
     If [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) returns `action_kyc_resubmission_requested`, the KYC provider has reviewed the submission and is requesting the user resubmit their documents. The response shape is identical to `action_complete_kyc` and includes a fresh `webSdkUrl`:
 
 ```json
-    {
-        "status": "action_kyc_resubmission_requested",
-        "webSdkUrl": "https://in.sumsub.com/websdk/p/sbx_yeuhsxyuhkio"
-    }
+{
+    "status": "action_kyc_resubmission_requested",
+    "webSdkUrl": "https://in.sumsub.com/websdk/p/sbx_yeuhsxyuhkio"
+}
 ```
 
     Open the Sumsub iframe again with the provided `webSdkUrl` and have the user resubmit their documents, following the same steps as the initial KYC completion.
@@ -270,9 +270,9 @@ This documentation provides a step-by-step guide on how to test the user onboard
     If [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) returns `kyc_manual_review`, the KYC provider has flagged the check for manual review. This is a non-recoverable state from the user's side — no `webSdkUrl` is provided and the user cannot self-resolve it.
 
 ```json
-    {
-        "status": "kyc_manual_review"
-    }
+{
+    "status": "kyc_manual_review"
+}
 ```
 
     <Warning>
@@ -286,14 +286,14 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/source-of-funds
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/source-of-funds
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/source-of-funds
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/source-of-funds
 ```
       </Tab>
     </Tabs>
@@ -303,32 +303,32 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/source-of-funds \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "answers": [
-            {
-              "question": "<string>",
-              "answer": "<string>"
-            }
-          ]
-        }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/source-of-funds \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "answers": [
+      {
+        "question": "<string>",
+        "answer": "<string>"
+      }
+    ]
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/source-of-funds \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "answers": [
-            {
-              "question": "<string>",
-              "answer": "<string>"
-            }
-          ]
-        }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/source-of-funds \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "answers": [
+      {
+        "question": "<string>",
+        "answer": "<string>"
+      }
+    ]
+  }'
 ```
       </Tab>
     </Tabs>
@@ -342,46 +342,46 @@ This documentation provides a step-by-step guide on how to test the user onboard
     Check the user's onboarding status using the [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) endpoint to determine if their KYC verification has been accepted. If the KYC is approved, the user status will transition to the following:
 
 ```json
-    {
-        "status": "action_create_account"
-    }
+{
+    "status": "action_create_account"
+}
 ```
 
     In the next step, we will create the GP spending Safe wallet address.
   </Step>
 
   <Step title="Create GP Account">
-    In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call [`POST /user/account`](/api-reference/user/create-account) endpoint to create an account for the authenticated user.
+    In this step, you will initiate the Gnosis Pay account provisioning and creation process. Call [`POST /user/account`](/api-reference/user-account/create-account) endpoint to create an account for the authenticated user.
 
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/user/account \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "celoConfig": {
-            "dailyLimits": {
-              "usdt": 1,
-              "usdc": 1
-            }
-          }
-        }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/user/account \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "celoConfig": {
+      "dailyLimits": {
+        "usdt": 1,
+        "usdc": 1
+      }
+    }
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/user/account \
-          --header 'Content-Type: application/json' \
-          --data '{
-          "celoConfig": {
-            "dailyLimits": {
-              "usdt": 1,
-              "usdc": 1
-            }
-          }
-        }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/user/account \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "celoConfig": {
+      "dailyLimits": {
+        "usdt": 1,
+        "usdc": 1
+      }
+    }
+  }'
 ```
       </Tab>
     </Tabs>
@@ -389,9 +389,9 @@ This documentation provides a step-by-step guide on how to test the user onboard
     Once the account provisioning begins, the onboarding status will be updated to the `waiting_account_setup` state, indicating that the account is being set up in the system.
 
 ```json
-    {
-        "status": "waiting_account_setup"
-    }
+{
+    "status": "waiting_account_setup"
+}
 ```
   </Step>
 
@@ -401,16 +401,16 @@ This documentation provides a step-by-step guide on how to test the user onboard
     <Tabs>
       <Tab title="Sandbox">
 ```bash cURL
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/user \
-          --header 'Content-Type: application/json'
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user \
+  --header 'Content-Type: application/json'
 ```
       </Tab>
       <Tab title="Production">
 ```bash cURL
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/user \
-          --header 'Content-Type: application/json'
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user \
+  --header 'Content-Type: application/json'
 ```
       </Tab>
     </Tabs>
@@ -424,9 +424,9 @@ This documentation provides a step-by-step guide on how to test the user onboard
     Once the account has provisioned and is active, [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) may return `action_verify_phone`.
 
 ```json
-    {
-        "status": "action_verify_phone"
-    }
+{
+    "status": "action_verify_phone"
+}
 ```
     Prompt the user to verify their phone number to proceed. Once verification is complete, the onboarding status will move to `completed`.
   </Step>
