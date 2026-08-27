@@ -24,16 +24,16 @@ Returns the daily spending limit configured on the authenticated user's account.
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request GET \
-      --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
-      --header 'Authorization: Bearer <token>'
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
+  --header 'Authorization: Bearer <token>'
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request GET \
-      --url https://core.prod.gnosispay.com/user-api/user/account/limit \
-      --header 'Authorization: Bearer <token>'
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/user/account/limit \
+  --header 'Authorization: Bearer <token>'
 ```
   </Tab>
 </Tabs>
@@ -50,26 +50,26 @@ The response returns the new limit immediately with `syncStatus: "pending"`, tra
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request PUT \
-      --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
-      --header 'Authorization: Bearer <token>' \
-      --header 'Content-Type: application/json' \
-      --data '{
-        "amount": 500000,
-        "currency": "USD"
-      }'
+curl --request PUT \
+  --url https://core.sandbox.gnosispay.in/user-api/user/account/limit \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "amount": 500000,
+    "currency": "USD"
+  }'
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request PUT \
-      --url https://core.prod.gnosispay.com/user-api/user/account/limit \
-      --header 'Authorization: Bearer <token>' \
-      --header 'Content-Type: application/json' \
-      --data '{
-        "amount": 500000,
-        "currency": "USD"
-      }'
+curl --request PUT \
+  --url https://core.prod.gnosispay.com/user-api/user/account/limit \
+  --header 'Authorization: Bearer <token>' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "amount": 500000,
+    "currency": "USD"
+  }'
 ```
   </Tab>
 </Tabs>

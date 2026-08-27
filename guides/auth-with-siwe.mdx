@@ -24,14 +24,24 @@ Let's take a look at how to complete SIWE validation and retrieve access tokens.
     <Tabs>
       <Tab title="Sandbox">
 ```bash
-        curl --request GET \
-          --url https://core.sandbox.gnosispay.in/user-api/auth/siwe/{address}?domain=&uri=&appName=
+# these values require prior partner registration (self signup)
+export APP_DOMAIN="myapp.xyz"
+export APP_URI="https://myapp.xyz"
+export APP_NAME="MyCardApp"
+
+curl --request GET \
+  --url https://core.sandbox.gnosispay.in/user-api/auth/siwe/{address}?domain=$APP_DOMAIN&uri=$APP_URI&appName=$APP_NAME
 ```
       </Tab>
       <Tab title="Production">
 ```bash
-        curl --request GET \
-          --url https://core.prod.gnosispay.com/user-api/auth/siwe/{address}?domain=&uri=&appName=
+# these values require prior partner registration (provisioned by Gnosis team)
+export APP_DOMAIN="myapp.xyz"
+export APP_URI="https://myapp.xyz"
+export APP_NAME="MyCardApp"
+
+curl --request GET \
+  --url https://core.prod.gnosispay.com/user-api/auth/siwe/{address}?domain=$APP_DOMAIN&uri=$APP_URI&appName=$APP_NAME
 ```
       </Tab>
     </Tabs>
@@ -45,26 +55,26 @@ Let's take a look at how to complete SIWE validation and retrieve access tokens.
     <Tabs>
       <Tab title="Sandbox">
 ```bash
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/auth/siwe \
-          --header 'Content-Type: application/json' \
-          --data '{
-              "address": "<string>",
-              "signature": "<string>",
-              "message": "<string>"
-          }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/auth/siwe \
+  --header 'Content-Type: application/json' \
+  --data '{
+      "address": "<string>",
+      "signature": "<string>",
+      "message": "<string>"
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/auth/siwe \
-          --header 'Content-Type: application/json' \
-          --data '{
-              "address": "<string>",
-              "signature": "<string>",
-              "message": "<string>"
-          }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/auth/siwe \
+  --header 'Content-Type: application/json' \
+  --data '{
+      "address": "<string>",
+      "signature": "<string>",
+      "message": "<string>"
+  }'
 ```
       </Tab>
     </Tabs>
@@ -82,22 +92,22 @@ Let's take a look at how to complete SIWE validation and retrieve access tokens.
     <Tabs>
       <Tab title="Sandbox">
 ```bash
-        curl --request POST \
-          --url https://core.sandbox.gnosispay.in/user-api/auth/refresh \
-          --header 'Content-Type: application/json' \
-          --data '{
-            "refreshToken": "your_refresh_token_here"
-          }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/auth/refresh \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "refreshToken": "your_refresh_token_here"
+  }'
 ```
       </Tab>
       <Tab title="Production">
 ```bash
-        curl --request POST \
-          --url https://core.prod.gnosispay.com/user-api/auth/refresh \
-          --header 'Content-Type: application/json' \
-          --data '{
-            "refreshToken": "your_refresh_token_here"
-          }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/auth/refresh \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "refreshToken": "your_refresh_token_here"
+  }'
 ```
       </Tab>
     </Tabs>
@@ -125,22 +135,22 @@ See full specification: [POST /auth/logout](/api-reference/auth/logout)
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request POST \
-      --url https://core.sandbox.gnosispay.in/user-api/auth/logout \
-      --header 'Content-Type: application/json' \
-      --data '{
-        "refreshToken": "your_refresh_token_here"
-      }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/auth/logout \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "refreshToken": "your_refresh_token_here"
+  }'
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request POST \
-      --url https://core.prod.gnosispay.com/user-api/auth/logout \
-      --header 'Content-Type: application/json' \
-      --data '{
-        "refreshToken": "your_refresh_token_here"
-      }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/auth/logout \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "refreshToken": "your_refresh_token_here"
+  }'
 ```
   </Tab>
 </Tabs>

@@ -5,7 +5,7 @@ description: "Create request to withdraw funds onchain to wallet address"
 
 ## Create Withdrawal Request
 
-The [`POST /user/withdrawals`](/api-reference/user/create-withdrawal) endpoint allows you to create a withdrawal request for a user.
+The [`POST /user/withdrawals`](/api-reference/user-movements/create-withdrawal) endpoint allows you to create a withdrawal request for a user.
 
 The withdrawal happens to the GP Safe's owner wallet address.
 
@@ -16,7 +16,7 @@ The withdrawal happens to the GP Safe's owner wallet address.
 <Warning>
   **Withdrawal Restrictions:**
   - Only specific tokens are currently supported for withdrawals.
-  - Withdrawals are restricted to the Safe owner address, the wallet address that initiated the Safe deployment via the [`POST /user/account`](/api-reference/user/create-account) endpoint.
+  - Withdrawals are restricted to the Safe owner address, the wallet address that initiated the Safe deployment via the [`POST /user/account`](/api-reference/user-account/create-account) endpoint.
 </Warning>
 
 <Note>
@@ -37,24 +37,24 @@ The withdrawal happens to the GP Safe's owner wallet address.
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request POST \
-      --url https://core.sandbox.gnosispay.in/user-api/user/withdrawals \
-      --header 'Content-Type: application/json' \
-      --data '{
-      "tokenAddress": "<string>",
-      "amount": "<string>"
-    }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/user/withdrawals \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "tokenAddress": "<string>",
+    "amount": "<string>"
+  }'
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request POST \
-      --url https://core.prod.gnosispay.com/user-api/user/withdrawals \
-      --header 'Content-Type: application/json' \
-      --data '{
-      "tokenAddress": "<string>",
-      "amount": "<string>"
-    }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/user/withdrawals \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "tokenAddress": "<string>",
+    "amount": "<string>"
+  }'
 ```
   </Tab>
 </Tabs>

@@ -22,24 +22,24 @@ The request accepts an optional `phone` field (E.164 format). The behavior depen
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request POST \
-      --url https://core.sandbox.gnosispay.in/user-api/cards/virtual \
-      --header 'Content-Type: application/json' \
-      --data '{
-      "cardName": "<string>",
-      "phone": "<string>"
-    }'
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/cards/virtual \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "cardName": "<string>",
+    "phone": "<string>"
+  }'
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request POST \
-      --url https://core.prod.gnosispay.com/user-api/cards/virtual \
-      --header 'Content-Type: application/json' \
-      --data '{
-      "cardName": "<string>",
-      "phone": "<string>"
-    }'
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/cards/virtual \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "cardName": "<string>",
+    "phone": "<string>"
+  }'
 ```
   </Tab>
 </Tabs>
@@ -47,7 +47,7 @@ The request accepts an optional `phone` field (E.164 format). The behavior depen
 
 ## Card transactions and enrichment
 
-A user's card transactions are returned as `card_transaction` entries via [`GET /user/statement`](/api-reference/user/get-account-statement). Each entry includes both the raw transaction data from the card network and an `enrichment` object with matched merchant, category, and location data which lets developers build a clean, recognizable transaction feed instead of showing raw network descriptors.
+A user's card transactions are returned as `card_transaction` entries via [`GET /user/statement`](/api-reference/user-movements/get-account-statement). Each entry includes both the raw transaction data from the card network and an `enrichment` object with matched merchant, category, and location data which lets developers build a clean, recognizable transaction feed instead of showing raw network descriptors.
 
 <Info>
   See [Transaction Enrichment](/concepts/card/transaction-enrichment) for why this matters and how matching works conceptually.

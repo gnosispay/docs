@@ -7,19 +7,19 @@ description: "Retrieve account statements for users"
 
 An account statement is a chronological record of all financial activity associated with a user's account. It provides a transparent view of money moving in and out of the account over a selected period of time, giving users complete visibility into their account activity.
 
-To retrieve the account statement, use the [`GET /user/statement`](/api-reference/user/get-account-statement) endpoint.
+To retrieve the account statement, use the [`GET /user/statement`](/api-reference/user-movements/get-account-statement) endpoint.
 
 <Tabs>
   <Tab title="Sandbox">
 ```bash
-    curl --request GET \
-      --url "https://core.sandbox.gnosispay.in/user-api/user/statement?limit=&cursor=&startDate=&endDate="
+curl --request GET \
+  --url "https://core.sandbox.gnosispay.in/user-api/user/statement?limit=&cursor=&startDate=&endDate="
 ```
   </Tab>
   <Tab title="Production">
 ```bash
-    curl --request GET \
-      --url "https://core.prod.gnosispay.com/user-api/user/statement?limit=&cursor=&startDate=&endDate="
+curl --request GET \
+  --url "https://core.prod.gnosispay.com/user-api/user/statement?limit=&cursor=&startDate=&endDate="
 ```
   </Tab>
 </Tabs>

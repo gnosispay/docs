@@ -75,12 +75,12 @@ Authorization creates an initial hold on the card balance.
 <Steps>
   <Step title="Send Authorization Request">
 ```json
-    {
-      "transaction_type": "authorization",
-      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "amount": "100.50",
-      "currency": "USD"
-    }
+{
+  "transaction_type": "authorization",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD"
+}
 ```
 
     **Required:** `transaction_type`, `amount`, `currency`, and `card_id` or `pan`.
@@ -114,13 +114,13 @@ Reversal cancels a previous authorization entirely and releases the held amount.
 
   <Step title="Send Reversal Request">
 ```json
-    {
-      "transaction_type": "reversal",
-      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "amount": "100.50",
-      "currency": "USD",
-      "authorization_code": "ABC123"
-    }
+{
+  "transaction_type": "reversal",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
 ```
   </Step>
 
@@ -143,14 +143,14 @@ Replacement adjusts a previous authorization to a different amount.
 
   <Step title="Send Replacement Request">
 ```json
-    {
-      "transaction_type": "replacement",
-      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "amount": "100.50",
-      "currency": "USD",
-      "authorization_code": "ABC123",
-      "replacement_amount": "75.00"
-    }
+{
+  "transaction_type": "replacement",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123",
+  "replacement_amount": "75.00"
+}
 ```
 
     **Required:** `authorization_code` and `replacement_amount`.
@@ -175,13 +175,13 @@ Clearing confirms a previous authorization (settlement/Base II) and finalizes th
 
   <Step title="Send Clearing Request">
 ```json
-    {
-      "transaction_type": "clearing",
-      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "amount": "100.50",
-      "currency": "USD",
-      "authorization_code": "ABC123"
-    }
+{
+  "transaction_type": "clearing",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
 ```
   </Step>
 
@@ -208,13 +208,13 @@ Clearing cancellation cancels a transaction via clearing. For partial cancellati
 
   <Step title="Send Clearing Cancellation Request">
 ```json
-    {
-      "transaction_type": "clearing_cancellation",
-      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "amount": "100.50",
-      "currency": "USD",
-      "authorization_code": "ABC123"
-    }
+{
+  "transaction_type": "clearing_cancellation",
+  "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "amount": "100.50",
+  "currency": "USD",
+  "authorization_code": "ABC123"
+}
 ```
   </Step>
 
