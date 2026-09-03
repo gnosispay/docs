@@ -85,6 +85,13 @@
             "pages": ["guides/auth-with-siwe", "guides/onboarding"]
           },
           {
+            "group": "KYC Sharing",
+            "pages": [
+              "guides/kyc-sharing/pass-kyc",
+              "guides/kyc-sharing/monerium"
+            ]
+          },
+          {
             "group": "Manage Accounts",
             "pages": [
               "guides/accounts/manage-accounts",

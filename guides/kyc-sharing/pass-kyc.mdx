@@ -1,0 +1,47 @@
+---
+title: "KYC Sharing with Sumsub"
+description: "Generate a Sumsub share token to reuse a user's verified KYC identity with a partner"
+---
+
+
+<Note>
+  Read [KYC Overview](/concepts/kyc/overview) as it covers why we use Sumsub and the full KYC status lifecycle. This guide covers how to share a user's already-verified identity with a partner via Sumsub.
+</Note>
+
+If a user has already completed KYC with Gnosis Pay, that verified identity can be **reused** rather than requiring the user to go through verification again with a partner. This is done by generating a temporary **Sumsub share token**, which the partner uses on their end to import the applicant's already-verified data.
+
+## Generate KYC Applicant Share Token
+
+Generates a temporary Sumsub share token for the authenticated user's KYC applicant. Pass this token to the named Sumsub recipient (the partner) to reuse the applicant's verified identity data.
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash
+    curl --request POST \
+      --url https://core.sandbox.gnosispay.in/user-api/kyc/import-partner-applicant \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "forClientId": "<string>",
+        "ttlInSecs": 1200
+      }'
+```
+  </Tab>
+  <Tab title="Production">
+```bash
+    curl --request POST \
+      --url https://core.prod.gnosispay.com/user-api/kyc/import-partner-applicant \
+      --header 'Authorization: Bearer <token>' \
+      --header 'Content-Type: application/json' \
+      --data '{
+        "forClientId": "<string>",
+        "ttlInSecs": 1200
+      }'
+```
+  </Tab>
+</Tabs>
+
+
+<Warning>
+  The share token is **single-use** and expires after `ttlInSecs` (or Sumsub's default of 1200 seconds if not specified). Generate a new token for each sharing attempt — it cannot be reused once consumed or expired.
+</Warning>
