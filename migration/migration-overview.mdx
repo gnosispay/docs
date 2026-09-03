@@ -20,3 +20,4 @@ This page compares Gnosis Pay's old API infrastructure against the current archi
 | **Delay Module Configuration** | 3-minute delay, 30-minute expiration | 25-hour delay, 31-hour expiration (discourages usage) |
 | **Transactions** | Separated by card transaction and onchain transaction; onchain transactions only available via RPC | Unified account-statement endpoint showing deposits, withdrawals, and card transactions |
 | **Owner Address** | Multiple SIWE-authenticated addresses could be added alongside the Safe owner | A single owner address, set at account creation, cannot be changed, and no other SIWE addresses can be added |
+| **Pre-Authorization Holds**| Not allowed in old infrastructure | Pre-authorization holds allowed, users can use it for gas stations or car rentals etc. |
