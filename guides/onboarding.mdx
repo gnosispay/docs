@@ -97,8 +97,8 @@ curl --request POST \
     | `action_complete_sof` | Source of Funds questionnaire required - KYC approved, SOF answers needed | Answer Source of Funds questionnaire |
     | `action_create_account` | Ready for account creation - KYC approved and SOF completed | Proceed with account creation |
     | `waiting_account_setup` | Account provisioning in progress - account is being set up in the system | Wait for account setup completion |
-    | `action_verify_phone` | Phone verification required, account is active but user can't create card until phone is verified.| Verify phone number |
-    | `completed` | Onboarding complete - account is active with cardholder ID | Start using the platform |
+    | `action_verify_phone` | Phone verification required - the account is active, but the user can't create a card until the phone is verified. You only see this status if you required phone OTP for your users | Verify the phone number with OTP. See [Phone Number](/guides/phone) |
+    | `completed` | Onboarding complete - account is active | Start using the platform |
     | `rejected` | Onboarding rejected - account is blocked, closed, or KYC verification failed | Contact support or retry if applicable |
 
     <Tabs>
@@ -421,13 +421,15 @@ curl --request GET \
 
 <Steps>
   <Step title="Handle phone verification requirement">
-    Once the account has provisioned and is active, [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) may return `action_verify_phone`.
+    Once the account has provisioned and is active, [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) returns `action_verify_phone` if you required phone OTP for your users.
 
 ```json
 {
     "status": "action_verify_phone"
 }
 ```
-    Prompt the user to verify their phone number to proceed. Once verification is complete, the onboarding status will move to `completed`.
+    Prompt the user to verify their phone number to proceed: send a code with [`POST /phone/verification`](/api-reference/phone/request-phone-verification), then confirm it with [`POST /phone`](/api-reference/phone/set-phone-number). Once verification is complete, the onboarding status will move to `completed`. See [Phone Number](/guides/phone) for the full flow.
+
+    If you did not require phone OTP for your users, the status goes straight to `completed` and the phone number is set when the first card is created.
   </Step>
 </Steps>

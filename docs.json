@@ -82,7 +82,11 @@
           },
           {
             "group": "Authentication & Onboarding",
-            "pages": ["guides/auth-with-siwe", "guides/onboarding"]
+            "pages": [
+              "guides/auth-with-siwe",
+              "guides/onboarding",
+              "guides/phone"
+            ]
           },
           {
             "group": "KYC Sharing",
