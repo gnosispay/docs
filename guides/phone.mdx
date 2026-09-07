@@ -1,0 +1,132 @@
+---
+title: "Phone Number"
+description: "Set, verify, and update a user's phone number"
+---
+
+When you onboard as a partner, you choose whether your users must prove they own a phone number with an SMS one-time password (OTP) before that number is stored. That choice is set during onboarding; you cannot change it yourself later. If you are unsure which mode you are on, ask your Gnosis Pay contact.
+
+Use [`GET /phone`](/api-reference/phone/get-phone-number) to read the stored `phone` and `countryCode`.
+
+This page documents both modes so you can follow the path that matches how you onboarded.
+
+## If you do not require phone OTP for your users
+
+Pass the number in E.164 format as `phone` on the first [`POST /cards/virtual`](/api-reference/cards/create-virtual-card). That is how the phone is set. See [Create Virtual Card](/guides/cards/create-virtual).
+
+## If you require phone OTP for your users
+
+Users must verify the number with SMS before it is stored.
+
+### Onboarding
+
+Phone verification is the last step of onboarding. [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) stays `action_verify_phone` until the phone is verified. Completing the OTP flow with [`POST /phone`](/api-reference/phone/set-phone-number) moves the status to `completed`. See [Onboard to Gnosis Pay](/guides/onboarding).
+
+Requesting an OTP (and setting the phone the first time with `POST /phone`) requires KYC approved and an active account. Otherwise the API returns `422 KYC_NOT_APPROVED` or `422 ACCOUNT_NOT_READY`.
+
+### Add a verified phone
+
+<Steps>
+  <Step title="Send an OTP">
+    Call [`POST /phone/verification`](/api-reference/phone/request-phone-verification) with the number in E.164 format. The user receives a 6-digit SMS code. Codes expire; requesting another code too soon returns `422 PHONE_OTP_RESEND_TOO_SOON`.
+
+    <Tabs>
+      <Tab title="Sandbox">
+```bash cURL
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/phone/verification \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "phone": "+441234567890"
+  }'
+```
+      </Tab>
+      <Tab title="Production">
+```bash cURL
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/phone/verification \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "phone": "+441234567890"
+  }'
+```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Confirm the code">
+    Call [`POST /phone`](/api-reference/phone/set-phone-number) with `{ "code": "<6 digits>" }`. `phone` is optional here; the number stored is the one that received the SMS. Omitting `code` returns `409 PHONE_VERIFICATION_REQUIRED`.
+
+    <Tabs>
+      <Tab title="Sandbox">
+```bash cURL
+curl --request POST \
+  --url https://core.sandbox.gnosispay.in/user-api/phone \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "code": "123456"
+  }'
+```
+      </Tab>
+      <Tab title="Production">
+```bash cURL
+curl --request POST \
+  --url https://core.prod.gnosispay.com/user-api/phone \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "code": "123456"
+  }'
+```
+      </Tab>
+    </Tabs>
+  </Step>
+</Steps>
+
+### Change a verified phone
+
+Request a new OTP with [`POST /phone/verification`](/api-reference/phone/request-phone-verification), then confirm with [`PATCH /phone`](/api-reference/phone/update-phone-number) and `{ "code": "<6 digits>" }`. `PATCH` only updates an existing number: if the user has no phone yet, the response is `404` and the OTP is **not** consumed.
+
+## Change a phone without verification
+
+Call [`PATCH /phone`](/api-reference/phone/update-phone-number) with the new number in E.164 format and omit `code`. If the user has no phone yet, the response is `404`.
+
+<Note>
+  If you require phone OTP for your users, this call fails with `409 PHONE_VERIFICATION_REQUIRED`. Use the OTP change flow above instead.
+</Note>
+
+<Tabs>
+  <Tab title="Sandbox">
+```bash cURL
+curl --request PATCH \
+  --url https://core.sandbox.gnosispay.in/user-api/phone \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "phone": "+441234567890"
+  }'
+```
+  </Tab>
+  <Tab title="Production">
+```bash cURL
+curl --request PATCH \
+  --url https://core.prod.gnosispay.com/user-api/phone \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "phone": "+441234567890"
+  }'
+```
+  </Tab>
+</Tabs>
+
+## Error codes
+
+| Code | Typical status | When |
+|------|----------------|------|
+| `PHONE_VERIFICATION_NOT_REQUIRED` | 422 | You called `POST /phone/verification` but you did not require phone OTP for your users |
+| `PHONE_OTP_NOT_REQUIRED` | 400 | You sent `code` on a write but you did not require phone OTP for your users |
+| `PHONE_VERIFICATION_REQUIRED` | 409 | You omitted `code` on a write, or tried to create a first card before the phone was verified, while you require phone OTP for your users |
+| `KYC_NOT_APPROVED` | 422 | OTP send or first `POST /phone` before KYC is approved |
+| `ACCOUNT_NOT_READY` | 422 | OTP send or first `POST /phone` before the account is active |
+| `INVALID_OTP` | 400 | Wrong code |
+| `OTP_EXPIRED` | 400 | Code expired |
+| `OTP_NOT_DELIVERED` | 400 | No delivered challenge to consume |
+| `PHONE_OTP_RESEND_TOO_SOON` | 422 | Another OTP was requested too recently |
+| `PHONE_OTP_DELIVERY_FAILED` | 502 | SMS delivery failed |

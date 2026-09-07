@@ -12,6 +12,7 @@ This page compares Gnosis Pay's old API infrastructure against the current archi
 | **SIWE Authentication** | Long-lived access token (24h) | Access token (15 min validity) and refresh token model (7 days validity) with rotation support |
 | **Reversals** | Processed after 1 business day | Instantly processed right after the clearing message |
 | **KYC Verification** | Dependent on Gnosis Pay to complete KYC; Gnosis Pay shares KYC results with partners | KYC can be performed by partners and shared with Gnosis Pay |
+| **Phone Number** | Always verified with SMS OTP (`POST /api/v1/verification`, then `/verification/check`) | Depends on whether you require phone OTP for your users: OTP via `POST /phone/verification` then `POST`/`PATCH /phone`, or the number is set when the first card is created |
 | **Safe Deployment** | Dedicated Safe deployment endpoint | Single `/account` endpoint handling provisioning + creation |
 | **Token Management** | Limited support for single token/currency | Multi-currency support with different balance states |
 | **Account Balances** | Spendable, non-spendable, and total balance | Detailed breakdown: spendable, authorized holds, non-spendable, processing deposits |
