@@ -109,7 +109,8 @@
             "pages": [
               "guides/cards/create-virtual",
               "guides/cards/card-limit",
-              "guides/cards/card-simulator"
+              "guides/cards/card-simulator",
+              "guides/cards/card-3ds"
             ]
           },
           {
