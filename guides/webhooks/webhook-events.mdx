@@ -606,14 +606,14 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
 <CodeGroup>
 ```typescript card.transaction.created
 {
-  "id": "evt_8a3c1d4f2b6e9870c2a5b4d6e8f0a1c3",
-  "type": "card.transaction.declined",
-  "createdAt": "2026-04-24T11:17:44.082000000Z",
+  "id": "evt_c4b7a913e0f5d268b1a4c7e9f2d0b5a3",
+  "type": "card.transaction.created",
+  "createdAt": "2026-04-24T11:17:43.000000000Z",
   "data": {
     "id": "f1c84a96-3d05-4b6b-9f1a-b2e7c5d8a012",
     "accountId": "12c4a7e2-7a91-4f4f-9e76-1c9e1c2a2b18",
     "cardId": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
-    "status": "declined",
+    "status": "pending",
     "amount": "20",
     "currency": "EUR",
     "decimals": 2,
@@ -623,6 +623,11 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
     "isCredit": false,
     "createdAt": "2026-04-24T11:17:43.000000000Z",
     "updatedAt": "2026-04-24T11:17:43.000000000Z",
+    "enrichment": {
+      "shop": null,
+      "status": "unmatched",
+      "merchant": null
+    },
     "description": "Kindle Svcs  888-802-3080 US",
     "authorizationId": 717,
     "authorizationCode": "XZ0COI",
@@ -651,21 +656,93 @@ Triggered when a new debit authorization occurs (purchase, withdrawal, etc.).
     },
     "cardToken": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
     "wallet": {
-          "provider": "apple_pay",
-          "deviceName": "aVBhZCAoMyk.",
-          "deviceType": "TABLET",
-          "deviceBrand": null,
-          "deviceModel": null
-        },
+      "provider": "apple_pay",
+      "deviceName": "aVBhZCAoMyk.",
+      "deviceType": "TABLET",
+      "deviceBrand": null,
+      "deviceModel": null
+    },
     "clearedAt": null,
+    "isPending": true,
+    "kind": "payment",
+    "transactionType": "0100",
+    "transactions": [],
+    "declineReason": null
+  }
+}
+```
+</CodeGroup>
+
+### 22. Card.transaction.cleared
+
+Triggered when a new debit authorization is cleared along with visa transaction code returned.
+
+<CodeGroup>
+```typescript card.transaction.cleared
+{
+  "id": "evt_9d2f6a814c3e7b95a0d8f1e5c7b3a2f6",
+  "type": "card.transaction.cleared",
+  "createdAt": "2026-04-24T11:19:10.000000000Z",
+  "data": {
+    "id": "f1c84a96-3d05-4b6b-9f1a-b2e7c5d8a012",
+    "accountId": "12c4a7e2-7a91-4f4f-9e76-1c9e1c2a2b18",
+    "cardId": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
+    "status": "settled",
+    "amount": "20",
+    "currency": "EUR",
+    "decimals": 2,
+    "originalAmount": "20",
+    "originalCurrency": "USD",
+    "originalDecimals": 2,
+    "isCredit": false,
+    "createdAt": "2026-04-24T11:17:43.000000000Z",
+    "updatedAt": "2026-04-24T11:19:10.000000000Z",
+    "enrichment": {
+      "shop": null,
+      "status": "unmatched",
+      "merchant": null
+    },
+    "description": "Kindle Svcs  888-802-3080 US",
+    "authorizationId": 717,
+    "authorizationCode": "XZ0COI",
+    "merchant": {
+      "name": "Kindle Svcs",
+      "city": "888-802-3080",
+      "country": "US",
+      "categoryCode": "5818"
+    },
+    "entryMode": "0100",
+    "country": null,
+    "billing": {
+      "billingAmount": "20",
+      "billingCurrency": {
+        "symbol": "€",
+        "code": "EUR",
+        "decimals": 2,
+        "name": "Euro"
+      }
+    },
+    "transactionCurrency": {
+      "symbol": "$",
+      "code": "USD",
+      "decimals": 2,
+      "name": "US Dollar"
+    },
+    "cardToken": "8a3b2c91-4d7e-49ab-bf25-ef019a4e6b20",
+    "wallet": {
+      "provider": "apple_pay",
+      "deviceName": "aVBhZCAoMyk.",
+      "deviceType": "TABLET",
+      "deviceBrand": null,
+      "deviceModel": null
+    },
+    "clearedAt": "2026-04-24T11:19:10.000000000Z",
     "isPending": false,
     "kind": "payment",
     "transactionType": "0100",
     "transactions": [],
-    "declineReason": {
-        "code": "810",
-        "message": "Insufficient balance"
-      }
+    "declineReason": null,
+    "visaTransactionCode": "05"
   }
 }
 ```
