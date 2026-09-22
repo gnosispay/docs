@@ -82,19 +82,18 @@ A challenge can be discovered one of two ways. Both produce the same `challengeI
           "id": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
           "cardId": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
           "accountId": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
+          "amount": "2599",
+          "currency": "USD",
+          "decimals": 2,
           "merchant": {
-            "id": "<string>",
-            "displayName": "<string>",
-            "country": "<string>",
-            "categoryCode": "<string>"
+            "id": "merchant-123",
+            "displayName": "Example Store",
+            "country": "USA",
+            "categoryCode": "5732"
           },
           "status": "pending",
           "expiresAt": "2023-11-07T05:31:56Z",
-          "decisionAvailable": true,
-          "amount": "<string>",
-          "currency": "<string>",
-          "decimals": 123,
-          "decision": "approve"
+          "decisionAvailable": true
         }
       ]
     }
@@ -112,6 +111,8 @@ A challenge can be discovered one of two ways. Both produce the same `challengeI
   The webhook and the list/detail endpoints don't use identical field names for the same data: the webhook's `merchant.name` / `merchant.mcc` correspond to the REST endpoints' `merchant.displayName` / `merchant.categoryCode`. Key off `data.id` (or `id`) and re-fetch via `GET /3ds/challenges/{challengeId}` if you need the canonical field names, don't assume the two shapes match 1:1.
 </Note>
 
+`amount`, `currency`, `decimals`, and the merchant display name are always present. `amount` is a non-negative minor-unit integer encoded as a decimal string; `"0"` is valid. The merchant ID remains optional and is never used as a fallback for the display name or signed decision.
+
 ## Deciding a challenge
 
 Approve and decline go through the identical signed flow, there is no unsigned decline shortcut.
@@ -124,30 +125,42 @@ Approve and decline go through the identical signed flow, there is no unsigned d
     ```
     POST /user-api/3ds/challenges/{challengeId}/decision-challenge
     ```
-    Send the selected `decision` (`approve` or `decline`). The response contains
-    the complete EIP-712 typed data, including the exact human-readable
-    `message.authorization` that will be signed.
+    Send the selected `decision` (`approve` or `decline`). The response contains the complete structured EIP-712 typed data:
 
-    Before signing, construct the expected authorization from the challenge
-    details and selected decision and compare it exactly with
-    `message.authorization`:
-
-    ```text
-    Approve <amount> <currency> payment to <merchant>
-    Decline <amount> <currency> payment to <merchant>
+    ```json
+    {
+      "domain": {
+        "name": "Gnosis Pay",
+        "version": "1",
+        "chainId": 42220
+      },
+      "primaryType": "ThreeDSDecision",
+      "types": {
+        "ThreeDSDecision": [
+          { "name": "decision", "type": "string" },
+          { "name": "challengeId", "type": "string" },
+          { "name": "amount", "type": "uint256" },
+          { "name": "currency", "type": "string" },
+          { "name": "decimals", "type": "uint8" },
+          { "name": "merchantName", "type": "string" },
+          { "name": "nonce", "type": "uint256" }
+        ]
+      },
+      "message": {
+        "decision": "approve",
+        "challengeId": "3c90c3cc-0d44-4b50-8888-8dd25736052a",
+        "amount": "2599",
+        "currency": "USD",
+        "decimals": 2,
+        "merchantName": "Example Store",
+        "nonce": "93485723094587230945872309458723094587"
+      }
+    }
     ```
 
-    These are stable, English protocol strings for EIP-712 version `1`; do not
-    localize them. Format the minor-unit amount using `decimals`, a dot as the
-    decimal separator, no digit grouping, and all decimal places (for example,
-    `25.99 USD`). Use `merchant.displayName` when present, otherwise
-    `merchant.id`.
+    Before signing, verify the fixed domain name (`Gnosis Pay`), version (`1`), expected chain ID, primary type, and exact field names, types, and order shown above. Then compare `message.decision`, `challengeId`, `amount`, `currency`, `decimals`, and `merchantName` exactly with the selected decision and the challenge response.
 
-    Also verify that `domain.name` equals the expected authorization,
-    `domain.version` is `1`, `domain.chainId` is the expected chain,
-    `primaryType` is `Message`, and the message fields are exactly
-    `authorization: string` and `nonce: uint256`. Do not request a wallet
-    signature if any value is unexpected.
+    Do not format `message.amount` as a major-unit decimal. It is the unchanged minor-unit integer string from the challenge (`"2599"`, or `"0"` for a zero amount), which avoids locale and rounding ambiguity. Use `decimals` only to format the amount in your user interface. Do not request a wallet signature if any value is unexpected.
   </Step>
   <Step title="Sign with the connected wallet">
     Pass the typed data to the wallet's `signTypedData` method and have the cardholder confirm in their wallet.
