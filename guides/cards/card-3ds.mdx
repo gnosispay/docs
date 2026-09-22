@@ -124,7 +124,30 @@ Approve and decline go through the identical signed flow, there is no unsigned d
     ```
     POST /user-api/3ds/challenges/{challengeId}/decision-challenge
     ```
-    Returns EIP-712 typed data bound to the decision (approve or decline) being made the typed data itself encodes which outcome is being signed, so a signature can't be replayed against the other one.
+    Send the selected `decision` (`approve` or `decline`). The response contains
+    the complete EIP-712 typed data, including the exact human-readable
+    `message.authorization` that will be signed.
+
+    Before signing, construct the expected authorization from the challenge
+    details and selected decision and compare it exactly with
+    `message.authorization`:
+
+    ```text
+    Approve <amount> <currency> payment to <merchant>
+    Decline <amount> <currency> payment to <merchant>
+    ```
+
+    These are stable, English protocol strings for EIP-712 version `1`; do not
+    localize them. Format the minor-unit amount using `decimals`, a dot as the
+    decimal separator, no digit grouping, and all decimal places (for example,
+    `25.99 USD`). Use `merchant.displayName` when present, otherwise
+    `merchant.id`.
+
+    Also verify that `domain.name` equals the expected authorization,
+    `domain.version` is `1`, `domain.chainId` is the expected chain,
+    `primaryType` is `Message`, and the message fields are exactly
+    `authorization: string` and `nonce: uint256`. Do not request a wallet
+    signature if any value is unexpected.
   </Step>
   <Step title="Sign with the connected wallet">
     Pass the typed data to the wallet's `signTypedData` method and have the cardholder confirm in their wallet.
