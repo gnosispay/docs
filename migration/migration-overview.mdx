@@ -22,3 +22,43 @@ This page compares Gnosis Pay's old API infrastructure against the current archi
 | **Transactions** | Separated by card transaction and onchain transaction; onchain transactions only available via RPC | Unified account-statement endpoint showing deposits, withdrawals, and card transactions |
 | **Owner Address** | Multiple SIWE-authenticated addresses could be added alongside the Safe owner | A single owner address, set at account creation, cannot be changed, and no other SIWE addresses can be added |
 | **Pre-Authorization Holds**| Not allowed in old infrastructure | Pre-authorization holds allowed, users can use it for gas stations or car rentals etc. |
+
+## Migrating your existing users
+
+Existing users are not moved over in bulk. Each one re-onboards through the [standard onboarding flow](/guides/onboarding) — the same endpoints, the same [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) polling loop, the same status values. There is no migration-specific endpoint to integrate and no `migrated` flag to branch on.
+
+What changes is how much the user has to do. When Gnosis Pay recognises the user as an existing customer, their identity verification is carried over in the background and the onboarding status machine simply never returns the steps they already completed.
+
+### What the user goes through
+
+<Steps>
+  <Step title="Sign in with the right wallet">
+    The user authenticates with SIWE as usual. Recognition happens on this wallet address, so it must be a wallet from their existing account — specifically one that is a current owner of their existing Safe.
+
+    This wallet becomes the only sign-in wallet and the only owner of the new account, and it cannot be changed later.
+  </Step>
+
+  <Step title="Verify email and register">
+    Standard email OTP and [`POST /user`](/api-reference/user/register-user). Recognition happens here and only here — if the user registers with an unrecognised wallet, they are treated as a brand new customer and there is no way to retroactively migrate them.
+  </Step>
+
+  <Step title="Accept the Terms of Service — `action_accept_tos`">
+    Always required. The new terms are different from the old ones, so previous acceptance does not carry over.
+  </Step>
+
+  <Step title="Wait while verification is carried over — `waiting_kyc_setup`">
+    Keep polling as you normally would. Gnosis Pay pulls the existing verification data in the background; this is usually quick but is asynchronous, so don't assume a fixed duration.
+  </Step>
+
+  <Step title="KYC and Source of Funds — usually skipped">
+    This is where the migrated journey diverges. `action_complete_kyc` is skipped entirely — the user never opens the KYC provider's SDK again. `action_complete_sof` is skipped too when their existing answers still map onto the current questionnaire; if they don't, the user answers the questionnaire normally.
+
+    Build for both outcomes and let the polled status decide, rather than hardcoding the skip.
+  </Step>
+
+  <Step title="Create the account, verify phone, create a card">
+    Identical to a new user from here on. The user creates their account, a new Safe is deployed, and phone verification applies if you require it.
+  </Step>
+</Steps>
+
+In the best case, a migrated user only accepts the Terms of Service and creates their account. In the worst case — verification could not be carried over — they fall back to the full standard flow with no error surfaced to you.
