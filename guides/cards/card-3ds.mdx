@@ -57,9 +57,9 @@ A challenge can be discovered one of two ways. Both produce the same `challengeI
         "decimals": 2,
         "merchant": {
           "id": "merchant-123",
-          "name": "Example Store",
+          "displayName": "Example Store",
           "country": "USA",
-          "mcc": "5732"
+          "categoryCode": "5732"
         },
         "expiresAt": "2026-09-15T10:05:00Z",
         "notificationAttempt": 1
@@ -92,6 +92,7 @@ A challenge can be discovered one of two ways. Both produce the same `challengeI
             "categoryCode": "5732"
           },
           "status": "pending",
+          "startedAt": "2023-11-07T05:26:56Z",
           "expiresAt": "2023-11-07T05:31:56Z",
           "decisionAvailable": true
         }
@@ -106,10 +107,6 @@ A challenge can be discovered one of two ways. Both produce the same `challengeI
     - Only show controls when `decisionAvailable` is `true`; otherwise display the challenge's existing `status` / `decision`.
   </Tab>
 </Tabs>
-
-<Note>
-  The webhook and the list/detail endpoints don't use identical field names for the same data: the webhook's `merchant.name` / `merchant.mcc` correspond to the REST endpoints' `merchant.displayName` / `merchant.categoryCode`. Key off `data.id` (or `id`) and re-fetch via `GET /3ds/challenges/{challengeId}` if you need the canonical field names, don't assume the two shapes match 1:1.
-</Note>
 
 `amount`, `currency`, `decimals`, and the merchant display name are always present. `amount` is a non-negative minor-unit integer encoded as a decimal string; `"0"` is valid. The merchant ID remains optional and is never used as a fallback for the display name or signed decision.
 
@@ -187,6 +184,46 @@ Approve and decline go through the identical signed flow, there is no unsigned d
 ## Dismissal and multiple challenges
 
 A cardholder can dismiss a prompt without deciding it. Dismissal is local to the current foreground session only, it doesn't cancel the challenge server-side, and the same challenge reappears on a fresh session. If more than one challenge is pending, present one at a time; after a challenge is dismissed, decided, or expires, immediately show the next pending one.
+
+## Testing in sandbox
+
+Use the [Card Transaction Simulator](/guides/cards/card-simulator#test-in-app-3ds) to exercise the full integrator-facing flow without creating a transaction through the live card network. The simulator replaces Apata for the test challenge, but it deliberately keeps the real partner webhook, polling, wallet-signature, and decision APIs in the path.
+
+<Steps>
+  <Step title="Start a 3DS authorization">
+    Send an authorization to the Simulator API with `3ds` set to `true`:
+
+    ```json
+    {
+      "transaction_type": "authorization",
+      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "amount": "1.00",
+      "currency": "USD",
+      "merchant_name": "SANDBOX 3DS TEST",
+      "merchant_code": "5732",
+      "3ds": true
+    }
+    ```
+
+    The request returns `202 Accepted` with a `simulation_id`. The challenge expires after five minutes.
+  </Step>
+  <Step title="Discover and decide the challenge">
+    Receive `card.3ds.challenge.created` through your configured partner webhook or discover the challenge through `GET /user-api/3ds/challenges`. Then use the same signed approve or decline flow described above; there is no simulator-only decision endpoint.
+  </Step>
+  <Step title="Check the simulation result">
+    Poll the simulation separately from the 3DS challenge:
+
+    ```
+    GET /simulator-api/transactions/3ds-simulations/{simulationId}
+    ```
+
+    Approval continues to the Pismo simulator and returns its result under `transaction`. Decline and timeout finish without calling Pismo.
+  </Step>
+</Steps>
+
+<Note>
+  You do not need funds to test challenge delivery, polling, signing, decline, or timeout. You need sufficient available balance only if you want the Pismo authorization after an approved 3DS decision to succeed. A successful 3DS approval can therefore produce a completed simulation whose nested transaction is denied for insufficient balance.
+</Note>
 
 ## Endpoints
 

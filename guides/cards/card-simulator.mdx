@@ -9,9 +9,9 @@ description: "Simulate card transactions for testing purposes as part of the san
 
 ## Card Transaction Simulator
 
-The Card Transaction Simulator allows you to test full card transaction lifecycles in the sandbox environment, without sending transactions to the live card network.
+The Card Transaction Simulator allows you to test full card transaction lifecycles in the sandbox environment, without sending transactions to the live card network. It can also start an asynchronous in-app 3DS challenge before an authorization.
 
-When you send a transaction request:
+For a normal transaction request, the simulator:
 
 1. The simulator authenticates the request
 2. It checks available balance
@@ -61,6 +61,7 @@ https://core.sandbox.gnosispay.in/docs/simulator-api
     | `replacement_amount` | string | Conditional | Required for `replacement` |
     | `merchant_name` | string | No | Defaults to `"TEST MERCHANT"` |
     | `merchant_code` | string | No | MCC code. Defaults to `"5541"` |
+    | `3ds` | boolean | No | When `true`, starts the asynchronous in-app 3DS flow before an authorization. Omitted or `false` keeps the normal synchronous behavior. |
   </Step>
 </Steps>
 
@@ -102,6 +103,126 @@ Authorization creates an initial hold on the card balance.
     </Warning>
   </Step>
 </Steps>
+
+## Test in-app 3DS
+
+Set the optional `3ds` field to `true` to test the same integration your app uses for a real in-app 3DS challenge. The simulator creates a synthetic Apata challenge internally; it does not make a request to Apata. Partner webhook delivery, user API polling, EIP-712 wallet signing, and decision submission all use the normal integration path.
+
+```mermaid
+sequenceDiagram
+    participant Test as Test client
+    participant Simulator as Simulator API
+    participant GP as Gnosis Pay
+    participant Partner as Partner webhook
+    participant App as Partner app
+    participant Pismo as Pismo simulator
+
+    Test->>Simulator: POST /transactions/simulate<br/>3ds: true
+    Simulator-->>Test: 202 pending + simulation_id
+    Simulator->>GP: Create synthetic 3DS challenge
+    GP->>Partner: card.3ds.challenge.created
+    App->>GP: Poll challenge and submit signed decision
+    alt Approved
+        GP->>Pismo: Simulate authorization
+        Pismo-->>GP: Approved or denied transaction
+    else Declined or timed out
+        GP-->>GP: Finish without calling Pismo
+    end
+    Test->>Simulator: GET /transactions/3ds-simulations/{simulationId}
+    Simulator-->>Test: Current or final result
+```
+
+<Warning>
+  `3ds: true` is supported only for `transaction_type: "authorization"` through `POST /transactions/simulate` with a `card_id`. It is not supported for reversals, replacements, clearing, clearing cancellation, by-PAN simulations, or named scenarios.
+</Warning>
+
+Before testing, the card must be active and Gnosis Pay must have enabled in-app 3DS and an active partner webhook for your sandbox tenant.
+
+<Steps>
+  <Step title="Start the simulation">
+    Authenticate with the Simulator API and send:
+
+    ```json
+    {
+      "transaction_type": "authorization",
+      "card_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "amount": "1.00",
+      "currency": "USD",
+      "merchant_name": "SANDBOX 3DS TEST",
+      "merchant_code": "5732",
+      "3ds": true
+    }
+    ```
+
+    The simulator request amount is expressed in major units and must be greater than zero. The generated 3DS challenge exposes the equivalent minor-unit integer string and its decimal exponent; for example, `"1.00"` USD becomes `amount: "100"` and `decimals: 2`.
+  </Step>
+
+  <Step title="Save the asynchronous simulation ID">
+    The simulator returns `202 Accepted` instead of the normal synchronous transaction response:
+
+    ```json
+    {
+      "simulation_id": "0195f62d-cbbb-7dd8-8d34-f6e46460a558",
+      "status": "pending",
+      "expires_at": "2026-09-24T15:05:00Z"
+    }
+    ```
+
+    The synthetic challenge expires five minutes after the simulation starts.
+  </Step>
+
+  <Step title="Handle the challenge through your integration">
+    Your partner webhook receives `card.3ds.challenge.created`. Your app can also discover the challenge through `GET /user-api/3ds/challenges`.
+
+    Follow the normal flow in [In-App 3DS Push Provisioning](/guides/cards/card-3ds): show the challenge, request the decision-bound EIP-712 data, have the cardholder sign it, and submit the signed approval or decline. The simulator does not provide a shortcut around wallet proof.
+  </Step>
+
+  <Step title="Poll the simulation">
+    Use Simulator API Basic Auth to request:
+
+    ```
+    GET /transactions/3ds-simulations/{simulationId}
+    ```
+
+    Continue until the simulation reaches a terminal state.
+  </Step>
+</Steps>
+
+### 3DS simulation statuses
+
+| Status | Meaning |
+|---|---|
+| `pending` | The challenge was created and is waiting for a decision. |
+| `processing` | A signed decision was accepted and is being processed. |
+| `completed` | The decision was approved and the Pismo simulator returned a transaction result. |
+| `declined` | The cardholder declined. Pismo was not called. |
+| `expired` | No decision was received within five minutes. Pismo was not called. |
+| `failed` | Challenge delivery, configuration, or downstream processing failed. See the bounded `error` field. |
+
+After approval, a completed response includes the normal Pismo result under `transaction`:
+
+```json
+{
+  "simulation_id": "0195f62d-cbbb-7dd8-8d34-f6e46460a558",
+  "status": "completed",
+  "expires_at": "2026-09-24T15:05:00Z",
+  "challenge_id": "0195f62d-cbe5-79da-b8ce-c981920a3af3",
+  "transaction": {
+    "status": "approved",
+    "authorization_code": "ABC123",
+    "authorization_id": 98765432,
+    "authorization_date_time": "2026-09-24T15:01:00Z",
+    "settlement_amount": "1.00",
+    "mode_type": "DEBIT",
+    "card_mode": "DEBIT",
+    "is_domestic_transaction": true
+  }
+}
+```
+
+<Note>
+  Funds are not required to test challenge delivery, polling, signing, decline, or timeout. Sufficient available balance is required only for the Pismo authorization after an approval. Without it, the simulation still reaches `completed`, but `transaction.status` is `denied`, usually with denial code `810` (`Insufficient balance`). You can fund the account before deciding through `POST /ledger/top-up`; use the `accountId` from the challenge and the account's supported currency.
+</Note>
 
 ### Simulate a Reversal
 
