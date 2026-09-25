@@ -31,7 +31,7 @@ A signature proves identity for a single moment. It doesn't create an ongoing se
 
 Every time a refresh token is used, it's invalidated and replaced with a new one. This is **token rotation**. The old refresh token becomes permanently unusable the moment a new one is issued, even if it hasn't expired yet.
 
-This turns refresh tokens into a kind of tripwire: in normal operations, only one "version" of a session's refresh token is ever valid at a time. If a refresh token is ever used *twice*, once by the legitimate client, once by an attacker who copied it the system can detect that the token has already been consumed and end the session for everyone holding a copy.
+This turns refresh tokens into a kind of tripwire: in normal operations, only one "version" of a session's refresh token is ever valid at a time. If a refresh token is ever used *twice* - once by the legitimate client once by an attacker who copied it - the system can detect that the token has already been consumed and end the session for everyone holding a copy.
 
 ```mermaid
 sequenceDiagram
