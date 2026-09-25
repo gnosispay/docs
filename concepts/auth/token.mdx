@@ -12,7 +12,7 @@ Once that signature is verified, the API issues a pair of tokens (**access** and
 SIWE (formalized as **EIP-4361**) defines a standard, human-readable message format that a wallet signs to prove address ownership.
 
 - **Signed message:** The signed message itself states *who* is authenticating, *for which domain*, at *what time*, and often includes a random nonce. The user can visually inspect what they're agreeing to before signing, rather than blindly approving an opaque hash.
-- **Domain-bound:** Because the message includes the requesting domain, a signature obtained on `app.example.com` can't be silently replayed against Gnosis Pay's own domain by a malicious site — this is what domain whitelisting on our side enforces.
+- **Domain-bound:** Because the message includes the requesting domain, a signature obtained on `app.example.com` can't be silently replayed against Gnosis Pay's own domain by a malicious site. This is what domain whitelisting on our side enforces.
 - **Replay resistance:** The nonce and timestamp in the message mean a captured signature can't be reused indefinitely to mint new sessions.
 
 
