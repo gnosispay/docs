@@ -1,6 +1,6 @@
 ---
-title: "Migrating to new Gnosis Pay APIs"
-description: "Overview of the differences between Gnosis Pay's old and new infrastructure, only applicable to old Partners integrating new APIs"
+title: "Migrating existing users to V2"
+description: "How can a partner in V1 bring their users to V2 with least amount of friction in onboarding flow."
 ---
 
 Existing users are not moved over in bulk. Each one re-onboards through the [standard onboarding flow](/guides/onboarding) — the same endpoints, the same [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) polling loop, the same status values. There is no migration-specific endpoint to integrate and no `migrated` flag to branch on.
