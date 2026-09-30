@@ -132,7 +132,10 @@
       },
       {
         "tab": "Migration",
-        "pages": ["migration/migration-overview"]
+        "pages": [
+          "migration/migration-overview",
+          "untitled-page"
+        ]
       },
       {
         "tab": "Changelog",
