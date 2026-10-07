@@ -7,50 +7,55 @@ mode: "custom"
 <div
   style={{
     backgroundImage: "linear-gradient(rgba(7,5,44,0.55), rgba(7,5,44,0.55)), url('/static/img/hero-visual.png')",
-    backgroundSize: "150% auto",
+    backgroundSize: "cover",
     backgroundPosition: "20% center",
     borderRadius: "20px",
-    padding: "56px 40px",
+    padding: "clamp(36px, 6vw, 72px) clamp(24px, 5vw, 56px)",
     maxWidth: "1100px",
-    margin: "40px auto 0"
+    margin: "32px auto 0"
   }}
 >
-
-  <div style={{ marginBottom: "40px" }}>
-    <img
-      src="/static/img/logo-light.svg"
-      alt="Gnosis Pay"
-      style={{ height: "36px" }}
-    />
-  </div>
-
-  <div style={{ maxWidth: "700px" }}>
-    <h1 style={{ fontSize: "56px", lineHeight: "1.05", fontWeight: 800, margin: 0, color: "#FFFFFF" }}>
-      Ship stablecoin<br />card programs<br />in minutes
+  <div style={{ maxWidth: "640px" }}>
+    <h1 style={{ fontSize: "clamp(36px, 6vw, 60px)", lineHeight: "1.05", fontWeight: 800, letterSpacing: "-0.02em", margin: 0, color: "#FFFFFF" }}>
+      Ship stablecoin card programs in minutes
     </h1>
-    <p style={{ fontSize: "18px", marginTop: "20px", maxWidth: "440px", color: "rgba(255,255,255,0.75)" }}>
+    <p style={{ fontSize: "18px", lineHeight: "1.55", marginTop: "20px", maxWidth: "460px", color: "rgba(255,255,255,0.8)" }}>
       White-label infrastructure for instant card issuance, fiat rails, and multi-currency accounts.
     </p>
-    <a
-      href="/concepts/intro"
-      style={{
-        display: "inline-block",
-        background: "#CBFB6C",
-        color: "#1A1751",
-        fontWeight: 700,
-        padding: "14px 28px",
-        borderRadius: "999px",
-        textDecoration: "none",
-        fontSize: "16px",
-        marginTop: "28px"
-      }}
-    >
-      Start integrating today
-    </a>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "32px" }}>
+      <a
+        href="/concepts/intro"
+        style={{
+          display: "inline-block",
+          background: "#CBFB6C",
+          color: "#1A1751",
+          fontWeight: 700,
+          padding: "14px 28px",
+          borderRadius: "999px",
+          textDecoration: "none",
+          fontSize: "16px"
+        }}
+      >
+        Start integrating
+      </a>
+      <a
+        href="/guides/configuring-environment"
+        style={{
+          display: "inline-block",
+          border: "1px solid rgba(255,255,255,0.4)",
+          color: "#FFFFFF",
+          fontWeight: 600,
+          padding: "13px 26px",
+          borderRadius: "999px",
+          textDecoration: "none",
+          fontSize: "16px"
+        }}
+      >
+        Set up your sandbox
+      </a>
+    </div>
   </div>
-
 </div>
-
 
 
 <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "56px 24px 72px" }}>
@@ -71,15 +76,52 @@ mode: "custom"
   <Card title="Multi-Currency Setup" icon="wallet">
    Setup multi-currency accounts in EUR, USD, and GBP available.
   </Card>
-  <Card title="Global Reach" icon="globe">
-    Live across Brazil, the EU, UK, Cyprus, Colombia, the Philippines, Mexico, Japan, Indonesia, Thailand, and Singapore and expanding.
+  <Card title="Global reach" icon="globe">
+    Live in the EU, UK, Brazil, Colombia, Mexico, Japan, Singapore, the Philippines, Indonesia, and Thailand, with more on the way.
   </Card>
 </CardGroup>
 
 </div>
 
-<div style={{ maxWidth: "1100px", margin: "0 auto", padding: "56px 24px 80px" }}>
+<div style={{ maxWidth: "1100px", margin: "0 auto", padding: "5px 24px 0" }}>
+
+<h2 style={{ fontSize: "28px", fontWeight: 700, margin: "0 0 8px", color: "#FFFFFF" }}>Kickoff your integration </h2>
 
 
+<div className="gp-timeline">
 
+  <a className="gp-step" href="/guides/configuring-environment">
+    <span className="gp-badge">1</span>
+    <div className="gp-step-body">
+      <span className="gp-step-title">🛠️ Get sandbox access</span>
+      <span className="gp-step-text">Request an invite from our team, create your credentials, and point your app at the sandbox.</span>
+      <span className="gp-step-link">Configure your environment</span>
+    </div>
+  </a>
+
+  <a className="gp-step" href="/guides/auth-with-siwe">
+    <span className="gp-badge">2</span>
+    <div className="gp-step-body">
+      <span className="gp-step-title">🔐 Sign in and onboard users</span>
+      <span className="gp-step-text">Authenticate users with Sign-In with Ethereum, then take them through onboarding and KYC.</span>
+      <span className="gp-step-link">Set up authentication</span>
+    </div>
+  </a>
+
+  <a className="gp-step" href="/guides/cards/create-virtual">
+    <span className="gp-badge">3</span>
+    <div className="gp-step-body">
+      <span className="gp-step-title">💳 Issue your first card</span>
+      <span className="gp-step-text">Create a virtual card and run a test payment in the card simulator to see the full flow.</span>
+      <span className="gp-step-link">Create a virtual card</span>
+    </div>
+  </a>
+
+</div>
+
+</div>
+
+<div style={{ maxWidth: "1100px", margin: "56px auto 0", padding: "20px 24px 40px", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px" }}>
+  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px" }}>© 2026 Gnosis Pay</span>
+  <a href="https://gnosispay.com/" style={{ color: "rgba(255,255,255,0.7)", textDecoration: "none", fontSize: "14px" }}>gnosispay.com</a>
 </div>
