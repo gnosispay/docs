@@ -8,13 +8,10 @@
     "dark": "#1A1751"
   },
   "appearance": {
-    "default": "light",
-    "strict": false
+    "default": "dark",
+    "strict": true
   },
-  "logo": {
-    "light": "/static/img/logo-dark.svg",
-    "dark": "/static/img/logo-light.svg"
-  },
+  "logo": "/static/img/logo-light.svg",
   "navbar": {
     "links": [
       {
@@ -24,7 +21,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Sign up as Partner",
+      "label": "Sign in as Partner",
       "href": "https://partner-dashboard.sandbox.gnosispay.com/auth/signin"
     }
   },
@@ -132,10 +129,7 @@
       },
       {
         "tab": "Migration",
-        "pages": [
-          "migration/migration-overview",
-          "untitled-page"
-        ]
+        "pages": ["migration/migration-overview"]
       },
       {
         "tab": "Changelog",
