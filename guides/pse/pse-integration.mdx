@@ -47,6 +47,17 @@ Before initializing the SDK on the front-end, your **backend** must establish a 
 
 **Mutual TLS (mTLS)** is a form of authentication where both parties in a connection verify each other using the TLS protocol. Your backend establishes an mTLS connection with the Gnosis Pay private PSE API to receive an ephemeral token.
 
+### PSE hosts
+
+PSE exposes two hosts. Your backend calls the **authenticated** host over mTLS. The SDK loads the secure iframe from the **public** host, which you pass as `iframeHost` when constructing the SDK.
+
+| | Sandbox | Production |
+|---|---|---|
+| Authenticated API (mTLS, backend only) | `https://api-pse.stg.gnosispay.com` | `https://api-pse.gnosispay.com` |
+| Public iframe host (`iframeHost`) | `https://api-pse-public.stg.gnosispay.com` | `https://api-pse-public.gnosispay.com` |
+
+The SDK defaults `iframeHost` to the production public host. Set it explicitly for sandbox.
+
 #### Generating mTLS certificates
 
 After signing up through the [Partners Dashboard](https://partners.gnosispay.com/), you'll receive an `App ID` instantly. Use it to generate a private key and Certificate Signing Request (CSR):
@@ -100,7 +111,7 @@ const httpsAgent = new https.Agent({
 const ephemeralTokenRequest = await axios({
   httpsAgent: httpsAgent,
   method: "POST",
-  url: `https://api-pse.gnosispay.com/api/v1/ephemeral-token`,
+  url: `https://api-pse.stg.gnosispay.com/api/v1/ephemeral-token`, // Sandbox. Production: https://api-pse.gnosispay.com
   headers: { "Content-Type": "application/json" },
 });
 ```
@@ -116,7 +127,7 @@ const httpsAgent = new https.Agent({
 
 const req = https.request(
   {
-    hostname: "api-pse.gnosispay.com",
+    hostname: "api-pse.stg.gnosispay.com", // Sandbox. Production: api-pse.gnosispay.com
     path: "/api/v1/ephemeral-token",
     method: "POST",
     headers: {
@@ -174,7 +185,7 @@ app.get("/api/ephemeral-token", async (_req, res) => {
 
     const response = await axios({
       method: "POST",
-      url: "https://api-pse.gnosispay.com/api/v1/ephemeral-token",
+      url: "https://api-pse.stg.gnosispay.com/api/v1/ephemeral-token", // Sandbox. Production: https://api-pse.gnosispay.com
       headers: { "Content-Type": "application/json" },
       httpsAgent,
     });
@@ -327,6 +338,7 @@ const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "view-
 const gpSdk = new GPSDK({
   pseVersion: 3,                          // PSE version 3, required for EIP-712 2FA
   appId: "gp_your_app_id",               // Your Partner App ID
+  iframeHost: "https://api-pse-public.stg.gnosispay.com", // Sandbox public host. Omit to use production.
   ephemeralToken: data.ephemeralToken,
   authModuleToken: authModuleToken,       // Auth module access token
   eip712Signature: eip712Signature,       // Hex signature from wallet
@@ -381,6 +393,7 @@ const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "view-
 const gpSdk = new GPSDK({
   pseVersion: 3,
   appId: "gp_your_app_id",
+  iframeHost: "https://api-pse-public.stg.gnosispay.com",
   ephemeralToken: data.ephemeralToken,
   authModuleToken: authModuleToken,
   eip712Signature,
@@ -410,6 +423,7 @@ const { eip712Signature, eip712Nonce } = await getSignedChallenge(cardId, "chang
 const gpSdk = new GPSDK({
   pseVersion: 3,
   appId: "gp_your_app_id",
+  iframeHost: "https://api-pse-public.stg.gnosispay.com",
   ephemeralToken: data.ephemeralToken,
   authModuleToken: authModuleToken,
   eip712Signature,

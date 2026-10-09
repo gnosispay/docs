@@ -9,7 +9,8 @@ If you want to display sensitive information (such as card numbers or PINs) in y
 
 To initialize the SDK, you'll need:
 - An `App ID` provided to you upon registration with Gnosis Pay
-- An **ephemeral-token** retrieved from the PSE private API using mTLS authentication
+- An **ephemeral-token** retrieved from the PSE authenticated API using mTLS authentication
+- The **public iframe host** for the environment you are calling (`iframeHost` on the SDK)
 - An **auth module token** obtained through the [SIWE authentication flow](/guides/auth-with-siwe)
 - An **EIP-712 signature** and **nonce** obtained from the challenge flow described below
 
@@ -34,26 +35,26 @@ Here's a diagram showing each step:
     sequenceDiagram
         participant FE as Your Frontend
         participant BE as Your Backend
-        participant Auth as Auth Module
+        participant UA as User Api
         participant PSE as PSE API
 
-        FE->>Auth: SIWE Login
-        Auth-->>FE: authModuleToken (15min access token)
+        FE->>UA: SIWE Login
+        UA-->>FE: authModuleToken (15min access token)
 
         FE->>BE: Request ephemeral-token
         BE->>PSE: POST /api/v1/ephemeral-token (mTLS)
         PSE-->>BE: ephemeral-token
         BE-->>FE: ephemeral-token
 
-        FE->>Auth: GET /pci/cards/{cardId}/challenge?action=...
-        Auth-->>FE: EIP-712 typed data (domain, types, message, nonce)
+        FE->>UA: GET /pci/cards/{cardId}/challenge?action=...
+        UA-->>FE: EIP-712 typed data (domain, types, message, nonce)
         Note over FE: User signs typed data in wallet
 
-        Note over FE: Initialize PSE SDK (PSE version 3) with<br/>ephemeralToken, authModuleToken, appId,<br/>eip712Signature, eip712Nonce
+        Note over FE: Initialize PSE SDK (PSE version 3) with<br/>ephemeralToken, authModuleToken, appId, iframeHost,<br/>eip712Signature, eip712Nonce
 
         FE->>PSE: SDK requests card data
-        PSE->>Auth: Verifies EIP-712 signature + nonce
-        Auth-->>PSE: Signature valid
+        PSE->>UA: Verifies EIP-712 signature + nonce
+        UA-->>PSE: Signature valid
         PSE-->>FE: Renders card data in secure iframe
 ```
 
