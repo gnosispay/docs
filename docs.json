@@ -1,6 +1,10 @@
 {
   "theme": "mint",
   "name": "Gnosis Pay Documentation",
+  "banner": {
+     "content": "⚠️ You are viewing the legacy documentation. [Go to the latest docs](https://docs.gnosispay.com)",
+     "dismissible": false
+   },
   "colors": {
     "primary": "#707A2D",
     "light": "#D8EB81",
