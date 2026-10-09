@@ -1,0 +1,35 @@
+---
+title: "Migrating existing users to V2"
+description: "How can a partner in V1 bring their users to V2 with least amount of friction in onboarding flow."
+---
+
+Migrating from v1 to v2 is user driven. There is no bulk migration, each user starts the process themselves by going through the [standard onboarding flow](/guides/onboarding), using the same endpoints and polling [`GET /user/onboarding`](/api-reference/user/get-onboarding-status) as usual. There is no `migrated` flag to check.
+
+### What changes for a user ?
+
+When a user comes to V2 endpoint, Gnosis Pay infra recognises the user as an existing v1 customer, their identity verification is carried over to v2 and they are moved forward in the flow, skipping the steps they have already completed.
+
+### What the user goes through
+
+<Steps>
+  <Step title="Sign in with the right wallet">
+    The user authenticates with SIWE. Recognition is based on the wallet address, so it must be a wallet that currently owns their existing Safe. This wallet becomes the only wallet the user can sign in with and the sole owner of the new account. It cannot be changed later.
+  </Step>
+  <Step title="Verify email and register">
+    The user completes email OTP verification and registers through [`POST /user`](/api-reference/user/register-user). This is the only point where recognition happens. If the user registers with a wallet that is not recognised, they are treated as a new customer and cannot be migrated afterwards.
+  </Step>
+  <Step title="Accept the Terms of Service (`action_accept_tos`)">
+    This step is always required. The terms have been updated, so earlier acceptance does not carry over.
+  </Step>
+  <Step title="Wait for verification to transfer (`waiting_kyc_setup`)">
+    Continue polling as normal. Gnosis Pay transfers the existing verification data asynchronously. It is usually quick, but you should not rely on a fixed duration.
+  </Step>
+  <Step title="KYC and Source of Funds, usually skipped">
+    The user skips `action_complete_kyc` entirely and never needs to open the KYC provider again. They also skip `action_complete_sof` if their previous answers still match the current questionnaire. If they do not, the user fills in the questionnaire as usual. Support both outcomes and let the polled status guide the flow instead of hardcoding the skip.
+  </Step>
+  <Step title="Create the account, verify phone, and create a card">
+    From here, the flow is identical to onboarding a new user. The user creates their account, a new Safe is deployed, and phone verification applies if you require it.
+  </Step>
+</Steps>
+
+In the best case, a migrated user only needs to accept the Terms of Service and create their account. If their verification cannot be carried over, they simply complete the full standard flow, and no error is returned to your integration.

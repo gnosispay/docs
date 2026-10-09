@@ -1,0 +1,41 @@
+---
+title: "Account Overview"
+description: "Understanding what a Gnosis Pay account is and how spending limits work"
+---
+
+A Gnosis Pay account is created once a user has been fully onboarded and has completed KYC.
+
+## Token and Safe configuration
+
+When an account is provisioned, it's configured with the **token** that the account will spend from. This token, along with a linked **Safe**, defines the account's spending source: the Safe is authorized to spend the configured token on behalf of the account.
+
+## Account spending limits
+
+Gnosis Pay accounts support configurable spending limits at two levels:
+
+- **User-configured limits** : users can set their own account limit, giving them direct control over how much they spend, independent of any partner-level configuration.
+- **Partner-configured limits** : as a partner, you can apply a custom limit on an account, up to a maximum limit set for that account type.
+
+<Info>
+  These two levels work together: a partner can define the limit for an account based on their program setup with Gnosis Pay, while the user retains control to set a stricter limit within it for their own spending discipline.
+</Info>
+
+<Note>
+  To apply for a custom limit for your users, [contact sales].
+</Note>
+
+## Multi-currency support
+
+A single account can hold and transact in multiple currencies, so users aren't restricted to a single-currency balance.
+
+<Note>
+  Multi-currency setup is not enabled by default. To request it for your program with Gnosis Pay, [contact sales].
+</Note>
+
+Because Gnosis Pay cards run on the **Visa network**, which accepts merchants worldwide, a purchase can be either a **domestic transaction** (merchant currency matches the account's currency) or an **international transaction** — in which case it becomes an **FX transaction**, converting between the account's currency and the currency the merchant is charging in.
+
+<Info>
+  As a partner, you can also customize the **FX fees** applied to these conversions, giving you control over how international spend is priced for your users.
+</Info>
+
+To find out which tokens are supported, visit the [Tokens and Chains Supported](/concepts/safe/tokens-and-chains-supported) page.

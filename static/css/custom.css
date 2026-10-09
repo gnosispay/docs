@@ -1,0 +1,120 @@
+/* Gnosis Pay brand palette — using Mintlify's documented CSS hooks */
+
+/* Hero headline — explicit color per theme, don't rely on inherited default */
+.hero-title {
+    color: #000000;
+}
+html.dark .hero-title {
+    color: #ffffff;
+}
+
+/* Hero subtext — real color per theme instead of flat opacity (which read as washed-out grey) */
+.hero-subtext {
+    color: #4a4570;
+}
+html.dark .hero-subtext {
+    color: #c6c2ee;
+}
+
+/* Page background */
+#background-color {
+    background-color: #fbebd4 !important;
+}
+html.dark #background-color {
+    background-color: #0b0836 !important;
+}
+
+/* Top navbar */
+#navbar {
+    background-color: #1a1751 !important;
+}
+
+/* Nav links — neon highlight on hover */
+navbar-link:hover,
+nav-anchor:hover {
+    color: #cbfb6c !important;
+    transition: color 0.15s ease;
+}
+
+/* CTA button in the topbar ("Sign up as Partner") */
+#topbar-cta-button {
+    background-color: #cbfb6c !important;
+    color: #1a1751 !important;
+    border: none !important;
+    border-radius: 999px !important;
+    transition:
+        filter 0.15s ease,
+        transform 0.15s ease;
+}
+#topbar-cta-button:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+/* Cards — neon lime border, subtle tint, glow + lift on hover */
+/* Scoped to the individual card element/class only — NOT card-group/columns wrappers */
+card,
+.card {
+    background-color: rgba(118, 109, 229, 0.05) !important;
+    border: 1px solid rgba(203, 251, 108, 0.45) !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+card:hover,
+.card:hover {
+    border-color: #cbfb6c !important;
+    box-shadow: 0 0 0 3px rgba(203, 251, 108, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+/* Explicitly strip any border/background from the group wrapper itself */
+card-group,
+columns,
+.card-group {
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    gap: 24px !important;
+}
+
+/* Cards — dark mode: lighter indigo card, same neon border treatment */
+html.dark card,
+html.dark .card {
+    background-color: rgba(255, 255, 255, 0.035) !important;
+    color: #fbebd4 !important;
+}
+
+/* Footer (renders on pages without mode: custom) */
+footer {
+    background-color: transparent !important;
+    border-top: 1px solid rgba(203, 251, 108, 0.15);
+}
+/* Muted footer text/icons so they recede rather than compete with content */
+footer,
+footer a {
+    color: #4a4570 !important;
+}
+html.dark footer,
+html.dark footer a {
+    color: #c6c2ee !important;
+}
+footer a:hover {
+    color: #cbfb6c !important;
+    transition: color 0.15s ease;
+}
+
+/* Body text — stronger contrast than Mintlify's default muted grey */
+.prose,
+.prose p,
+.prose li {
+    color: #2a2550 !important; /* deep indigo-ink on the cream background */
+}
+html.dark .prose,
+html.dark .prose p,
+html.dark .prose li {
+    color: #ece9ff !important; /* near-white with a faint lilac tint */
+}

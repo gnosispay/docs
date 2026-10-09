@@ -1,105 +1,142 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Gnosis Pay Documentation",
+  "name": "Gnosis Pay",
   "colors": {
-    "primary": "#707A2D",
-    "light": "#D8EB81",
-    "dark": "#919E3A"
+    "primary": "#766DE5",
+    "light": "#9994ED",
+    "dark": "#1A1751"
   },
-  "favicon": "/static/img/favicon.ico",
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "favicon": "/static/img/faviconnew.ico",
+  "logo": "/static/img/logo-light.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact Sales team",
+        "href": "https://form.typeform.com/to/naN3irHW?typeform-source=gnosispay.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Sign in as Partner",
+      "href": "https://partner-dashboard.sandbox.gnosispay.com/auth/signin"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Concepts",
         "groups": [
           {
-            "group": "Introduction to Gnosis Pay",
-            "icon": "play",
-            "pages": ["index", "integration-model", "auth", "onboarding-flow"]
-          },
-          {
-            "group": "Accounts",
-            "icon": "user",
+            "group": "Welcome to Gnosis Pay",
             "pages": [
-              "account",
-              "account/update-authenticated-account",
-              "account/adding-safe-owner"
+              "concepts/intro",
+              "concepts/whybuild",
+              "concepts/architecture"
             ]
           },
           {
-            "group": "On/Off Ramps",
-            "icon": "landmark",
+            "group": "Authentication",
+            "pages": ["concepts/auth/token"]
+          },
+          {
+            "group": "KYC",
+            "pages": ["concepts/kyc/kyc-overview", "concepts/kyc/kyc-statuses"]
+          },
+          {
+            "group": "Accounts",
             "pages": [
-              "on-off-ramps/index",
-              "on-off-ramps/iban-integration",
-              "on-off-ramps/kyc-sharing"
+              "concepts/accounts/account",
+              "concepts/accounts/account-status"
+            ]
+          },
+          {
+            "group": "Safe & Modules",
+            "pages": [
+              "concepts/safe/overview",
+              "concepts/safe/tokens-and-chains-supported"
             ]
           },
           {
             "group": "Cards",
-            "icon": "credit-card",
             "pages": [
-              "cards/concepts",
-              "cards/create-physical-cards",
-              "cards/create-virtual-cards",
-              "cards/card-order-state-transitions",
-              "cards/pse-integration"
-            ]
-          },
-          {
-            "group": "Card Transactions",
-            "icon": "receipt",
-            "pages": [
-              "transactions/index",
-              "transactions/lifecycle",
-              "transactions/integration-guide"
-            ]
-          },
-          {
-            "group": "On-chain",
-            "icon": "cubes",
-            "pages": [
-              "gp-onchain/overview",
-              "gp-onchain/about-GP-safe",
-              "gp-onchain/sign-message",
-              "gp-onchain/daily-limit",
-              "gp-onchain/withdraw-funds-from-safe",
-              "gp-onchain/third-party-bridges"
-            ]
-          },
-          {
-            "group": "Webhooks",
-            "icon": "webhook",
-            "pages": [
-              "webhooks/introduction",
-              "webhooks/getting-started",
-              "webhooks/events"
+              "concepts/card/overview",
+              "concepts/card/decline-codes",
+              "concepts/card/transaction-enrichment"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Integration Guide",
         "groups": [
           {
-            "group": "Authentication",
-            "pages": ["api-reference/intro", "api-reference/auth-app"]
+            "group": "Getting started",
+            "pages": ["guides/configuring-environment"]
           },
           {
-            "group": "API reference",
-            "openapi": "https://api.gnosispay.com/api-docs/spec.json"
+            "group": "Authentication & Onboarding",
+            "pages": [
+              "guides/auth-with-siwe",
+              "guides/onboarding",
+              "guides/phone"
+            ]
           },
           {
-            "group": "PSE API",
-            "openapi": "https://api-pse-public.gnosispay.com/api-docs/spec.json"
+            "group": "KYC Sharing",
+            "pages": [
+              "guides/kyc-sharing/pass-kyc",
+              "guides/kyc-sharing/monerium"
+            ]
+          },
+          {
+            "group": "Manage Accounts",
+            "pages": [
+              "guides/accounts/manage-accounts",
+              "guides/accounts/limits",
+              "guides/accounts/account-statement",
+              "guides/accounts/onchain-withdrawal"
+            ]
+          },
+          {
+            "group": "Manage Cards",
+            "pages": [
+              "guides/cards/create-virtual",
+              "guides/cards/card-limit",
+              "guides/cards/card-simulator",
+              "guides/cards/card-3ds"
+            ]
+          },
+          {
+            "group": "Secure Card Elements via PSE",
+            "pages": ["guides/pse/pse", "guides/pse/pse-integration"]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "guides/webhooks/webhook",
+              "guides/webhooks/webhook-events"
+            ]
           }
         ]
+      },
+      {
+        "tab": "API Reference",
+        "openapi": "https://core.prod.gnosispay.com/user-api/openapi.json"
+      },
+      {
+        "tab": "Migration",
+        "pages": ["migration/migration-overview"]
+      },
+      {
+        "tab": "Changelog",
+        "pages": ["changelog/index"]
       }
     ]
-  },
-  "logo": {
-    "light": "/static/img/Logo-black.svg",
-    "dark": "/static/img/Logo-white.svg"
   },
   "contextual": {
     "options": [

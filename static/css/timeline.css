@@ -1,0 +1,111 @@
+/* Landing page: "Get started" timeline */
+
+.gp-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 32px;}
+
+.gp-step {
+  position: relative;
+  display: block;
+  padding-right: 32px;
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* Connector line between badges */
+.gp-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 44px;
+  right: 12px;
+  height: 2px;
+  background: linear-gradient(90deg, #CBFB6C, rgba(203, 251, 108, 0.15));
+}
+
+.gp-badge {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #CBFB6C;
+  color: #1A1751;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 0 0 6px rgba(203, 251, 108, 0.12);
+}
+
+.gp-step-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.gp-step-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.gp-step-text {
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 8px;
+}
+
+.gp-step-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: #CBFB6C;
+  margin-top: 14px;
+}
+
+.gp-step:hover .gp-step-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gp-step:focus-visible {
+  outline: 2px solid #CBFB6C;
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+/* Mobile: vertical timeline */
+@media (max-width: 767px) {
+  .gp-timeline {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .gp-step {
+    padding: 0 0 0 52px;
+  }
+
+  .gp-badge {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .gp-step:not(:last-child)::before {
+    top: 44px;
+    left: 15px;
+    right: auto;
+    bottom: -20px;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, #CBFB6C, rgba(203, 251, 108, 0.15));
+  }
+
+  .gp-step-body {
+    margin-top: 4px;
+  }
+}
